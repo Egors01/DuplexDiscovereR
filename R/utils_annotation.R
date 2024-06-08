@@ -100,7 +100,7 @@ annotateGI <- function(
 #' look for <id_col_base>.A and <id_col_base>.B columns and compare them
 #' @keywords internal
 #' @return gi `GInteractions` object containing `cis` field with 0/1 values
-annotate_cis_trans <- function(gi, id_col_base = "gene_id") {
+.annotateCisTrans <- function(gi, id_col_base = "gene_id") {
     gi$cis <- 0
 
     name_col1 <- paste0(id_col_base, ".A")
@@ -132,7 +132,7 @@ annotate_cis_trans <- function(gi, id_col_base = "gene_id") {
 #' @param df_counts dataframe with read counts
 #' @param id_col key to use in merge
 #' @return `GInteractions` with added counts
-add_gene_counts <- function(gi, df_counts, id_col = "gene_id") {
+.addGeneCounts <- function(gi, df_counts, id_col = "gene_id") {
     df_counts <- df_counts %>% as.data.frame()
     df_all_cts <- as_tibble(data.frame("RNA" = unname(df_counts[1]), "n" = unname(df_counts[2])))
 
@@ -155,7 +155,7 @@ add_gene_counts <- function(gi, df_counts, id_col = "gene_id") {
 }
 
 
-calculate_ligation_pvalues <- function(gi, df_counts, id_col = "gene_id") {
+calculateLigationPvalues <- function(gi, df_counts, id_col = "gene_id") {
     df_counts <- df_counts %>% as.data.frame()
     df_all_cts <- as_tibble(data.frame("RNA" = unname(df_counts[1]), "n" = unname(df_counts[2])))
 
@@ -210,14 +210,14 @@ calculate_ligation_pvalues <- function(gi, df_counts, id_col = "gene_id") {
     gi$p_val <- tibble("chim_id" = seq_len(length(gi))) %>%
         left_join(chimdf_save, by = "chim_id") %>%
         pull(p.adj)
-    gi <- add_gene_counts(gi, df_counts)
+    gi <- .addGeneCounts(gi, df_counts)
 
     return(gi)
 }
 
 
 
-.check_RNAduplex_installed <- function() {
+.checkRNAduplexinstalled <- function() {
     returncode <- system("RNAduplex -h > /dev/null 2>&1")
     if (returncode != 0) {
         message("RNAduplex from ViennaRNA is not found.Unable to call hybrid predictions")
@@ -227,7 +227,7 @@ calculate_ligation_pvalues <- function(gi, df_counts, id_col = "gene_id") {
     }
 }
 
-run_RNAduplex <- function(RNA1, RNA2) {
+.runRNAduplex <- function(RNA1, RNA2) {
     cmd <- paste0('echo -e "', RNA1, "\n", RNA2, '\n" | RNAduplex')
     result <- system(cmd, intern = TRUE)
     predicted_structure <- result[1]
@@ -235,7 +235,7 @@ run_RNAduplex <- function(RNA1, RNA2) {
 }
 
 
-get_duplex_string <- function(gi, fafile) {
+.getDuplexString <- function(gi, fafile) {
     s <- Biostrings::readBStringSet(fafile)
     s <- Biostrings::RNAStringSet(s)
     newnames <- str_squish(str_sub(names(s), 1, 5))
@@ -246,7 +246,7 @@ get_duplex_string <- function(gi, fafile) {
 }
 
 
-get_gc_content <- function(seqrna) {
+.getGCContent <- function(seqrna) {
     # seqrna is RNAstringset based on the arm s[get_arm_a(gi)]
     gc_freq <- Biostrings::letterFrequency(seqrna, c("G", "C"))
     gc_content <- rowSums(gc_freq) / width(seqrna) * 100

@@ -117,7 +117,7 @@ runDuplexDiscoverer <- function(
     # 2.2 convert to GInteractions and mark short/overlapping/splice junction reads
     big_gi <- makeGiFromDf(single_gap_df)
     if (!is.null(junctions_gr)) {
-        big_gi <- classify_two_arm_chimeras(
+        big_gi <- classifyTwoArmChimeras(
             gi = big_gi,
             min_junction_len = min_junction_len,
             junctions_gr = junctions_gr,
@@ -125,7 +125,7 @@ runDuplexDiscoverer <- function(
         )
     } else {
         message(" Splice junction refrence is not provided")
-        big_gi <- get_chimeric_junction_types(big_gi, normal_gap_threshold = min_junction_len)
+        big_gi <- getChimericJunctionTypes(big_gi, normal_gap_threshold = min_junction_len)
         big_gi$splicejnc <- 0
     }
 
@@ -160,7 +160,7 @@ runDuplexDiscoverer <- function(
 
     # 3.1 prepare clustering: reduce complexity -----------
     message("--- collapsing identical reads ---")
-    res_collapse_ident <- collapse_identical_reads(gi_2arm)
+    res_collapse_ident <- collapseIdenticalReads(gi_2arm)
 
     # 3.1a get results of collapse: get new gi object, update read stats
     gi <- res_collapse_ident$gi_collapsed
@@ -175,8 +175,8 @@ runDuplexDiscoverer <- function(
     if (collapse_n_inter != 0) {
         message("--- iteratively collapse similar reads  --- ")
         message("minimum shift is  :", gap_collapse_similar, " nt")
-        res <- collapse_similar_reads(gi, read_stats_df,
-            mgap = gap_collapse_similar,
+        res <- collapseSimilarChimeras(gi, read_stats_df,
+            maxgap = gap_collapse_similar,
             niter = collapse_n_inter,
             minovl = 20
         )
@@ -188,7 +188,7 @@ runDuplexDiscoverer <- function(
     # 3.3 Clustering on the whole-genome -----
     message("--- calculating total read overlaps ---")
 
-    graphdf_fast <- compute_gi_self_overlaps(gi,
+    graphdf_fast <- computeGISelfOverlaps(gi,
         maxgap = max_gap,
         id_column = "duplex_id",
         minovl = min_overlap
@@ -212,7 +212,7 @@ runDuplexDiscoverer <- function(
     # clustering will add one column "dg_id"
     gi_fast <- clusterDuplexGroups(gi, graphdf = graphdf_fast, decompose = FALSE)
     # add dg_id for duplexes which are aggregated locally, but not clustered globally
-    gi_fast <- add_dg_ids_for_noempty_duplexes(gi_fast)
+    gi_fast <- .addDGidsForTmpDGs(gi_fast)
 
     # use it to collapse duplexes into suplex groups
     gi_final <- collapse_duplex_groups(gi_fast,
@@ -221,7 +221,7 @@ runDuplexDiscoverer <- function(
         keep_meta = FALSE
     )
     # update read stats
-    read_stats_df <- left_join(read_stats_df, dg_id_to_duplex_id(gi_fast),
+    read_stats_df <- left_join(read_stats_df, .DGIdToDuplexId(gi_fast),
         by = "duplex_id"
     )
 
@@ -253,7 +253,7 @@ runDuplexDiscoverer <- function(
     if (!is.null(anno_gr)) {
         message("--- annotation --- ")
         gi_final <- annotateGI(gi_final, anno_gr)
-        gi_final <- annotate_cis_trans(gi_final)
+        gi_final <- .annotateCisTrans(gi_final)
         not_annotated <- sum(as.integer(is.na(gi_final$gene_id.A) | is.na(gi_final$gene_id.B)))
         not_annotated_full <- sum(as.integer(is.na(gi_final$gene_id.A) & is.na(gi_final$gene_id.B)))
         annotated <- length(gi_final) - not_annotated
@@ -263,8 +263,8 @@ runDuplexDiscoverer <- function(
 
         if (!is.null(df_counts)) {
             message("--- computing random ligation p-values ---")
-            # gi_final = calculate_ligation_pvalues(gi_final,df_counts)
-            gi_final <- calculate_ligation_pvalues(gi_final, df_counts)
+            # gi_final = calculateLigationPvalues(gi_final,df_counts)
+            gi_final <- calculateLigationPvalues(gi_final, df_counts)
         }
     } else {
         message("No annotation provided")

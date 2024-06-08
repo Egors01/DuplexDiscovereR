@@ -35,12 +35,12 @@
 #' # run preprocessing and filtering
 #' preproc_df <- runDuplexDiscoPreproc(RNADuplexesRawBed, table_type = "bedpe")
 #' preproc_gi <- makeGiFromDf(preproc_df)
-#' preproc_gi <- classify_two_arm_chimeras(preproc_gi,
+#' preproc_gi <- classifyTwoArmChimeras(preproc_gi,
 #'     min_junction_len = 5,
 #'     junctions_gr = SampleSpliceJncGR, max_sj_shift = 10
 #' )
 #' # collapse duplicates
-#' gi <- collapse_identical_reads(preproc_gi)$gi
+#' gi <- collapseIdenticalReads(preproc_gi)$gi
 #' # run global clustering
 #' gi <- clusterDuplexGroups(gi)
 #' # check dg_ids
@@ -61,7 +61,7 @@ clusterDuplexGroups <- function(gi, graphdf = NULL, maxgap = 40,
         message("Computing overlaps on-the-fly")
         gi$idx_tmp <- seq_len(length(gi))
         id_column <- "idx_tmp"
-        graphdf <- compute_gi_self_overlaps(gi,
+        graphdf <- computeGISelfOverlaps(gi,
             id_column = id_column, maxgap = maxgap,
             minovl = minovl
         )

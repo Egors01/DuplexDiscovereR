@@ -24,23 +24,23 @@
 #' \item{junction_type}{factor for the junction types}
 #' }
 #' @export
-#' @seealso [DuplexDiscoverer::get_chimeric_junction_types(),
-#' DuplexDiscoverer::get_splice_junction_chimeras()]
+#' @seealso [DuplexDiscoverer::getChimericJunctionTypes(),
+#' DuplexDiscoverer::getSpliceJunctionChimeras()]
 #' @examples
 #' data("RNADuplexesSampleData")
 #' head(RNADuplexSampleGI)
 #' # remove all metadata
 #' mcols(RNADuplexSampleGI) <- NULL
-#' gi <- classify_two_arm_chimeras(RNADuplexSampleGI,
+#' gi <- classifyTwoArmChimeras(RNADuplexSampleGI,
 #'     min_junction_len = 5,
 #'     junctions_gr = SampleSpliceJncGR, max_sj_shift = 10
 #' )
 #' table(gi$splicejnc)
 #' table(gi$junction_type)
-classify_two_arm_chimeras <- function(gi, min_junction_len = 4,
+classifyTwoArmChimeras <- function(gi, min_junction_len = 4,
     junctions_gr, max_sj_shift = 4) {
-    gi <- get_chimeric_junction_types(gi, normal_gap_threshold = min_junction_len)
-    gi <- get_splice_junction_chimeras(gi, sj_gr = junctions_gr, sj_tolerance = max_sj_shift)
+    gi <- getChimericJunctionTypes(gi, normal_gap_threshold = min_junction_len)
+    gi <- getSpliceJunctionChimeras(gi, sj_gr = junctions_gr, sj_tolerance = max_sj_shift)
 
     return(gi)
 }
@@ -68,9 +68,9 @@ classify_two_arm_chimeras <- function(gi, min_junction_len = 4,
 #' data("RNADuplexesSampleData")
 #' preproc_df <- runDuplexDiscoPreproc(RNADuplexesRawBed, table_type = "bedpe")
 #' preproc_gi <- makeGiFromDf(preproc_df)
-#' preproc_gi <- get_chimeric_junction_types(preproc_gi)
+#' preproc_gi <- getChimericJunctionTypes(preproc_gi)
 #' table(preproc_gi$junction_type)
-get_chimeric_junction_types <- function(gi, normal_gap_threshold = 10) {
+getChimericJunctionTypes <- function(gi, normal_gap_threshold = 10) {
     message("\n--- filtering 2-arm duplexes by junction type  ---")
     gi$junction_type <- factor(x = "2arm", levels = c(
         "2arm",
@@ -155,9 +155,9 @@ get_chimeric_junction_types <- function(gi, normal_gap_threshold = 10) {
 #' @export
 #' @examples
 #' data("RNADuplexesSampleData")
-#' gi <- get_splice_junction_chimeras(RNADuplexSampleGI, SampleSpliceJncGR)
+#' gi <- getSpliceJunctionChimeras(RNADuplexSampleGI, SampleSpliceJncGR)
 #' table(gi$splicejnc)
-get_splice_junction_chimeras <- function(gi, sj_gr, sj_tolerance = 20) {
+getSpliceJunctionChimeras <- function(gi, sj_gr, sj_tolerance = 20) {
     message("\n--- searching for the exon-exon junctions  ---")
     gi$idx <- seq_len(length(gi))
     gi$gap <- pairdist(gi, type = "gap")

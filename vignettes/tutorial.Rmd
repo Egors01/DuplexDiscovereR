@@ -385,8 +385,8 @@ determining the types of the overlaps.
 Both can be called by separate method, which adds corresponding metadata field
 to the input
 ```{r ex_classif1}
-gi <- get_chimeric_junction_types(new_gi)
-gi <- get_splice_junction_chimeras(gi, sj_gr = SampleSpliceJncGR)
+gi <- getChimericJunctionTypes(new_gi)
+gi <- getSpliceJunctionChimeras(gi, sj_gr = SampleSpliceJncGR)
 ```
  One can inspect detected jucntoin types
 ```{r ex_classif2}
@@ -443,7 +443,7 @@ In the overlap-based clustering, these reads would belong to the same duplex gro
 Collapsing them into single entry reduces the number of nodes and vertices in
 the clustering graph, resulting in better time and memory performance.  
 ```{r , dupl1 }
-res_collapse <- collapse_identical_reads(gi)
+res_collapse <- collapseIdenticalReads(gi)
 # returns new object
 gi_unique <- res_collapse$gi_collapsed
 ```
@@ -479,7 +479,7 @@ sRNA.
 To modify the graph weights, one can use following 
 Call the finding of the pair overlaps in the input gi 
 ```{r cl1}
-graph_df <- compute_gi_self_overlaps(gi_unique)
+graph_df <- computeGISelfOverlaps(gi_unique)
 head(graph_df)
 ```
 This dataframe size is detemined by the existence of the pairwise overlap between

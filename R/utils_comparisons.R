@@ -9,7 +9,7 @@
 #' of chimeric reads is less than \code{min_arm_ratio}, then the total overlap for this pair is set to zero.
 #' Relevant to comparison of superset vs individual samples
 #' @param minovl Parameter for read clustering to create a superset. Minimum required overlap to for either arm (A or B) for pair of entries.
-#' @param mgap Parameter for read clustering. Minimum required shift between start and end coordinates of arms for pair of overlapping entries..
+#' @param maxgap Parameter for read clustering. Minimum required shift between start and end coordinates of arms for pair of overlapping entries..
 #' If the shift is longer than \code{max_gap} for either arm, then total read overlap between those reads is zero.
 #' @param gi_superset Optional. Superset defining the space (all) of the interactions, against which inputs from the list will be compared.
 #' @param niter Internal parameter for debugging. Number of cluster& collapse iterations to find superset
@@ -53,7 +53,7 @@
 compareMultipleInteractions <- function(gi_samples_list,
     min_ratio = 0.3,
     minovl = 5,
-    mgap = 50,
+    maxgap = 50,
     niter = 3,
     gi_superset = NULL,
     anno_gr = NULL) {
@@ -88,14 +88,14 @@ compareMultipleInteractions <- function(gi_samples_list,
 
         # message("DEBUG INTER:", length(gi_all))
         # gi_all_inter = clusterDuplexGroups(gi = gi_all,
-        #                     maxgap =mgap, minovl =  minovl,
+        #                     maxgap =maxgap, minovl =  minovl,
         #                     min_arm_ratio = min_ratio)
         # gi_all_inter = collapse_duplex_groups(gi_all_inter,
         #                                       return_unclustered = TRUE)
 
-        gi_all_inter <- collapse_similar_reads(
+        gi_all_inter <- collapseSimilarChimeras(
             gi = gi_all, niter = niter, minovl = minovl,
-            mgap = mgap, read_stats_df = statdf
+            maxgap = maxgap, read_stats_df = statdf
         )$gi_updated
         gi_all_inter$id <- seq_len(length(gi_all_inter))
     }
@@ -103,7 +103,7 @@ compareMultipleInteractions <- function(gi_samples_list,
 
     if (!is.null(anno_gr)) {
         gi_all_inter <- annotateGI(gi_all_inter, anno_gr)
-        gi_all_inter <- annotate_cis_trans(gi_all_inter)
+        gi_all_inter <- .annotateCisTrans(gi_all_inter)
     }
 
 
@@ -124,7 +124,7 @@ compareMultipleInteractions <- function(gi_samples_list,
         first <- gi_all_inter
         second <- assign_name_to_gi(gi_samples_list[[i]], sample_name = samplename2)
         # unset maxgap because we compare against less-defined superset
-        ovldt <- compute_gi_pair_overlaps(first, second,
+        ovldt <- computeGIPairOverlaps(first, second,
             minovl = minovl,
             maxgap = 100
         )
@@ -151,7 +151,7 @@ compareMultipleInteractions <- function(gi_samples_list,
     return(res)
 }
 
-compute_gi_pair_overlaps <- function(gi1, gi2, minovl = 10,
+computeGIPairOverlaps <- function(gi1, gi2, minovl = 10,
     maxgap = 10) {
     # this is to unify levels
     # otherwise A-B B-A matches would be messed between query an dsubject

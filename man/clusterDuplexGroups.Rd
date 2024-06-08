@@ -66,12 +66,12 @@ data("RNADuplexesSampleData")
 # run preprocessing and filtering
 preproc_df <- runDuplexDiscoPreproc(RNADuplexesRawBed, table_type = "bedpe")
 preproc_gi <- makeGiFromDf(preproc_df)
-preproc_gi <- classify_two_arm_chimeras(preproc_gi,
+preproc_gi <- classifyTwoArmChimeras(preproc_gi,
     min_junction_len = 5,
     junctions_gr = SampleSpliceJncGR, max_sj_shift = 10
 )
 # collapse duplicates
-gi <- collapse_identical_reads(preproc_gi)$gi
+gi <- collapseIdenticalReads(preproc_gi)$gi
 # run global clustering
 gi <- clusterDuplexGroups(gi)
 # check dg_ids
