@@ -14,7 +14,7 @@ An object of class \code{StrictGInteractions} of length 14.
 data(RNADuplexesSmallGI)
 }
 \description{
-\code{Ginteractions} object containing two-arm chimeric reads extracted from
+\code{GInteractions} object containing two-arm chimeric reads extracted from
 mapping output and which can be represented in the \code{GInteraction} object
 and subset to chr22: 23877144-45562960 '*'
 }

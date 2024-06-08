@@ -20,7 +20,7 @@ divided into several categories based on the distance between the chimeric
 fragments and existence of the overlap between these fragments.
 }
 \details{
-Takes \code{Ginteractions} object and classifies junctions into following categories
+Takes \code{GInteractions} object and classifies junctions into following categories
 \describe{
 \item{2arm}{ normal chimeric read }
 \item{2arm_short}{ normal chimeric read with junction < \emph{normal_gap_threshold}}

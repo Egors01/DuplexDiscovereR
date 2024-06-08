@@ -14,7 +14,7 @@ runDuplexDiscoPreproc(
 }
 \arguments{
 \item{data}{Either dataframe-like object: Chimeric.out.junction from STAR or
-.bepde - formatted or \code{Ginteractions} object from \pkg{InteractionSet} package}
+.bepde - formatted or \code{GInteractions} object from \pkg{InteractionSet} package}
 
 \item{table_type}{in \code{c("STAR","bedpe")} for Chimeric.out.Junction or generic input}
 
@@ -32,7 +32,7 @@ tibble with new metadata fields OR GInteractions if \code{return_gi} is
 set to TRUE
 }
 \description{
-Imports dataframe with reads (.bedpe or Chimeric.out.junction ) or \code{Ginteractions}
+Imports dataframe with reads (.bedpe or Chimeric.out.junction ) or \code{GInteractions}
 object. Adds necessary metadata
 If the input is
 Checks column names or tries to quess them if not provided.

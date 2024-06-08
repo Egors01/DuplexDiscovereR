@@ -131,7 +131,7 @@ annotate_cis_trans <- function(gi, id_col_base = "gene_id") {
     }
 }
 
-#' Helper function to add count data to metadata of `Ginteractions`
+#' Helper function to add count data to metadata of `GInteractions`
 #'
 #' Merges the count dataframe and interactions metadata by `id_col`
 #' If key is not found, in metadata throws error
@@ -139,7 +139,7 @@ annotate_cis_trans <- function(gi, id_col_base = "gene_id") {
 #' @param gi `GInteractions`
 #' @param df_counts dataframe with read counts
 #' @param id_col key to use in merge
-#' @return `Ginteractions` with added counts
+#' @return `GInteractions` with added counts
 add_gene_counts <- function(gi, df_counts, id_col = "gene_id") {
     df_counts <- df_counts %>% as.data.frame()
     df_all_cts <- as_tibble(data.frame("RNA" = unname(df_counts[1]), "n" = unname(df_counts[2])))

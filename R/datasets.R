@@ -33,7 +33,7 @@
 
 #' RNA duplex reads of SPLASH, clustered and assigned to duplex groups
 #'
-#' `Ginteractions` read-level object containing processed reads,annotated with duplex group
+#' `GInteractions` read-level object containing processed reads,annotated with duplex group
 #'  ids, read types gene names and p-values
 #' @source [SequenceReadArcive](https://www.ncbi.nlm.nih.gov/sra/?term=SRR3404943)
 #' Reads were aligned with STAR and duplex groups were identified
@@ -42,7 +42,7 @@
 #' @docType data
 #' @keywords datasets
 #' @usage data(RNADuplexesSampleData)
-#' @returns `Ginteractions` with
+#' @returns `GInteractions` with
 #' - `n_reads_dg ` : number of reads in the duplex group (DG)
 #' - `duplex_id  ` : temporary id for RNA duplexes which could be found before
 #' clustering (duplicated or shifted by couple of nt )
@@ -54,7 +54,7 @@
 
 #' RNA duplex reads of SPLASH derived from chimeric alignments
 #'
-#' `Ginteractions` read-level object containing two-arm chimeric reads extracted from
+#' `GInteractions` read-level object containing two-arm chimeric reads extracted from
 #' mapping output and which can be represented in the `GInteraction` object
 #' @source [SequenceReadArcive](https://www.ncbi.nlm.nih.gov/sra/?term=SRR3404943)
 #' @details
@@ -63,7 +63,7 @@
 #' @docType data
 #' @keywords datasets
 #' @usage data(RNADuplexesSampleData)
-#' @returns `Ginteractions` with
+#' @returns `GInteractions` with
 #' - `readname` : read name
 #' - `map_type ` : type of the mapped read (2arm by design of pre-filtering)
 #' - `junction_type` : if read jucntion is too short, or it not a 'true' ligated
@@ -75,7 +75,7 @@
 
 #' RNA duplex reads of SPLASH, clustered and collapsed to duplex groups
 #'
-#' `Ginteractions` duplex group -level object containing detected duplex groups,
+#' `GInteractions` duplex group -level object containing detected duplex groups,
 #' annotated with duplex group ids, gene_names and p-values
 #' @source [SequenceReadArcive](https://www.ncbi.nlm.nih.gov/sra/?term=SRR3404943)
 #' Reads were aligned with STAR and duplex groups were identified
@@ -84,7 +84,7 @@
 #' @docType data
 #' @keywords datasets
 #' @usage data(RNADuplexesSampleData)
-#' @returns `Ginteractions` with
+#' @returns `GInteractions` with
 #' - `n_reads` : number of reads in the duplex group (DG)
 #' - `dg_id` :id of the duplex group
 #' - `p_val` : BH adjusted p-value of testing to reject hypothesis of DG arising
@@ -139,7 +139,7 @@
 
 #' RNA duplex reads of SPLASH derived from chimeric alignments
 #'
-#' `Ginteractions` object containing two-arm chimeric reads extracted from
+#' `GInteractions` object containing two-arm chimeric reads extracted from
 #' mapping output and which can be represented in the `GInteraction` object
 #' and subset to chr22: 23877144-45562960 '*'
 #' @source [SequenceReadArcive](https://www.ncbi.nlm.nih.gov/sra/?term=SRR3404943)

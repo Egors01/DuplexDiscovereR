@@ -114,7 +114,7 @@ runDuplexDiscoverer <- function(
         mutate(read_id = c(seq_len(nrow(df)))) %>%
         relocate(read_id, .after = n_reads)
 
-    # 2.2 convert to Ginteractions and mark short/overlapping/splice junction reads
+    # 2.2 convert to GInteractions and mark short/overlapping/splice junction reads
     big_gi <- makeGiFromDf(single_gap_df)
     if (!is.null(junctions_gr)) {
         big_gi <- classify_two_arm_chimeras(

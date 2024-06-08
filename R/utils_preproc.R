@@ -379,14 +379,14 @@ preproc_generic <- function(dt, keep_all_columns = TRUE) {
     return(dt)
 }
 
-#' Preprocess Ginteractions input
+#' Preprocess GInteractions input
 #'
 #' Searches for the multi-mapped reads (overlapping arms)
 #' Adds 'multimap', 'bad_junction' columns filled with 0/1 and 'multigap' = 0
 #' for consistency with other pre-processing methods.
 #'
 #' @keywords internal
-#' @param gi_raw `Ginteractions` with inpit RNA interactions
+#' @param gi_raw `GInteractions` with inpit RNA interactions
 #' @param keep_all_columns keep columns apart from those required by .bedpe format
 #'
 #' @return pre-processed dataframe
@@ -430,7 +430,7 @@ preproc_generic_gi <- function(gi_raw, keep_all_columns = TRUE) {
 
 #' Run pre-processing of chimeric reads input
 #' @description
-#' Imports dataframe with reads (.bedpe or Chimeric.out.junction ) or `Ginteractions`
+#' Imports dataframe with reads (.bedpe or Chimeric.out.junction ) or `GInteractions`
 #' object. Adds necessary metadata
 #' If the input is
 #' Checks column names or tries to quess them if not provided.
@@ -448,7 +448,7 @@ preproc_generic_gi <- function(gi_raw, keep_all_columns = TRUE) {
 #'   junction was wrongly introduced in the mapping}
 #' }
 #' @param data Either dataframe-like object: Chimeric.out.junction from STAR or
-#' .bepde - formatted or `Ginteractions` object from \pkg{InteractionSet} package
+#' .bepde - formatted or `GInteractions` object from \pkg{InteractionSet} package
 #' @param keep_metadata - TRUE or FALSE. do not extra fields like
 #'  CIGAR strings and junction coordinates
 #' @param table_type in \code{c("STAR","bedpe")} for Chimeric.out.Junction or generic input
