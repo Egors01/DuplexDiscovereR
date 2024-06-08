@@ -661,7 +661,6 @@ availableDisplayPars <- function(class) {
     }
 }
 
-
 #' Plots distributed boxes
 #'
 #' Non-exported from Gviz, contains logic for calcualting boxes alignment on plot

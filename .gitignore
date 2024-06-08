@@ -1,4 +1,5 @@
 .Rproj.user
+.gitignore
 inst/doc
 DuplexDiscovereR.Rcheck
 build
