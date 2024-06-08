@@ -17,7 +17,7 @@
 #' @import InteractionSet
 #' @import digest
 #' @import rlang
-#' @import scales
+#' @importFrom scales rescale
 #' @importFrom GenomicAlignments cigarWidthAlongReferenceSpace
 #' @import tibble
 #' @import dplyr
@@ -31,7 +31,6 @@
 #' @importFrom purrr set_names
 #' @import Gviz
 #' @import grid
-#' @importFrom BiocGenerics which
 #' @importFrom Biostrings readBStringSet RNAStringSet letterFrequency
 #' @importFrom ggsci pal_igv
 #' @author Egor Semenchenko

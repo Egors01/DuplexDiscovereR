@@ -155,9 +155,7 @@ setMethod("initialize", "DuplexTrack", function(.Object, ...) {
         return(.Object)
     }
     ## the display parameter defaults
-    # Gviz:::.makeParMapping()
-    # .Object <- Gviz:::.updatePars(.Object, "DuplexTrack")
-    # .gv_parmapping()
+
     .Object <- .gv_updatepars(.Object, "DuplexTrack")
     range <- list(...)$range
     giobject <- list(...)$giobject

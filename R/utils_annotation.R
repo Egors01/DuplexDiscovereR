@@ -30,9 +30,7 @@ annotateGI <- function(
     anno_gr <- anno_gr[, keys]
     anno_gr$feature_id <- seq_len(length(anno_gr))
     gi@regions$region_id <- seq_len(length(gi@regions))
-    # TODO add check for overlaps
-    # multiple_hit mark, return list
-    # multiple hit mark, return largest overlap
+
     po <- findOverlapPairs(gi@regions, anno_gr)
     df <- tibble(
         "region_id" = po@first$region_id,
@@ -59,12 +57,6 @@ annotateGI <- function(
         ungroup() %>%
         distinct(region_id, .keep_all = TRUE)
     df <- left_join(df, as_tibble(mcols(anno_gr)), by = "feature_id")
-
-    # gi@regions$feature_id = NA
-    # gi@regions$feature_id = NA
-    # gi@regions[df$region_id]$feature_id= anno_gr[df$feature_id]$feature_id
-    # gi@regions[df$region_id]$ambig= anno_gr[df$feature_id]$ambig
-    # dt = left_join(as_tibble(mcols(gi@regions)),as_tibble(mcols(anno_gr)),on='feature_id')
 
     dt <- left_join(as_tibble(mcols(gi@regions)), df, by = "region_id")
 

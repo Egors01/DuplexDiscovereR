@@ -326,10 +326,10 @@ Result contains slot for the interaction superset and the overlap information
 We can visualize sample intersections via upset plot 
 ```{r comp4, eval=TRUE}
 # first, check if UpSetR is installed
-if ("UpSetR" %in% installed.packages()) {
-    library(UpSetR)
-    upset(res_comp$dt_upset, text.scale = 1.5)
-}
+if (!requireNamespace('UpSetR', quietly = TRUE))
+    stop("Install 'UpSetR' to use this function.")
+library(UpSetR)
+upset(res_comp$dt_upset, text.scale = 1.5)
 ```
 
 # Building customized duplex data analysis with DuplexDiscoverer 
@@ -493,12 +493,12 @@ their sum as the new weight after re-scaling the values to {0,1}
 
 ```{r cl2}
 graph_df <- graph_df[graph_df$ratio.A > 0.5 & graph_df$ratio.B > 0.5, ]
-rescale <- function(x) {
+rescale_vec <- function(x) {
     return((x - min(x)) / (max(x) - min(x)))
 }
 
 graph_df$weight_new <- graph_df$ratio.A + graph_df$ratio.B
-graph_df$weight_new <- rescale(graph_df$weight_new)
+graph_df$weight_new <- rescale_vec(graph_df$weight_new)
 head(graph_df, 2)
 ```
 

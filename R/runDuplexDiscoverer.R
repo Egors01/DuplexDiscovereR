@@ -202,7 +202,7 @@ runDuplexDiscoverer <- function(
     }
 
     # scale weights from (min:max): (0,2) to (0,1)
-    graphdf_fast$weight <- rescale(graphdf_fast$weight, to = c(0, 1))
+    graphdf_fast$weight <- scales::rescale(graphdf_fast$weight, to = c(0, 1))
     # prune weak edges
     graphdf_fast <- graphdf_fast %>% dplyr::filter(
         ratio.A >= min_arm_ratio,
