@@ -1,0 +1,65 @@
+Package: DuplexDiscoverer
+Title: Analysis of the data from RNA duplex probing experiments
+Authors@R: 
+    c(person("Egor", "Semenchenko", ,  email = "yegor.smb@gmail.com", 
+    role = c("aut", "cre","cph"),comment = c(ORCID = "0009-0007-5306-076X") ,),
+         person("Volodymyr", "Tsybulskyi", ,
+         email = "Volodymyr.Tsybulskyi@mdc-berlin.de", role = c("ctb")),
+         person("Irmtraud", "Meyer", ,
+         email = "irmtraud.m.meyer@cantab.net", role = c("ctb"),
+         comment = c(ORCID = "0000-0002-4048-3479")))
+Description: 
+    DuplexDiscoverer is a package for analysis of the data from RNA cross-linking and proximity
+    ligation protocols such as SPLASH, PARIS, LIGR-seq and others.
+    DuplexDiscoverer takes input in a form of Chimericly or split -aligned reads.
+    It implements procedures for classification, filtering and efficient clustering 
+    of inidividual read alignments into duplex groups (DGs)
+    After DGs are found, RNA duplex formation and their hybridization energies 
+    are predicted,additional metrics 
+    i.e p-values or mean alignement scores can be calcualted to rank and analyze 
+    final RNA duplex predictions.Data from multiple experiments or replicates
+    can be processed separately and further compared to analyse reproducability 
+    of experimental method. 
+License:  GPL-3
+URL: https://github.com/Egors01/Duplex_Explorer
+BugReports: https://github.com/Egors01/Duplex_Explorer
+Encoding: UTF-8
+NeedsCompilation: no
+Version: 0.99.0
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
+BiocType: Software
+biocViews: 
+  Sequencing,
+  Transcriptomics,
+  Clustering
+Imports: 
+    BiocGenerics,
+    rtracklayer,
+    digest,
+    GenomicAlignments,
+    dplyr,
+    ggsci,
+    Gviz,
+    Biostrings,
+    igraph,
+    rlang,
+    scales,
+    stringr,
+    tibble,
+    tidyr,
+    purrr,
+    methods
+Depends: 
+    R (>= 4.4),
+    InteractionSet
+LazyData: false
+Suggests: 
+    knitr,
+    UpSetR,
+    BiocStyle,
+    rmarkdown,
+    testthat (>= 3.0.0)
+VignetteBuilder: knitr
+VignetteEngine: knitr
+Config/testthat/edition: 3
