@@ -29,6 +29,6 @@ mapping output and which can be represented in the \code{GInteraction} object
 }
 \details{
 see \code{system.file("extdata/scripts", "DD_data_generation.R", package =
-"DuplexDiscoverer")} for details on the data generation proccedure.
+"DuplexDiscovereR")} for details on the data generation proccedure.
 }
 \keyword{datasets}

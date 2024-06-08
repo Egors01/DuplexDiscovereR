@@ -11,7 +11,7 @@ An object of class \code{StrictGInteractions} of length 79.
 \href{https://www.ncbi.nlm.nih.gov/sra/?term=SRR3404943}{SequenceReadArcive}
 Reads were aligned with STAR and duplex groups were identified
 see \code{system.file("extdata/scripts", "DD_data_generation.R", package =
-"DuplexDiscoverer")} for details on the data generation procedure.
+"DuplexDiscovereR")} for details on the data generation procedure.
 }
 \usage{
 data(RNADuplexesSampleData)

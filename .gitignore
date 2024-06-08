@@ -1,8 +1,8 @@
 .Rproj.user
 inst/doc
-DuplexDiscoverer.Rcheck
+DuplexDiscovereR.Rcheck
 build
-DuplexDiscoverer.Rproj
+DuplexDiscovereR.Rproj
 /doc/
 /Meta/
 *.Rproj

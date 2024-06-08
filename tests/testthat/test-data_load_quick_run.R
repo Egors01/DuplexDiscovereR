@@ -10,7 +10,7 @@ test_that("Load test data object run small clustering works", {
 test_that("Load STAR format and classification clustering works", {
     suppressMessages({
         set.seed(123)
-        test_reads_star <- read.table(system.file("extdata", "test_SPLASH_Chimeric.out.junction", package = "DuplexDiscoverer"), header = T)
+        test_reads_star <- read.table(system.file("extdata", "test_SPLASH_Chimeric.out.junction", package = "DuplexDiscovereR"), header = T)
         df_chim <- runDuplexDiscoPreproc(data = test_reads_star, library_type = "SE", table_type = "STAR", keep_metadata = F)
         typetable <- table(df_chim$map_type)
         two_arm_N <- typetable[["2arm"]]
@@ -23,7 +23,7 @@ test_that("Load STAR format and classification clustering works", {
 })
 test_that("Load bedpe format and crude clustering works", {
     suppressMessages({
-        df_bedpe <- read.table(system.file("extdata", "test_SPLASH_DuplexesRaw.bedpe", package = "DuplexDiscoverer"))
+        df_bedpe <- read.table(system.file("extdata", "test_SPLASH_DuplexesRaw.bedpe", package = "DuplexDiscovereR"))
         colnames(df_bedpe) <- get_colnames_and_types_for_input("BEDPE_COLNAMES")
         set.seed(123)
         df_chim <- runDuplexDiscoPreproc(data = df_bedpe, library_type = "SE", table_type = "bedpe", keep_metadata = F)

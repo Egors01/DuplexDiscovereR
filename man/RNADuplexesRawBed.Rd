@@ -14,7 +14,7 @@ which could be represented as 2-arm chimeric alignments. Converted to the
 \href{https://bedtools.readthedocs.io/en/latest/content/general-usage.html#bedpe-format}{bedpe}
 format
 see \code{system.file("extdata/scripts", "DD_data_generation.R", package =
-"DuplexDiscoverer")} for details on the pre-processing and sub-setting the
+"DuplexDiscovereR")} for details on the pre-processing and sub-setting the
 data
 }
 \usage{

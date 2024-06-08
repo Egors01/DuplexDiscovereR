@@ -2,7 +2,7 @@
 % Please edit documentation in R/runDuplexDiscoverer.R
 \name{runDuplexDiscoverer}
 \alias{runDuplexDiscoverer}
-\title{Executes all steps of DuplexDiscoverer pipeline}
+\title{Executes all steps of DuplexDiscovereR pipeline}
 \usage{
 runDuplexDiscoverer(
   data,
@@ -99,7 +99,7 @@ Keeps 2-arm chimeric reads for downstream analysis
 }
 \examples{
 
-library(DuplexDiscoverer)
+library(DuplexDiscovereR)
 # load data
 data("RNADuplexesSampleData")
 res <- runDuplexDiscoverer(

@@ -86,7 +86,7 @@ get_char_count_cigar <- function(strings, s) {
 #' Extra columns are stored as metadata fields
 #' @param df dataframe-like object. Should be convertable to tibble::tibble()
 #' @return GInteractions(mode='strict')
-#' @seealso [DuplexDiscoverer::makeDfFromGi()]
+#' @seealso [DuplexDiscovereR::makeDfFromGi()]
 #' @export
 #' @examples
 #' # load example GInteractions
@@ -127,7 +127,7 @@ makeGiFromDf <- function(df) {
 #' 'chromB','startB','endB','strandB')`
 #' @param gi GInteracttions
 #' @return tibble preserving metadata columns
-#' @seealso [DuplexDiscoverer::makeGiFromDf()]
+#' @seealso [DuplexDiscovereR::makeGiFromDf()]
 #' @export
 #' @examples
 #' data(RNADuplexesSmallGI)

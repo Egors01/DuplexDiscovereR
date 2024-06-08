@@ -56,7 +56,7 @@ all_interactions <- c(interactions, new_interactions)
 test_that("Creating visualization track workds", {
     suppressMessages({
         track_a <- DuplexTrack(interactions, gr_region = gr_region, stacking = "dense")
-        track_b <- DuplexDiscoverer::DuplexTrack(all_interactions,
+        track_b <- DuplexDiscovereR::DuplexTrack(all_interactions,
             gr_region = gr_region
         )
     })
@@ -92,7 +92,7 @@ test_that("Drawing visualization track workds", {
             gr_region = gr_region,
             stacking = "dense"
         )
-        track_b <- DuplexDiscoverer::DuplexTrack(all_interactions,
+        track_b <- DuplexDiscovereR::DuplexTrack(all_interactions,
             gr_region = gr_region
         )
         r_a <- plotTracks(track_a, stacking = "dense")

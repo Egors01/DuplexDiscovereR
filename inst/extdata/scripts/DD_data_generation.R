@@ -79,7 +79,7 @@ txf <- convertToTxFeatures(tx_gtf)
 SampleSpliceJncGR<-GRanges(txf[txf@type=='J'])
 
 # call the pipeline to produce clustered and unclustered reads samples
-library(DuplexDiscoverer)
+library(DuplexDiscovereR)
 res <- run_duplexdisco(
   df = RNADuplexesRawChimSTAR,
   junctions_gr = SampleSpliceJncGR,
@@ -102,7 +102,7 @@ RNADuplexSampleDGs = res$gi_clusters
 # We leave only required BEDPE-specific columns in order defined in a format defintion
 # see specification at https://bedtools.readthedocs.io/en/latest/content/general-usage.html#bedpe-format
 # We use 'flag field' as the placeholder for the alignment score
-RNADuplexesRawBed = DuplexDiscoverer::MakeDfFromGi(RNADuplexSampleGI) %>%
+RNADuplexesRawBed = DuplexDiscovereR::MakeDfFromGi(RNADuplexSampleGI) %>%
 dplyr::select(chromA ,startA,endA,chromB ,startB,endB,readname,score,strandA,strandB)
 
 
@@ -120,11 +120,11 @@ export.gff(SampleGeneAnnoGR,'./inst/extdata/test_chr22Anno.gtf')
 
 
 
-# stardf <- DuplexDiscoverer::run_preproc(stardf,table_type = 'STAR',library_type = 'SE')
+# stardf <- DuplexDiscovereR::run_preproc(stardf,table_type = 'STAR',library_type = 'SE')
 # # select
 # twoarm <- stardf %>% filter(map_type=='2arm')
 # twoarm_gi = MakeGiFromDf(twoarm)
-# load('/data/meyer/egor/duplex_workflow/public/DuplexDiscoverer/data/example_data.rda')
+# load('/data/meyer/egor/duplex_workflow/public/DuplexDiscovereR/data/example_data.rda')
 # gr_region = GRanges(IRanges(start=17504924,end=17524195),seqnames='chr22',strand = '+')
 # add_reads = subsetByOverlaps(twoarm_gi,gr_region+50000)$readname
 # add_df = stardf_raw[stardf_raw$read_name %in% add_reads,]
@@ -132,9 +132,9 @@ export.gff(SampleGeneAnnoGR,'./inst/extdata/test_chr22Anno.gtf')
 # stardf %>% filter(readname %in% example_reads_star$read_name)
 # new_removed = example_reads_star[-sample(c(1:5000),size=81),]
 # new_test = rbind(new_removed,add_df)
-# write_tsv(new_test,'/data/meyer/egor/duplex_workflow/public/DuplexDiscoverer/inst/extdata/sample_Chimeric.out.junction')
+# write_tsv(new_test,'/data/meyer/egor/duplex_workflow/public/DuplexDiscovereR/inst/extdata/sample_Chimeric.out.junction')
 # run_duplexdisco()
-# setwd("/data/meyer/egor/duplex_workflow/public/DuplexDiscoverer/")
+# setwd("/data/meyer/egor/duplex_workflow/public/DuplexDiscovereR/")
 #
 #
 #
