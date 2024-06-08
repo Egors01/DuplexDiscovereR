@@ -111,7 +111,7 @@ new_interactions$anno_A <- c("A.out", "A.out_chr")
 new_interactions$anno_B <- c("B.in", "B.in")
 all_interactions <- c(interactions, new_interactions)
 
-b <- DuplexDiscoverer::DuplexTrack(all_interactions,
+b <- DuplexDiscovereR::DuplexTrack(all_interactions,
     gr_region = gr_region,
     annotation.column1 = "anno_A",
     annotation.column2 = "anno_B"
@@ -120,6 +120,6 @@ b <- DuplexDiscoverer::DuplexTrack(all_interactions,
 plotTracks(b)
 
 # to customize plot, one can call, to see options
-DuplexDiscoverer::availableDisplayPars(b)
+DuplexDiscovereR::availableDisplayPars(b)
 
 }

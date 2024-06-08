@@ -42,5 +42,5 @@ interactions <- GInteractions(anchor1, anchor2, mode = "strict")
 gr_region <- range(anchor1, anchor2)
 a <- DuplexTrack(interactions, gr_region = gr_region, stacking = "dense")
 availableDisplayPars("DuplexTrack")
-DuplexDiscoverer::availableDisplayPars(a)
+DuplexDiscovereR::availableDisplayPars(a)
 }

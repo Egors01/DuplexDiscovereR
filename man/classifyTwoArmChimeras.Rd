@@ -55,5 +55,5 @@ table(gi$splicejnc)
 table(gi$junction_type)
 }
 \seealso{
-\link[=getSpliceJunctionChimeras]{DuplexDiscoverer::getChimericJunctionTypes(), DuplexDiscoverer::getSpliceJunctionChimeras()}
+\link[=getSpliceJunctionChimeras]{DuplexDiscovereR::getChimericJunctionTypes(), DuplexDiscovereR::getSpliceJunctionChimeras()}
 }

@@ -11,7 +11,7 @@ An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) w
 \href{https://www.ncbi.nlm.nih.gov/sra/?term=SRR3404943}{SequenceReadArcive}
 Reads were aligned with STAR
 see \code{system.file("extdata/scripts", "DD_data_generation.R", package =
-"DuplexDiscoverer")} for details on the pre-processing and sub-setting the
+"DuplexDiscovereR")} for details on the pre-processing and sub-setting the
 data
 }
 \usage{

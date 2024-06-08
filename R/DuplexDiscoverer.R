@@ -1,7 +1,7 @@
-#' DuplexDiscoverer
-#' DuplexDiscoverer is a package for analysis of the data from RNA cross-linking and proximity
+#' DuplexDiscovereR
+#' DuplexDiscovereR is a package for analysis of the data from RNA cross-linking and proximity
 #' ligation protocols such as SPLASH, PARIS, LIGR-seq and others.
-#' DuplexDiscoverer takes input in a form of Chimericly or split -aligned reads.
+#' DuplexDiscovereR takes input in a form of Chimericly or split -aligned reads.
 #' It implements procedures for classification, filtering and efficient clustering
 #' of inidividual read alignments into duplex groups (DGs)
 #' After DGs are found, RNA duplex formation and their hybridization energies
@@ -11,7 +11,7 @@
 #' can be processed separately and further compared to analyse reproducability
 #' of experimental method.
 #'
-#' @name DuplexDiscoverer
+#' @name DuplexDiscovereR
 #'
 #' @import rtracklayer
 #' @import InteractionSet
@@ -34,5 +34,5 @@
 #' @importFrom Biostrings readBStringSet RNAStringSet letterFrequency
 #' @importFrom ggsci pal_igv
 #' @author Egor Semenchenko
-#' @seealso [`browseVignettes("DuplexDiscoverer")`
+#' @seealso [`browseVignettes("DuplexDiscovereR")`
 "_PACKAGE"

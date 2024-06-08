@@ -20,6 +20,6 @@ and subset to chr22: 23877144-45562960 '*'
 }
 \details{
 see \code{system.file("extdata/scripts", "DD_data_generation.R", package =
-"DuplexDiscoverer")} for details on the data generation procedure.
+"DuplexDiscovereR")} for details on the data generation procedure.
 }
 \keyword{datasets}

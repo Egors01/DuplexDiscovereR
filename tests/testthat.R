@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(DuplexDiscoverer)
+library(DuplexDiscovereR)
 
-test_check("DuplexDiscoverer")
+test_check("DuplexDiscovereR")

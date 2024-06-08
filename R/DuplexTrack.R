@@ -101,7 +101,7 @@
 #' new_interactions$anno_B <- c("B.in", "B.in")
 #' all_interactions <- c(interactions, new_interactions)
 #'
-#' b <- DuplexDiscoverer::DuplexTrack(all_interactions,
+#' b <- DuplexDiscovereR::DuplexTrack(all_interactions,
 #'     gr_region = gr_region,
 #'     annotation.column1 = "anno_A",
 #'     annotation.column2 = "anno_B"
@@ -110,7 +110,7 @@
 #' plotTracks(b)
 #'
 #' # to customize plot, one can call, to see options
-#' DuplexDiscoverer::availableDisplayPars(b)
+#' DuplexDiscovereR::availableDisplayPars(b)
 #'
 setClass(
     "DuplexTrack",
@@ -647,7 +647,7 @@ setMethod("drawGD", signature("DuplexTrack"), function(GdObject, minBase, maxBas
 #' gr_region <- range(anchor1, anchor2)
 #' a <- DuplexTrack(interactions, gr_region = gr_region, stacking = "dense")
 #' availableDisplayPars("DuplexTrack")
-#' DuplexDiscoverer::availableDisplayPars(a)
+#' DuplexDiscovereR::availableDisplayPars(a)
 availableDisplayPars <- function(class) {
     if (!is.character(class)) {
         class <- class(class)

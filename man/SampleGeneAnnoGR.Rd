@@ -22,6 +22,6 @@ GENCODEv44 annotaion
 }
 \details{
 see \code{system.file("extdata/scripts", "DD_data_generation.R", package =
-"DuplexDiscoverer")} for details
+"DuplexDiscovereR")} for details
 }
 \keyword{datasets}

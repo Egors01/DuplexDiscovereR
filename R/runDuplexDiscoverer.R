@@ -1,4 +1,4 @@
-#' Executes all steps of DuplexDiscoverer pipeline
+#' Executes all steps of DuplexDiscovereR pipeline
 #' @description
 #' Generates GInteractions object with duplex groups from the STAR
 #' Chimeric.out.junction or bedpe file.
@@ -54,7 +54,7 @@
 #'
 #' @examples
 #'
-#' library(DuplexDiscoverer)
+#' library(DuplexDiscovereR)
 #' # load data
 #' data("RNADuplexesSampleData")
 #' res <- runDuplexDiscoverer(
