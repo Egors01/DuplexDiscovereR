@@ -2,7 +2,7 @@ test_that("Load test data object run small clustering works", {
     suppressMessages({
         data("RNADuplexesSmallGI")
         SampleSmallGI$n_reads <- 1
-        gi <- clusterDuplexGroups(SampleSmallGI, maxgap = 40, minovl = 10, min_arm_ratio = 0.3)
+        gi <- clusterDuplexGroups(SampleSmallGI, maxgap = 40, minoverlap = 10, min_arm_ratio = 0.3)
     })
     expect_equal(length(collapse_duplex_groups(gi)), 3)
     expect_equal(length(collapse_duplex_groups(gi, return_unclustered = T)), 6)

@@ -4,7 +4,12 @@
 \alias{computeGISelfOverlaps}
 \title{Find overlaps between entries in \code{GInteractions}}
 \usage{
-computeGISelfOverlaps(gi, id_column = "duplex_id", maxgap = 40, minovl = 10)
+computeGISelfOverlaps(
+  gi,
+  id_column = "duplex_id",
+  maxgap = 40,
+  minoverlap = 10
+)
 }
 \arguments{
 \item{gi}{input gi object}
@@ -13,15 +18,15 @@ computeGISelfOverlaps(gi, id_column = "duplex_id", maxgap = 40, minovl = 10)
 
 \item{maxgap}{parameter for call of \code{\link[InteractionSet:overlaps]{InteractionSet::findOverlaps()}}}
 
-\item{minovl}{parameter for call \code{\link[InteractionSet:overlaps]{InteractionSet::findOverlaps()}}}
+\item{minoverlap}{parameter for call \code{\link[InteractionSet:overlaps]{InteractionSet::findOverlaps()}}}
 }
 \value{
 dataframe with indexes of pairwise overlapsin input and
 columns for span, overlap, ratios of either read arm
 }
 \description{
-Utility function to find overlapping reads in the input. Removes
-self-hits. Computes overlap/span ratios for
+Utility function to find overlapping reads in the input and calculate
+overlap scores. Removes self-hits. Computes overlap/span ratios for
 each interaction arm. Sum of the scores is recorded in 'weight' field
 }
 \examples{

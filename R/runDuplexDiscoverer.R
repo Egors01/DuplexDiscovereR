@@ -178,7 +178,7 @@ runDuplexDiscoverer <- function(
         res <- collapseSimilarChimeras(gi, read_stats_df,
             maxgap = gap_collapse_similar,
             niter = collapse_n_inter,
-            minovl = 20
+            minoverlap = 20
         )
         # get results
         gi <- res$gi_updated
@@ -191,7 +191,7 @@ runDuplexDiscoverer <- function(
     graphdf_fast <- computeGISelfOverlaps(gi,
         maxgap = max_gap,
         id_column = "duplex_id",
-        minovl = min_overlap
+        minoverlap = min_overlap
     )
 
     if ((nrow(graphdf_fast) == 0)) {

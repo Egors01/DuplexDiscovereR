@@ -4,7 +4,13 @@
 \alias{collapseSimilarChimeras}
 \title{Call clustering multiple times to collapse similar reads into duplex groups}
 \usage{
-collapseSimilarChimeras(gi, read_stats_df, maxgap = 5, niter = 2, minovl = 10)
+collapseSimilarChimeras(
+  gi,
+  read_stats_df,
+  maxgap = 5,
+  niter = 2,
+  minoverlap = 10
+)
 }
 \arguments{
 \item{gi}{\code{GInteractions} object}
@@ -18,7 +24,7 @@ the single duplex_id with n_reads=2}
 
 \item{niter}{Number of times clustering will be called}
 
-\item{minovl}{Minimum required overlap between either read arm}
+\item{minoverlap}{Minimum required overlap between either read arm}
 }
 \value{
 a list with the following keys

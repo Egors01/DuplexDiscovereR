@@ -63,7 +63,7 @@
 #'  the single duplex_id with n_reads=2
 #' @param maxgap  Maximum relative shift between the overlapping read arms
 #' @param niter Number of times clustering will be called
-#' @param minovl Minimum required overlap between either read arm
+#' @param minoverlap Minimum required overlap between either read arm
 #'
 #' @return a list with the following keys
 #' \describe{
@@ -77,14 +77,14 @@ collapseSimilarChimeras <- function(
         gi, read_stats_df,
         maxgap = 5,
         niter = 2,
-        minovl = 10) {
-    message("--- Collapsing of the reads shifted by <= ", maxgap, " nt ---")
+        minoverlap = 10) {
+    message("--- Collapsing the reads shifted by <= ", maxgap, " nt ---")
     gi_base <- gi
     gi_base$dg_id <- NULL
     stats_df <- read_stats_df
     read_stats_df_upd <- read_stats_df
     for (i in seq_len(niter)) {
-        ovl_df <- computeGISelfOverlaps(gi_base, maxgap = maxgap, minovl = minovl)
+        ovl_df <- computeGISelfOverlaps(gi_base, maxgap = maxgap, minoverlap = minoverlap)
         message("----iter ", i, "-----")
         message(
             "Connectivity of the duplex graph: ", .getConnectivity(gi_base, ovl_df),
@@ -283,14 +283,14 @@ collapseIdenticalReads <- function(gi) {
 
 #' Find overlaps between entries in `GInteractions`
 #'
-#' Utility function to find overlapping reads in the input. Removes
-#' self-hits. Computes overlap/span ratios for
+#' Utility function to find overlapping reads in the input and calculate 
+#' overlap scores. Removes self-hits. Computes overlap/span ratios for
 #' each interaction arm. Sum of the scores is recorded in 'weight' field
 #'
 #' @param gi input gi object
 #' @param id_column column which use for using as ids for entries
 #' @param maxgap parameter for call of [InteractionSet::findOverlaps()]
-#' @param minovl  parameter for call [InteractionSet::findOverlaps()]
+#' @param minoverlap  parameter for call [InteractionSet::findOverlaps()]
 #'
 #' @return dataframe with indexes of pairwise overlapsin input and
 #' columns for span, overlap, ratios of either read arm
@@ -298,7 +298,7 @@ collapseIdenticalReads <- function(gi) {
 #' @examples
 #' data("RNADuplexesSmallGI")
 #' computeGISelfOverlaps(SampleSmallGI)
-computeGISelfOverlaps <- function(gi, id_column = "duplex_id", maxgap = 40, minovl = 10) {
+computeGISelfOverlaps <- function(gi, id_column = "duplex_id", maxgap = 40, minoverlap = 10) {
     if (id_column %in% colnames(mcols(gi))) {
         # message("Using ",id_column," as id for computing overlaps")
         ids <- mcols(gi)[, id_column]
@@ -312,7 +312,7 @@ computeGISelfOverlaps <- function(gi, id_column = "duplex_id", maxgap = 40, mino
     }
     id_names <- str_c(id_column, c(1, 2), sep = ".")
 
-    fo <- findOverlaps(gi, ignore.strand = FALSE, type = "equal", maxgap = maxgap, minoverlap = minovl)
+    fo <- findOverlaps(gi, ignore.strand = FALSE, type = "equal", maxgap = maxgap, minoverlap = minoverlap)
     fo <- fo[queryHits(fo) < subjectHits(fo)]
     if (length(fo) == 0) {
         dt <- tibble()

@@ -8,7 +8,7 @@ clusterDuplexGroups(
   gi,
   graphdf = NULL,
   maxgap = 40,
-  minovl = 10,
+  minoverlap = 10,
   id_column = "duplex_id",
   weight_column = "weight",
   fast_greedy = FALSE,
@@ -27,7 +27,7 @@ If not provided, graphdf is created inside the function}
 
 \item{maxgap}{For graph creation only. Max shift between arms starts and ends for pair of overlapping reads}
 
-\item{minovl}{For graph creation only. Minimum required overlap between either arm for pair of overlapping reads
+\item{minoverlap}{For graph creation only. Minimum required overlap between either arm for pair of overlapping reads
 Other optional arguments, which are not relevant, unless user want to modify clustering
 weights or modify clustering in some other way}
 

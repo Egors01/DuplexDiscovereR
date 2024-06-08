@@ -5,11 +5,10 @@
 \title{Collapses identical interactions}
 \usage{
 collapseIdenticalReads(gi)
-
-collapseIdenticalReads(gi)
 }
 \arguments{
-\item{gi}{GInteractions(mode='strict') object with chromA, strandA, startA, endA, chromB, strandB, startB, endB, score columns
+\item{gi}{GInteractions(mode='strict') object with chromA, strandA, startA,
+endA, chromB, strandB, startB, endB, score columns
 Optionally cigar_alnA, cigar_alnB columns are also considered for collapsing
 'read_id' column used as the index in the initial objects. Created, if not exists}
 }
@@ -17,23 +16,12 @@ Optionally cigar_alnA, cigar_alnB columns are also considered for collapsing
 result_list object with keys
 ' gi_collapsed':   New collapsed GInteraction object
 ' stats_df': tibble with the mapping of the original entries to the new duplex_id
-
-result_list object with keys
-' gi_collapsed':   New collapsed GInteraction object
-' stats_df': tibble with the mapping of the original entries to the new duplex_id
 }
 \description{
 Two entries (reads) are considered identical if they share start, end, strand and score vales
 Identical entries are collapsed into the single one.
-
-Two entries (reads) are considered identical if they share start, end, strand and score vales
-Identical entries are collapsed into the single one.
 }
 \details{
-Adds columns to the collapsed object
-duplex_id (int) unique record id
-n_reads (int) number of entries collapsed
-
 Adds columns to the collapsed object
 duplex_id (int) unique record id
 n_reads (int) number of entries collapsed
@@ -44,10 +32,5 @@ data("RNADuplexesSmallGI")
 res_collapse <- collapseIdenticalReads(SampleSmallGI)
 gi_new <- res_collapse[["gi_collapsed"]]
 # keeps the mapping of the colapsed object to new
-read_stats_df <- res_collapse[["stats_df"]]
-# load data
-data("RNADuplexesSmallGI")
-res_collapse <- collapseIdenticalReads(SampleSmallGI)
-gi_new <- res_collapse[["gi_collapsed"]]
 read_stats_df <- res_collapse[["stats_df"]]
 }

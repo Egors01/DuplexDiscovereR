@@ -7,7 +7,7 @@
 compareMultipleInteractions(
   gi_samples_list,
   min_ratio = 0.3,
-  minovl = 5,
+  minoverlap = 5,
   maxgap = 50,
   niter = 3,
   gi_superset = NULL,
@@ -21,7 +21,7 @@ compareMultipleInteractions(
 of chimeric reads is less than \code{min_arm_ratio}, then the total overlap for this pair is set to zero.
 Relevant to comparison of superset vs individual samples}
 
-\item{minovl}{Parameter for read clustering to create a superset. Minimum required overlap to for either arm (A or B) for pair of entries.}
+\item{minoverlap}{Parameter for read clustering to create a superset. Minimum required overlap to for either arm (A or B) for pair of entries.}
 
 \item{maxgap}{Parameter for read clustering. Minimum required shift between start and end coordinates of arms for pair of overlapping entries..
 If the shift is longer than \code{max_gap} for either arm, then total read overlap between those reads is zero.}
