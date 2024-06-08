@@ -2,12 +2,12 @@
 % Please edit documentation in R/utils_preproc.R
 \name{preproc_generic_gi}
 \alias{preproc_generic_gi}
-\title{Preprocess Ginteractions input}
+\title{Preprocess GInteractions input}
 \usage{
 preproc_generic_gi(gi_raw, keep_all_columns = TRUE)
 }
 \arguments{
-\item{gi_raw}{\code{Ginteractions} with inpit RNA interactions}
+\item{gi_raw}{\code{GInteractions} with inpit RNA interactions}
 
 \item{keep_all_columns}{keep columns apart from those required by .bedpe format}
 }

@@ -32,16 +32,17 @@ BiocType: Software
 biocViews: 
   Sequencing,
   Transcriptomics,
-  Clustering
+  StructuralPrediction,
+  Clustering,
+  SplicedAlignment
 Imports: 
-    BiocGenerics,
+    Gviz,
+    Biostrings,
     rtracklayer,
     digest,
     GenomicAlignments,
     dplyr,
     ggsci,
-    Gviz,
-    Biostrings,
     igraph,
     rlang,
     scales,

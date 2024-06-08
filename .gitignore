@@ -1,13 +1,11 @@
 .Rproj.user
 inst/doc
 DuplexDiscoverer.Rcheck
-DuplexDiscovererSave
-DuplexDiscoverer_0.0.0.9000
-DuplexDiscoverer_0.0.1.tar.gz
-DuplexDiscoverer_0.1.0.tar.gz
 build
 DuplexDiscoverer.Rproj
 /doc/
 /Meta/
 *.Rproj
+.Rhistory
+.Rbuildignore
 dev/

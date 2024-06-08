@@ -30,9 +30,7 @@ annotateGI <- function(
     anno_gr <- anno_gr[, keys]
     anno_gr$feature_id <- seq_len(length(anno_gr))
     gi@regions$region_id <- seq_len(length(gi@regions))
-    # TODO add check for overlaps
-    # multiple_hit mark, return list
-    # multiple hit mark, return largest overlap
+
     po <- findOverlapPairs(gi@regions, anno_gr)
     df <- tibble(
         "region_id" = po@first$region_id,
@@ -59,12 +57,6 @@ annotateGI <- function(
         ungroup() %>%
         distinct(region_id, .keep_all = TRUE)
     df <- left_join(df, as_tibble(mcols(anno_gr)), by = "feature_id")
-
-    # gi@regions$feature_id = NA
-    # gi@regions$feature_id = NA
-    # gi@regions[df$region_id]$feature_id= anno_gr[df$feature_id]$feature_id
-    # gi@regions[df$region_id]$ambig= anno_gr[df$feature_id]$ambig
-    # dt = left_join(as_tibble(mcols(gi@regions)),as_tibble(mcols(anno_gr)),on='feature_id')
 
     dt <- left_join(as_tibble(mcols(gi@regions)), df, by = "region_id")
 
@@ -108,7 +100,7 @@ annotateGI <- function(
 #' look for <id_col_base>.A and <id_col_base>.B columns and compare them
 #' @keywords internal
 #' @return gi `GInteractions` object containing `cis` field with 0/1 values
-annotate_cis_trans <- function(gi, id_col_base = "gene_id") {
+.annotateCisTrans <- function(gi, id_col_base = "gene_id") {
     gi$cis <- 0
 
     name_col1 <- paste0(id_col_base, ".A")
@@ -131,7 +123,7 @@ annotate_cis_trans <- function(gi, id_col_base = "gene_id") {
     }
 }
 
-#' Helper function to add count data to metadata of `Ginteractions`
+#' Helper function to add count data to metadata of `GInteractions`
 #'
 #' Merges the count dataframe and interactions metadata by `id_col`
 #' If key is not found, in metadata throws error
@@ -139,8 +131,8 @@ annotate_cis_trans <- function(gi, id_col_base = "gene_id") {
 #' @param gi `GInteractions`
 #' @param df_counts dataframe with read counts
 #' @param id_col key to use in merge
-#' @return `Ginteractions` with added counts
-add_gene_counts <- function(gi, df_counts, id_col = "gene_id") {
+#' @return `GInteractions` with added counts
+.addGeneCounts <- function(gi, df_counts, id_col = "gene_id") {
     df_counts <- df_counts %>% as.data.frame()
     df_all_cts <- as_tibble(data.frame("RNA" = unname(df_counts[1]), "n" = unname(df_counts[2])))
 
@@ -163,7 +155,7 @@ add_gene_counts <- function(gi, df_counts, id_col = "gene_id") {
 }
 
 
-calculate_ligation_pvalues <- function(gi, df_counts, id_col = "gene_id") {
+calculateLigationPvalues <- function(gi, df_counts, id_col = "gene_id") {
     df_counts <- df_counts %>% as.data.frame()
     df_all_cts <- as_tibble(data.frame("RNA" = unname(df_counts[1]), "n" = unname(df_counts[2])))
 
@@ -218,14 +210,14 @@ calculate_ligation_pvalues <- function(gi, df_counts, id_col = "gene_id") {
     gi$p_val <- tibble("chim_id" = seq_len(length(gi))) %>%
         left_join(chimdf_save, by = "chim_id") %>%
         pull(p.adj)
-    gi <- add_gene_counts(gi, df_counts)
+    gi <- .addGeneCounts(gi, df_counts)
 
     return(gi)
 }
 
 
 
-.check_RNAduplex_installed <- function() {
+.checkRNAduplexinstalled <- function() {
     returncode <- system("RNAduplex -h > /dev/null 2>&1")
     if (returncode != 0) {
         message("RNAduplex from ViennaRNA is not found.Unable to call hybrid predictions")
@@ -235,7 +227,7 @@ calculate_ligation_pvalues <- function(gi, df_counts, id_col = "gene_id") {
     }
 }
 
-run_RNAduplex <- function(RNA1, RNA2) {
+.runRNAduplex <- function(RNA1, RNA2) {
     cmd <- paste0('echo -e "', RNA1, "\n", RNA2, '\n" | RNAduplex')
     result <- system(cmd, intern = TRUE)
     predicted_structure <- result[1]
@@ -243,7 +235,7 @@ run_RNAduplex <- function(RNA1, RNA2) {
 }
 
 
-get_duplex_string <- function(gi, fafile) {
+.getDuplexString <- function(gi, fafile) {
     s <- Biostrings::readBStringSet(fafile)
     s <- Biostrings::RNAStringSet(s)
     newnames <- str_squish(str_sub(names(s), 1, 5))
@@ -254,7 +246,7 @@ get_duplex_string <- function(gi, fafile) {
 }
 
 
-get_gc_content <- function(seqrna) {
+.getGCContent <- function(seqrna) {
     # seqrna is RNAstringset based on the arm s[get_arm_a(gi)]
     gc_freq <- Biostrings::letterFrequency(seqrna, c("G", "C"))
     gc_content <- rowSums(gc_freq) / width(seqrna) * 100

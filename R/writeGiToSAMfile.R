@@ -262,7 +262,7 @@ writeGiToSAMfile <- function(gi_coords, file_out,
 # output_sam_cis = paste("SamCis/",index,".sam",sep="")
 # distance_chim_junction = 1000
 #
-# #classify_two_arm_chimeras(sam_test,min_junction_len = 10,junctions_gr = SampleSpliceJncGR,max_sj_shift = 5)
+# #classifyTwoArmChimeras(sam_test,min_junction_len = 10,junctions_gr = SampleSpliceJncGR,max_sj_shift = 5)
 # library(TxDb.Hsapiens.UCSC.hg38.knownGene)
 # library(SGSeq)
 # txdb_v44 <- makeTxDbFromGFF("/fast/AG_Meyer/esemenc/SequenceData/hg38_transcriptome/gencode.v44.annotation.gtf")

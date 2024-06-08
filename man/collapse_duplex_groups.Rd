@@ -62,7 +62,7 @@ gimixed <- collapse_duplex_groups(RNADuplexSampleGI, return_unclustered = TRUE)
 # load small sample GInteractions and process it manually
 data("RNADuplexesSmallGI")
 # First, collapse duplicated reads. This adds n_reads and duplex ids
-ginodup <- collapse_identical_reads(SampleSmallGI)$gi_collapsed
+ginodup <- collapseIdenticalReads(SampleSmallGI)$gi_collapsed
 # Second, run clustering, get DG ids
 ginodup <- clusterDuplexGroups(ginodup)
 # Return all DGs result in n=3 DGS, one of them formed by

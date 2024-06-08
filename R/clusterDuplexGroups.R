@@ -12,7 +12,7 @@
 #' @param gi `GInteractions` object
 #' @param min_arm_ratio For graph creation only. Span-to-overlap ratio threshold. If smaller than this value, then edge is not drawn
 #' @param maxgap For graph creation only. Max shift between arms starts and ends for pair of overlapping reads
-#' @param minovl For graph creation only. Minimum required overlap between either arm for pair of overlapping reads
+#' @param minoverlap For graph creation only. Minimum required overlap between either arm for pair of overlapping reads
 #' Other optional arguments, which are not relevant, unless user want to modify clustering
 #' weights or modify clustering in some other way
 #' @param graphdf Optional. Dataframe representing connection edges between entries in gi
@@ -35,18 +35,18 @@
 #' # run preprocessing and filtering
 #' preproc_df <- runDuplexDiscoPreproc(RNADuplexesRawBed, table_type = "bedpe")
 #' preproc_gi <- makeGiFromDf(preproc_df)
-#' preproc_gi <- classify_two_arm_chimeras(preproc_gi,
+#' preproc_gi <- classifyTwoArmChimeras(preproc_gi,
 #'     min_junction_len = 5,
 #'     junctions_gr = SampleSpliceJncGR, max_sj_shift = 10
 #' )
 #' # collapse duplicates
-#' gi <- collapse_identical_reads(preproc_gi)$gi
+#' gi <- collapseIdenticalReads(preproc_gi)$gi
 #' # run global clustering
 #' gi <- clusterDuplexGroups(gi)
 #' # check dg_ids
 #' table(is.na(gi$dg_id))
 clusterDuplexGroups <- function(gi, graphdf = NULL, maxgap = 40,
-    minovl = 10,
+    minoverlap = 10,
     id_column = "duplex_id",
     weight_column = "weight",
     fast_greedy = FALSE,
@@ -61,9 +61,9 @@ clusterDuplexGroups <- function(gi, graphdf = NULL, maxgap = 40,
         message("Computing overlaps on-the-fly")
         gi$idx_tmp <- seq_len(length(gi))
         id_column <- "idx_tmp"
-        graphdf <- compute_gi_self_overlaps(gi,
+        graphdf <- computeGISelfOverlaps(gi,
             id_column = id_column, maxgap = maxgap,
-            minovl = minovl
+            minoverlap = minoverlap
         )
         if (nrow(graphdf) == 0) {
             message("No overlap found. No DG found in input object")

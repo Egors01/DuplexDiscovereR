@@ -41,7 +41,7 @@
 #' }
 getRNAHybrids <- function(gi, fafile) {
     # exit if not installed
-    if (.check_RNAduplex_installed() != 0) {
+    if (.checkRNAduplexinstalled() != 0) {
         return(gi)
     }
 
@@ -51,15 +51,15 @@ getRNAHybrids <- function(gi, fafile) {
         stop("Calling hybrids: Seqnames in fasta file do not contain all seqnames of the input gi ")
     }
 
-    gi$GC_content.A <- get_gc_content(sq[get_arm_a(gi)])
-    gi$GC_content.B <- get_gc_content(sq[get_arm_b(gi)])
+    gi$GC_content.A <- .getGCContent(sq[get_arm_a(gi)])
+    gi$GC_content.B <- .getGCContent(sq[get_arm_b(gi)])
 
     gr1 <- get_arm_a(gi)
     gr2 <- get_arm_b(gi)
     seq1 <- sq[gr1]
     seq2 <- sq[gr2]
 
-    rr <- mapply(run_RNAduplex, seq1, seq2)
+    rr <- mapply(.runRNAduplex, seq1, seq2)
 
     dots <- str_split_i(rr, " ", 1)
     energies <- as.numeric(sub(".*\\((-?[0-9]+\\.[0-9]+)\\).*", "\\1", rr))

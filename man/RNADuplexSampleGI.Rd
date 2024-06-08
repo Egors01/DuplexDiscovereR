@@ -14,7 +14,7 @@ An object of class \code{StrictGInteractions} of length 2090.
 data(RNADuplexesSampleData)
 }
 \value{
-\code{Ginteractions} with
+\code{GInteractions} with
 \itemize{
 \item \code{readname} : read name
 \item \code{map_type } : type of the mapped read (2arm by design of pre-filtering)
@@ -24,7 +24,7 @@ reads because of the jucntoin coincides with splice junction
 }
 }
 \description{
-\code{Ginteractions} read-level object containing two-arm chimeric reads extracted from
+\code{GInteractions} read-level object containing two-arm chimeric reads extracted from
 mapping output and which can be represented in the \code{GInteraction} object
 }
 \details{

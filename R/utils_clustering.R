@@ -11,7 +11,7 @@
 #' @param gi_input \pkg{GInteractions} with the  \code{dg_id},  \code{duplex_id} and  \code{n_reads} column
 #' @return
 #' \pkg{GInteractions} object with new \code{dg_id} for rows with  \code{n_reads > 1}
-add_dg_ids_for_noempty_duplexes <- function(gi_input) {
+.addDGidsForTmpDGs <- function(gi_input) {
     # add new cluster ids
     col_check <- c("duplex_id", "dg_id", "n_reads")
     if (!all(col_check %in% colnames(mcols(gi_input)))) {
@@ -61,9 +61,9 @@ add_dg_ids_for_noempty_duplexes <- function(gi_input) {
 #'  'read_id' refers to the unique read, 'duplex_id' refers to the entry collapsed
 #'  identical reads i.e two identical reads will will correspond to two unique read_id and
 #'  the single duplex_id with n_reads=2
-#' @param mgap  Maximum relative shift between the overlapping read arms
+#' @param maxgap  Maximum relative shift between the overlapping read arms
 #' @param niter Number of times clustering will be called
-#' @param minovl Minimum required overlap between either read arm
+#' @param minoverlap Minimum required overlap between either read arm
 #'
 #' @return a list with the following keys
 #' \describe{
@@ -73,21 +73,21 @@ add_dg_ids_for_noempty_duplexes <- function(gi_input) {
 #'    with the the infromation about time and memory reaquired for the function
 #'    call}
 #' }
-collapse_similar_reads <- function(
+collapseSimilarChimeras <- function(
         gi, read_stats_df,
-        mgap = 5,
+        maxgap = 5,
         niter = 2,
-        minovl = 10) {
-    message("--- Collapsing of the reads shifted by <= ", mgap, " nt ---")
+        minoverlap = 10) {
+    message("--- Collapsing the reads shifted by <= ", maxgap, " nt ---")
     gi_base <- gi
     gi_base$dg_id <- NULL
     stats_df <- read_stats_df
     read_stats_df_upd <- read_stats_df
     for (i in seq_len(niter)) {
-        ovl_df <- compute_gi_self_overlaps(gi_base, maxgap = mgap, minovl = minovl)
+        ovl_df <- computeGISelfOverlaps(gi_base, maxgap = maxgap, minoverlap = minoverlap)
         message("----iter ", i, "-----")
         message(
-            "Connectivity of the duplex graph: ", get_connectivity(gi_base, ovl_df),
+            "Connectivity of the duplex graph: ", .getConnectivity(gi_base, ovl_df),
             " n_edges = ", nrow(ovl_df), " n_nodes = ", length(gi_base)
         )
         if (is_empty(ovl_df) | nrow(ovl_df) < 3) {
@@ -95,7 +95,7 @@ collapse_similar_reads <- function(
             break
         }
 
-        gi_clustered <- clusterDuplexGroups(gi = gi_base, graphdf = ovl_df, maxgap = mgap)
+        gi_clustered <- clusterDuplexGroups(gi = gi_base, graphdf = ovl_df, maxgap = maxgap)
 
         grc <- collapse_duplex_groups(gi_clustered,
             return_unclustered = TRUE,
@@ -162,7 +162,7 @@ collapse_similar_reads <- function(
 #' @param gi
 #'
 #' @return tibble
-dg_id_to_duplex_id <- function(gi) {
+.DGIdToDuplexId <- function(gi) {
     future_clusters <- as_tibble(data.frame(gi))
     return(future_clusters %>% dplyr::select(duplex_id, dg_id))
 }
@@ -188,11 +188,11 @@ dg_id_to_duplex_id <- function(gi) {
 #' @examples
 #' # load data
 #' data("RNADuplexesSmallGI")
-#' res_collapse <- collapse_identical_reads(SampleSmallGI)
+#' res_collapse <- collapseIdenticalReads(SampleSmallGI)
 #' gi_new <- res_collapse[["gi_collapsed"]]
 #' # keeps the mapping of the colapsed object to new
 #' read_stats_df <- res_collapse[["stats_df"]]
-collapse_identical_reads <- function(gi) {
+collapseIdenticalReads <- function(gi) {
     if (is(gi, "StrictGInteractions")) {
         out_gi <- TRUE
         gi_dt <- makeDfFromGi(gi)
@@ -274,114 +274,7 @@ collapse_identical_reads <- function(gi) {
     return(res)
 }
 
-
-
-
-#' Collapses identical interactions
-#' @description
-#' Two entries (reads) are considered identical if they share start, end, strand and score vales
-#' Identical entries are collapsed into the single one.
-#' @details
-#' Adds columns to the collapsed object
-#' duplex_id (int) unique record id
-#' n_reads (int) number of entries collapsed
-#' @param gi GInteractions(mode='strict') object with chromA, strandA, startA, endA, chromB, strandB, startB, endB, score columns
-#' Optionally cigar_alnA, cigar_alnB columns are also considered for collapsing
-#' 'read_id' column used as the index in the initial objects. Created, if not exists
-#' @return result_list object with keys
-#'' gi_collapsed':   New collapsed GInteraction object
-#'' stats_df': tibble with the mapping of the original entries to the new duplex_id
-#' @export
-#' @examples
-#' # load data
-#' data("RNADuplexesSmallGI")
-#' res_collapse <- collapse_identical_reads(SampleSmallGI)
-#' gi_new <- res_collapse[["gi_collapsed"]]
-#' read_stats_df <- res_collapse[["stats_df"]]
-collapse_identical_reads <- function(gi) {
-    if (is(gi, "StrictGInteractions")) {
-        out_gi <- TRUE
-        gi_dt <- makeDfFromGi(gi)
-    } else {
-        out_gi <- FALSE
-        message("Input type is not StrictGInteractions, will try to work with the dataframe")
-        message("Expected columns: chromA, strandA, startA, endA, chromB, strandB, startB, endB, score")
-        message("Optional: cigar_alnA, cigar_alnB")
-        gi_dt <- gi
-    }
-
-    if (!("read_id" %in% colnames(gi_dt))) {
-        gi_dt$read_id <- seq_len(nrow(gi_dt))
-        message("Created 'read_id' column as the unique index in  the provided object")
-    }
-
-    if ("cigar_alnA" %in% colnames(gi)) {
-        dt1 <- gi_dt %>%
-            tidyr::unite("grp", c(
-                chromA, strandA, startA, endA,
-                chromB, strandB, startB, endB, cigar_alnA, cigar_alnB, score
-            ), remove = FALSE) %>%
-            mutate(num = digest2int(grp))
-    } else {
-        dt1 <- gi_dt %>%
-            tidyr::unite("grp", c(
-                chromA, strandA, startA, endA,
-                chromB, strandB, startB, endB, score
-            ), remove = FALSE) %>%
-            mutate(num = digest2int(grp))
-    }
-
-    dt1$n_reads <- NULL
-
-    readcts <- dt1 %>%
-        dplyr::filter(duplicated(num)) %>%
-        dplyr::select(num)
-    readcts <- table(readcts$num)
-    readcts <- tibble("num" = as.double(names(readcts)), "n_reads" = as.vector(readcts) + 1)
-
-    # dt_or = dt1
-
-    # dt1 = dt1 %>% dplyr::distinct(num,.keep_all = TRUE)
-    dt1 <- left_join(dt1, readcts, by = "num") %>%
-        mutate(n_reads = tidyr::replace_na(n_reads, 1))
-
-    read2duplex_map <- dt1 %>% dplyr::select(read_id, num)
-
-    dt1 <- dt1 %>% dplyr::distinct(num, .keep_all = TRUE)
-    dt1 <- dt1 %>%
-        mutate(duplex_id = seq_len(nrow(dt1)))
-
-    read2duplex_map <- left_join(read2duplex_map, dt1[, c("num", "duplex_id", "n_reads")], by = "num") %>%
-        dplyr::rename(n_reads_collapsed = n_reads) %>%
-        dplyr::select(-c(num))
-    # dt1 =dt1 %>%
-    #   dplyr::select(-c(grp,num,read_id))
-    #
-    dt1 <- dt1 %>%
-        dplyr::select(c(
-            chromA, strandA, startA, endA,
-            chromB, strandB, startB, endB, duplex_id, n_reads, score
-        ))
-
-
-    dt1 <- dt1 %>%
-        relocate(duplex_id, .before = score)
-    message("Duplicated   :  ", round((1 - nrow(dt1) / nrow(gi_dt)) * 100, 2),
-            "% of initial")
-    message("Initial size :  ", nrow(gi_dt))
-    message("New size     :  ", nrow(dt1))
-
-    if (out_gi == TRUE) {
-        dt1 <- makeGiFromDf(dt1)
-    }
-
-    res <- list()
-    res$gi_collapsed <- dt1
-    res$stats_df <- read2duplex_map
-    return(res)
-}
-
-get_connectivity <- function(gi, dt_conn) {
+.getConnectivity <- function(gi, dt_conn) {
     edg <- nrow(dt_conn)
     vert <- length(gi)
     connectivity <- round(edg / vert, 4)
@@ -390,36 +283,36 @@ get_connectivity <- function(gi, dt_conn) {
 
 #' Find overlaps between entries in `GInteractions`
 #'
-#' Utility function to find overlapping reads in the input. Removes
-#' self-hits. Computes overlap/span ratios for
+#' Utility function to find overlapping reads in the input and calculate 
+#' overlap scores. Removes self-hits. Computes overlap/span ratios for
 #' each interaction arm. Sum of the scores is recorded in 'weight' field
 #'
-#' @param tr input gi object
+#' @param gi input gi object
 #' @param id_column column which use for using as ids for entries
 #' @param maxgap parameter for call of [InteractionSet::findOverlaps()]
-#' @param minovl  parameter for call [InteractionSet::findOverlaps()]
+#' @param minoverlap  parameter for call [InteractionSet::findOverlaps()]
 #'
 #' @return dataframe with indexes of pairwise overlapsin input and
 #' columns for span, overlap, ratios of either read arm
 #' @export
 #' @examples
 #' data("RNADuplexesSmallGI")
-#' compute_gi_self_overlaps(SampleSmallGI)
-compute_gi_self_overlaps <- function(tr, id_column = "duplex_id", maxgap = 40, minovl = 10) {
-    if (id_column %in% colnames(mcols(tr))) {
+#' computeGISelfOverlaps(SampleSmallGI)
+computeGISelfOverlaps <- function(gi, id_column = "duplex_id", maxgap = 40, minoverlap = 10) {
+    if (id_column %in% colnames(mcols(gi))) {
         # message("Using ",id_column," as id for computing overlaps")
-        ids <- mcols(tr)[, id_column]
-        mcols(tr) <- NULL
-        tr$idcol <- ids
+        ids <- mcols(gi)[, id_column]
+        mcols(gi) <- NULL
+        gi$idcol <- ids
     } else {
         # message("Using index as id for computing overlaps")
-        mcols(tr) <- NULL
-        tr$idcol <- seq_len(length(tr))
+        mcols(gi) <- NULL
+        gi$idcol <- seq_len(length(gi))
         id_column <- "index"
     }
     id_names <- str_c(id_column, c(1, 2), sep = ".")
 
-    fo <- findOverlaps(tr, ignore.strand = FALSE, type = "equal", maxgap = maxgap, minoverlap = minovl)
+    fo <- findOverlaps(gi, ignore.strand = FALSE, type = "equal", maxgap = maxgap, minoverlap = minoverlap)
     fo <- fo[queryHits(fo) < subjectHits(fo)]
     if (length(fo) == 0) {
         dt <- tibble()
@@ -427,23 +320,23 @@ compute_gi_self_overlaps <- function(tr, id_column = "duplex_id", maxgap = 40, m
         return(dt)
     }
     dt <- tibble(
-        idcol.1 = tr[queryHits(fo)]$idcol,
-        idcol.2 = tr[subjectHits(fo)]$idcol,
+        idcol.1 = gi[queryHits(fo)]$idcol,
+        idcol.2 = gi[subjectHits(fo)]$idcol,
         A_span = width(punion(
-            tr@regions[tr[queryHits(fo)]@anchor1],
-            tr@regions[tr[subjectHits(fo)]@anchor1]
+            gi@regions[gi[queryHits(fo)]@anchor1],
+            gi@regions[gi[subjectHits(fo)]@anchor1]
         )),
         B_span = width(punion(
-            tr@regions[tr[queryHits(fo)]@anchor2],
-            tr@regions[tr[subjectHits(fo)]@anchor2]
+            gi@regions[gi[queryHits(fo)]@anchor2],
+            gi@regions[gi[subjectHits(fo)]@anchor2]
         )),
         A_ovl = width(pintersect(
-            tr@regions[tr[queryHits(fo)]@anchor1],
-            tr@regions[tr[subjectHits(fo)]@anchor1]
+            gi@regions[gi[queryHits(fo)]@anchor1],
+            gi@regions[gi[subjectHits(fo)]@anchor1]
         )),
         B_ovl = width(pintersect(
-            tr@regions[tr[queryHits(fo)]@anchor2],
-            tr@regions[tr[subjectHits(fo)]@anchor2]
+            gi@regions[gi[queryHits(fo)]@anchor2],
+            gi@regions[gi[subjectHits(fo)]@anchor2]
         ))
     ) %>%
         mutate(

@@ -17,7 +17,7 @@ see \code{system.file("extdata/scripts", "DD_data_generation.R", package =
 data(RNADuplexesSampleData)
 }
 \value{
-\code{Ginteractions} with
+\code{GInteractions} with
 \itemize{
 \item \code{n_reads_dg } : number of reads in the duplex group (DG)
 \item \code{duplex_id  } : temporary id for RNA duplexes which could be found before
@@ -28,7 +28,7 @@ clustering (duplicated or shifted by couple of nt )
 }
 }
 \description{
-\code{Ginteractions} read-level object containing processed reads,annotated with duplex group
+\code{GInteractions} read-level object containing processed reads,annotated with duplex group
 ids, read types gene names and p-values
 }
 \keyword{datasets}

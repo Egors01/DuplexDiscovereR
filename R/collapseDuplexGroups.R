@@ -46,7 +46,7 @@
 #' # load small sample GInteractions and process it manually
 #' data("RNADuplexesSmallGI")
 #' # First, collapse duplicated reads. This adds n_reads and duplex ids
-#' ginodup <- collapse_identical_reads(SampleSmallGI)$gi_collapsed
+#' ginodup <- collapseIdenticalReads(SampleSmallGI)$gi_collapsed
 #' # Second, run clustering, get DG ids
 #' ginodup <- clusterDuplexGroups(ginodup)
 #' # Return all DGs result in n=3 DGS, one of them formed by
@@ -71,9 +71,9 @@ collapse_duplex_groups <- function(
         to_add_n <- length(gi[is.na(gi$dg_id) & gi$n_reads > 1])
         if (to_add_n != 0) {
             message("Found temporary duplex groups without assigned dg_id", to_add_n)
-            gi <- add_dg_ids_for_noempty_duplexes(gi)
+            gi <- .addDGidsForTmpDGs(gi)
 
-            # Consider calling  add_dg_ids_for_noempty_duplexes(gi) to add them into final DGs")
+            # Consider calling  .addDGidsForTmpDGs(gi) to add them into final DGs")
         }
     }
 
