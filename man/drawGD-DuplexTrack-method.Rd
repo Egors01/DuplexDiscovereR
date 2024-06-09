@@ -2,7 +2,7 @@
 % Please edit documentation in R/DuplexTrack.R
 \name{drawGD,DuplexTrack-method}
 \alias{drawGD,DuplexTrack-method}
-\title{Draw methods for DuplexTrack}
+\title{Draw method for DuplexTrack}
 \usage{
 \S4method{drawGD}{DuplexTrack}(GdObject, minBase, maxBase, prepare = FALSE, subset = TRUE, ...)
 }
