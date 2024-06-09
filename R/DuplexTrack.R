@@ -177,11 +177,15 @@ DuplexTrack <- function(
     message("constructor")
     ## Some defaults
     if (is.null(gr_region)) {
-        if (!any(c(is.null(start), is.null(strand), is.null(strand)))) {
-            gr_region <- GRanges(as.character(chromosome), IRanges(start, end), strand = strand)
+        if (!any(c(is.null(start), is.null(strand),
+        is.null(strand),is.null(chromosome)))) {
+        gr_region <- GRanges(as.character(chromosome),
+            IRanges(start, end), strand = strand)
+        }else{
+          stop("start, end, chromosome and strand OR Granges should be provided")
         }
     } else {
-        message("Using provided Granges for plot")
+        message("Using Granges for plot region")
     }
 
     # first select gi where at least single region is on the range
@@ -294,7 +298,7 @@ setMethod("show", signature(object = "DuplexTrack"), function(object) {
 })
 
 
-#' Draw methods for DuplexTrack
+#' Draw method for DuplexTrack
 #'
 #' `Gviz::AnnotationTrack` stacking algorithm is used to calculate vertical
 #' distribution of boxes for the interactions.
@@ -488,7 +492,6 @@ setMethod("drawGD", signature("DuplexTrack"), function(GdObject, minBase, maxBas
     arc_h_list <- list()
     df_arc_y <- data.frame()
     if (length(pass_arcs) != 0) {
-        internal <- 1
         for (internal in seq_along(pass_arcs)) {
             grp_var <- paste(pass_arcs[internal], c("A", "B"), sep = ".")
             tmp <- tmp_box[grp_var, ]

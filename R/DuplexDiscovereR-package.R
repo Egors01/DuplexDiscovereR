@@ -1,5 +1,7 @@
 #' DuplexDiscovereR
 #' 
+#' @title Analysis of the data from RNA duplex probing experiments
+#' @description
 #' DuplexDiscovereR is a package for analysing data from RNA cross-linking and 
 #' proximity ligation protocols such as SPLASH, PARIS, LIGR-seq and others, 
 #' which provide information about intra-molecular RNA-RNA interactions through 
