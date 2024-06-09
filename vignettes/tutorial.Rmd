@@ -44,6 +44,15 @@ BiocManager::install("DuplexDiscovereR")
 library(DuplexDiscovereR)
 ?DuplexDiscovereR
 ```
+or github page 
+
+```{r install_chunk2, eval=FALSE}
+if (!require("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+
+library(devtools)
+devtools::install_github("Egors01/DuplexDiscovereR")
+
+```
 
 ## Installing RNAduplex 
 
@@ -88,12 +97,11 @@ different experiments and to allow straightforward cross-checking between
 replicates, `DuplexDiscovereR` includes functionality to intersect multiple RNA
 interaction datasets.  
 
-
 `DuplexDiscovereR` relies on the `GInteractions` container from
 `r Biocpkg("InteractionSet")` package for the storage of 
 the RNA-RNA interaction data and uses tidyverse `tibble` and `dplyr` for 
 internal data transformations. For visualization,
-`DuplexDiscovereR` comes with the `Gviz` - based `DuplexTrack` track and 
+`DuplexDiscovereR` comes with the `r Biocpkg("Gviz")` - based `DuplexTrack` track and 
 supports export of the results to the .sam file.
 
 # Quick start

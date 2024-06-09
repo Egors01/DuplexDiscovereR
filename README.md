@@ -19,8 +19,8 @@ analyses.
 ## License
 
 The `DuplexDiscovereR` code is distributed under [GNU Public License 3.0](https://www.gnu.org/licenses/gpl-3.0.html). 
-The documentation, including the manual pages and the vignettes,
-are distributed under a [CC BY-SA 4.0 license](https://creativecommons.org/licenses/by-sa/4.0/deed.en).
+The documentation, including the manual pages and vignettes,
+is distributed under a [CC BY-SA 4.0 license](https://creativecommons.org/licenses/by-sa/4.0/deed.en).
 
 
 Some functionality of `DuplexDiscovereR` depends on the [RNAduplex](https://www.tbi.univie.ac.at/RNA/RNAduplex.1.html) from the
