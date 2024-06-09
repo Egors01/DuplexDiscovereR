@@ -26,7 +26,7 @@ Some functionality of `DuplexDiscovereR` depends on the [RNAduplex](https://www.
 
 ## Installation
 
-To install this package, start R (version "4.4") and enter:
+To install this package, use R (version "4.4"):
 
 ```
 if (!require("BiocManager", quietly = TRUE))
@@ -35,7 +35,7 @@ if (!require("BiocManager", quietly = TRUE))
 BiocManager::install("DuplexDiscovereR")
 ```
 
-You can install the development version from Github with 
+You can also install the package from Github with 
 ```r
 library(devtools)
 install_github('Egors01/DuplexDiscovereR')
