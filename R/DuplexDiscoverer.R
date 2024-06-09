@@ -1,15 +1,18 @@
 #' DuplexDiscovereR
-#' DuplexDiscovereR is a package for analysis of the data from RNA cross-linking and proximity
-#' ligation protocols such as SPLASH, PARIS, LIGR-seq and others.
-#' DuplexDiscovereR takes input in a form of Chimericly or split -aligned reads.
-#' It implements procedures for classification, filtering and efficient clustering
-#' of inidividual read alignments into duplex groups (DGs)
-#' After DGs are found, RNA duplex formation and their hybridization energies
-#' are predicted,additional metrics
-#' i.e p-values or mean alignement scores can be calcualted to rank and analyze
-#' final RNA duplex predictions.Data from multiple experiments or replicates
-#' can be processed separately and further compared to analyse reproducability
-#' of experimental method.
+#' 
+#' DuplexDiscovereR is a package for analysing data from RNA cross-linking and 
+#' proximity ligation protocols such as SPLASH, PARIS, LIGR-seq and others, 
+#' which provide information about intra-molecular RNA-RNA interactions through 
+#' chimeric RNA-seq reads. Chimerically aligned fragments in these experiments 
+#' correspond to the base-paired stretches (RNA duplexes) of RNA molecules .
+#' DuplexDiscovereR takes input in the form of chimericly or split -aligned reads,
+#' It implements procedures for alignment classification, filtering and efficient
+#' clustering  of  individual chimeric reads into duplex groups (DGs).
+#' Once DGs are found, RNA duplex formation and their hybridization energies are 
+#' predicted. Additional metrics, such as p-values or mean DG alignment scores, 
+#' can be calculated to rank and analyse the final set of RNA duplexes. 
+#' Data from multiple experiments or replicates can be processed separately 
+#' and further compared to check the reproducibility of the experimental method. 
 #'
 #' @name DuplexDiscovereR
 #'
