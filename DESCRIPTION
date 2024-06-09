@@ -1,25 +1,29 @@
 Package: DuplexDiscovereR
 Title: Analysis of the data from RNA duplex probing experiments
 Authors@R: 
-    c(person("Egor", "Semenchenko", ,  email = "yegor.smb@gmail.com", 
-    role = c("aut", "cre","cph"),comment = c(ORCID = "0009-0007-5306-076X") ,),
-         person("Volodymyr", "Tsybulskyi", ,
-         email = "Volodymyr.Tsybulskyi@mdc-berlin.de", role = c("ctb")),
-         person("Irmtraud", "Meyer", ,
-         email = "irmtraud.m.meyer@cantab.net", role = c("ctb"),
-         comment = c(ORCID = "0000-0002-4048-3479")))
+        c(person("Egor", "Semenchenko", , 
+        email = "yegor.smb@gmail.com", 
+        role = c("aut", "cre","cph"),
+        comment = c(ORCID = "0009-0007-5306-076X")),
+        person("Volodymyr", "Tsybulskyi", ,
+        email = "Volodymyr.Tsybulskyi@mdc-berlin.de", role = c("ctb"),
+        comment = c(ORCID = "0009-0002-4141-6291")),
+        person("Irmtraud M.", "Meyer", ,
+        email = "irmtraud.m.meyer@cantab.net", role = c("aut","cph"),
+             comment = c(ORCID = "0000-0002-4048-3479")))
 Description: 
-    DuplexDiscovereR is a package for analysis of the data from RNA cross-linking and proximity
-    ligation protocols such as SPLASH, PARIS, LIGR-seq and others.
-    DuplexDiscovereR takes input in a form of Chimericly or split -aligned reads.
-    It implements procedures for classification, filtering and efficient clustering 
-    of inidividual read alignments into duplex groups (DGs)
-    After DGs are found, RNA duplex formation and their hybridization energies 
-    are predicted,additional metrics 
-    i.e p-values or mean alignement scores can be calcualted to rank and analyze 
-    final RNA duplex predictions.Data from multiple experiments or replicates
-    can be processed separately and further compared to analyse reproducability 
-    of experimental method. 
+   DuplexDiscovereR is a package designed for analyzing data from RNA 
+   cross-linking and proximity ligation protocols such as SPLASH, PARIS, 
+   LIGR-seq, and others.
+   DuplexDiscovereR accepts input in the form of chimerically or
+   split-aligned reads. It includes procedures for alignment classification,
+   filtering, and efficient clustering of individual chimeric reads into duplex 
+   groups (DGs). Once DGs are identified, the package predicts RNA duplex 
+   formation and their hybridization energies. Additional metrics, such as
+   p-values for random ligation hypothesis or mean DG alignment scores, 
+   can be calculated to rank final set of RNA duplexes.
+   Data from multiple experiments or replicates can be processed separately 
+   and further compared to check the reproducibility of the experimental method.
 License:  GPL-3
 URL: https://github.com/Egors01/Duplex_Explorer
 BugReports: https://github.com/Egors01/Duplex_Explorer
