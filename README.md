@@ -10,7 +10,7 @@ DuplexDiscovereR is a package for analysing data from RNA cross-linking and
 proximity ligation protocols such as SPLASH, PARIS, LIGR-seq and other
 experimental methods that capture information about RNA-RNA interactions 
 as chimeric fragments after high-throughput sequencing.
-It provides functions for unified processing and visualisation of the raw chimeric 
+It provides functions for uniform processing and visualisation of the raw chimeric 
 read data. The methods implemented in DuplexDiscovereR are compatible with 
 Bioconductor's GenomicRanges and InteractionSet classes, allowing for the 
 integration of RNA-RNA interaction probing results into transcriptomic
