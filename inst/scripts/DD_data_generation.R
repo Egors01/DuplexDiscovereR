@@ -1,6 +1,6 @@
 #' This script shows how the the example data used for test and vignettes was generated.
 #' It is not intended to be run 'as-is'. To replicate the process, one should
-#' start with downloading the raw duplex read read data fro i.e SRA and proceed
+#' start with downloading the raw RNA duplex read read data from i.e SRA and proceed
 #' with the downstream steps:
 
 #' For creating this example data, we used single replicate of the SPLASH ES
@@ -80,7 +80,7 @@ SampleSpliceJncGR<-GRanges(txf[txf@type=='J'])
 
 # call the pipeline to produce clustered and unclustered reads samples
 library(DuplexDiscovereR)
-res <- run_duplexdisco(
+res <- runDuplexDiscoverer(
   df = RNADuplexesRawChimSTAR,
   junctions_gr = SampleSpliceJncGR,
   anno_gr = SampleGeneAnnoGR,
