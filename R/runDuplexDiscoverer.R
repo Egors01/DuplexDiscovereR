@@ -43,6 +43,11 @@
 #' Increasing this from i.e 0 to 5 reduces clustering time and memory for the libraries with many overlapping reads.
 #' @param gap_collapse_similar  Parameter for read clustering (iterative step). Analogous to the max_gap, but applied \code{collapse_n_inter} times during the iterative merging step.
 #' Reduce this to 1 or 2 to lower RAM usage for clustering the library with many similar reads.
+#' @param trim_alignments TRUE or FALSE. Whether to trim arms alignments to 
+#' 'trim_length' nucleotide around chimeric junction
+#' @param trim_length target size of trimmed alignment 
+#' @param min_arm_len minimum allowed length of the alignment arm.
+#' Read will be dropped if either arm is shorter
 #' @return a list with the   following keys
 #' \describe{
 #'   \item{gi_clusters}{ \pkg{GInteractions} object with called duplex groups }
@@ -78,6 +83,9 @@ runDuplexDiscoverer <- function(
         df_counts = NULL,
         sample_name = "sample",
         lib_type = "SE",
+        trim_alignments = FALSE,
+        trim_length = 40,
+        min_arm_len = 15,
         min_junction_len = 5,
         max_gap = 50,
         min_arm_ratio = 0.1,
@@ -92,7 +100,8 @@ runDuplexDiscoverer <- function(
     df <- runDuplexDiscoPreproc(data,
         table_type = table_type,
         library_type = lib_type,
-        keep_metadata = TRUE
+        keep_metadata = TRUE,
+        min_arm_len = min_arm_len
     )
 
     n_reads_initial <- sum(df$n_reads)
@@ -108,12 +117,18 @@ runDuplexDiscoverer <- function(
     # 2.1 filter out multi spli and multimap aln
     single_gap_df <- df %>%
         dplyr::filter(map_type == "2arm")
-    # 2.1a create stats
+    # 2.1.1 create stats
     read_stats_df <- df %>%
         dplyr::select(readname, n_reads, map_type) %>%
         mutate(read_id = c(seq_len(nrow(df)))) %>%
         relocate(read_id, .after = n_reads)
-
+    
+    #2.1.2 trim alignments 
+    if (trim_alignments){
+      single_gap_df = trimAroundJunction(single_gap_df,
+                                         extract_len = trim_length)
+    }
+    
     # 2.2 convert to GInteractions and mark short/overlapping/splice junction reads
     big_gi <- makeGiFromDf(single_gap_df)
     if (!is.null(junctions_gr)) {
