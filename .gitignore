@@ -1,11 +1,12 @@
 .Rproj.user
-.gitignore
 inst/doc
 DuplexDiscovereR.Rcheck
 build
 DuplexDiscovereR.Rproj
 /doc/
 /Meta/
+vignettes/*.html
+vignettes/*.R
 *.Rproj
 .Rhistory
 .Rbuildignore
