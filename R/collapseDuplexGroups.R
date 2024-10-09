@@ -72,8 +72,6 @@ collapse_duplex_groups <- function(
         if (to_add_n != 0) {
             message("Found temporary duplex groups without assigned dg_id", to_add_n)
             gi <- .addDGidsForTmpDGs(gi)
-
-            # Consider calling  .addDGidsForTmpDGs(gi) to add them into final DGs")
         }
     }
 

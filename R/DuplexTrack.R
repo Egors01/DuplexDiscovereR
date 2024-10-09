@@ -709,7 +709,12 @@ availableDisplayPars <- function(class) {
     }
 }
 
-#' Takes  of inherited Gviz graphical parameters
+#' Set Gviz graphical parameters 
+#' 
+#' @details
+#' Non-exported from Gviz. Uses the same procedure as in AnnotationTrack 
+#' to set defaults.
+#' 
 #' @importFrom Gviz getScheme
 #' @keywords internal
 #' @returns set default values inside class upon calling withn class constructor
@@ -723,7 +728,7 @@ availableDisplayPars <- function(class) {
         # use scheme compatibility
         scheme <- Gviz::getScheme(sid)
     }
-    # set thisto calculate labels - we use groups as interactions pars
+    # set this to calculate labels - we use groups as interactions pars
     scheme[["AnnotationTrack"]]["groupAnnotation"] <- "group"
     schemePars <- if (is.null(scheme) || is.null(scheme[[class]])) {
         list()

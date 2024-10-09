@@ -77,9 +77,6 @@ clusterDuplexGroups <- function(gi, graphdf = NULL, maxgap = 40,
             ratio.B >= min_arm_ratio
         )
     } else {
-        # message("Climeric duplex id column: ",id_column)
-        # message("Using connections dataframe with indexes: ",id_columns_grapdf[1],"-",id_columns_grapdf[2])
-        # message("Weights in: ",weight_column)
         if (!(id_column %in% colnames(mcols(gi)))) {
             stop(id_column, "not found in provided GenomicInteractions onject")
         } else {
@@ -100,23 +97,22 @@ clusterDuplexGroups <- function(gi, graphdf = NULL, maxgap = 40,
 
 
     if (decompose) {
+        # do clustering by subgraphs 
         # here we split into subgraphs and cluster each
         comps <- igraph::decompose(g)
         message("Whole-transciptome graph was split into ", length(comps), " components")
-        pb <- txtProgressBar(min = 1, max = length(comps), style = 3)
-        for (i in seq_along(comps)) { # For each subgraph comps[[i]]
-            wt <- igraph::cluster_louvain(comps[[i]], weights = E(comps[[i]])$weight)
-            igraph::V(comps[[i]])$cluster_group <- str_c(i, "_", igraph::membership(wt))
-            setTxtProgressBar(pb, i)
-        }
-        close(pb)
+        
+        #call clustering over the list of subgraphs
+        comps <- lapply(seq_along(comps), function(i) {
+          .compute_clusters_comp(comps[[i]], i)
+        })
         df_clustered <-
             tibble(
                 dg_id_raw = unlist(lapply(comps, function(x) {
-                    V(x)$cluster_group
+                  igraph::V(x)$cluster_group
                 })),
                 vert_id = as.integer(unlist(lapply(comps, function(x) {
-                    names(V(x))
+                    names(igraph::V(x))
                 })))
             ) %>%
             mutate(idx = as.integer(vert_id)) %>%
@@ -137,7 +133,7 @@ clusterDuplexGroups <- function(gi, graphdf = NULL, maxgap = 40,
             save(grres, file = dump_path)
         }
     } else {
-        # here we do clustering genome-wide
+        # do clustering genome-wide
         if (!fast_greedy) {
             cluster_lou <- igraph::cluster_louvain(g)
         } else {
@@ -169,3 +165,16 @@ clusterDuplexGroups <- function(gi, graphdf = NULL, maxgap = 40,
 
     return(gi)
 }
+
+#' Helper function to call clustering on each component
+#' 
+#' @details
+#' Call clustering on each independent graph component. 
+#' Used when decompose==TRUE
+#' @keywords internal
+.compute_clusters_comp <- function(graph, index) {
+  wt <- cluster_louvain(graph, weights = igraph::E(graph)$weight)
+  igraph::V(graph)$cluster_group <- str_c(index, "_", igraph::membership(wt))
+  return(graph)  
+}
+

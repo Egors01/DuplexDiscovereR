@@ -7,7 +7,7 @@ test_that("Load test data object run small clustering works", {
     expect_equal(length(collapse_duplex_groups(gi)), 3)
     expect_equal(length(collapse_duplex_groups(gi, return_unclustered = T)), 6)
 })
-test_that("Load STAR format and classification clustering works", {
+test_that("Load STAR format and classification works", {
     suppressMessages({
         set.seed(123)
         test_reads_star <- read.table(system.file("extdata", "test_SPLASH_Chimeric.out.junction", package = "DuplexDiscovereR"), header = T)
@@ -21,6 +21,7 @@ test_that("Load STAR format and classification clustering works", {
     expect_equal(mm_N, "expected" = 218, label = "mapping type classification works 2")
     expect_equal(ms_N, "expected" = 285, label = "mapping type classification works 3")
 })
+
 test_that("Load bedpe format and crude clustering works", {
     suppressMessages({
         df_bedpe <- read.table(system.file("extdata", "test_SPLASH_DuplexesRaw.bedpe", package = "DuplexDiscovereR"))
@@ -30,8 +31,13 @@ test_that("Load bedpe format and crude clustering works", {
         df_chim <- df_chim %>% dplyr::filter(map_type == "2arm")
         gi_clusters <- collapse_duplex_groups(clusterDuplexGroups(makeGiFromDf(df_chim)))
         n_reads_clustered <- sum(gi_clusters$n_reads)
+        
+        gi_clusters_decomp <- collapse_duplex_groups(clusterDuplexGroups(makeGiFromDf(df_chim),decompose = TRUE))
+        n_reads_clustered_decomp <- sum(gi_clusters_decomp$n_reads)
+        
     })
     expect_equal(n_reads_clustered, 1162, label = "clustering bedpe produced expected results")
+    expect_equal(n_reads_clustered_decomp, 1162, label = "clustering+decomposition produced expected results")
 })
 test_that("Load GInteractions format and crude clustering works", {
     suppressMessages({
