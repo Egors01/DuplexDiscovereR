@@ -274,8 +274,14 @@ of the hybridization energies by not providing the
 path to the genome through `fafile` argument. 
 However, predicting RNA hybrids is central to the RNA-RNA interaction data analysis. 
 
-If the **ViennaRNA** external dependency is installed, one can re-run all steps
-of the analysis with `runDuplexDiscoverer` with option `fafile = <path to genome>`
+To compute the structure formed by two stretches of RNA `DuplexDiscoverer` uses 
+**RNAduplex** algorithm from **ViennaRNA**. Note that **ViennaRNA** is distributed 
+under its own licence. Please refer 
+to the https://www.tbi.univie.ac.at/RNA/ViennaRNA/doc/html/license.html for details
+
+If the **RNAduplex** is installed, one can re-run all steps
+of the analysis with `runDuplexDiscoverer` specifying the genome by
+setting option `fafile = <path to genome>`
 Alternatively, one can predict RNA hybrids by calling separate function on
 `GInteractions` object: 
 
