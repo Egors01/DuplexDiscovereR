@@ -81,7 +81,7 @@ col_check_rename <- function(df, table_type = "STAR") {
     actual_names <- names(testt)
     actual_types <- vapply(
         testt %>% dplyr::select(all_of(seq_len(n_col_check))),
-        function(col) class(col),""
+        function(col) class(col), ""
     )
 
     # Check if there are extra columns
@@ -127,8 +127,6 @@ col_check_rename <- function(df, table_type = "STAR") {
             message(paste(status$Before, "\t-> ", status$After, collapse = "\n", sep = ""))
             msgtext <- paste0(colnames(df), sep = " ")
             message("\nGuessed column names and converted types \n", msgtext)
-
-
         } else {
             # if something was wrong with types guessing
             stats <- ifelse(actual_types[seq_len(n_col_check)] == expected_types, "ok", "<-problem")
@@ -467,10 +465,11 @@ preproc_generic_gi <- function(gi_raw, keep_all_columns = TRUE) {
 #'     table_type = "STAR",
 #'     keep_metadata = FALSE
 #' )
-runDuplexDiscoPreproc <- function(data, table_type,
-    library_type = "SE",
-    keep_metadata = TRUE,
-    return_gi = FALSE) {
+runDuplexDiscoPreproc <- function(
+        data, table_type,
+        library_type = "SE",
+        keep_metadata = TRUE,
+        return_gi = FALSE) {
     # Start with determining the input data type
     if (is(data, "GInteractions")) {
         # GI input

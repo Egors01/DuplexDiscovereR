@@ -45,16 +45,19 @@ Imports:
     rtracklayer,
     digest,
     GenomicAlignments,
-    dplyr,
     ggsci,
     igraph,
     rlang,
     scales,
     stringr,
+    dplyr,
     tibble,
     tidyr,
     purrr,
-    methods
+    methods,
+    grDevices,
+    stats,
+    utils
 Depends: 
     R (>= 4.4),
     InteractionSet

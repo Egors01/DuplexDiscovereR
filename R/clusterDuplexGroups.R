@@ -45,16 +45,17 @@
 #' gi <- clusterDuplexGroups(gi)
 #' # check dg_ids
 #' table(is.na(gi$dg_id))
-clusterDuplexGroups <- function(gi, graphdf = NULL, maxgap = 40,
-    minoverlap = 10,
-    id_column = "duplex_id",
-    weight_column = "weight",
-    fast_greedy = FALSE,
-    decompose = FALSE,
-    id_columns_grapdf = paste(id_column, c(1, 2), sep = "."),
-    min_arm_ratio = 0.3,
-    dump_graph = FALSE,
-    dump_path = "") {
+clusterDuplexGroups <- function(
+        gi, graphdf = NULL, maxgap = 40,
+        minoverlap = 10,
+        id_column = "duplex_id",
+        weight_column = "weight",
+        fast_greedy = FALSE,
+        decompose = FALSE,
+        id_columns_grapdf = paste(id_column, c(1, 2), sep = "."),
+        min_arm_ratio = 0.3,
+        dump_graph = FALSE,
+        dump_path = "") {
     gi$dg_id <- NULL
 
     if (is.null(graphdf)) {
@@ -97,19 +98,19 @@ clusterDuplexGroups <- function(gi, graphdf = NULL, maxgap = 40,
 
 
     if (decompose) {
-        # do clustering by subgraphs 
+        # do clustering by subgraphs
         # here we split into subgraphs and cluster each
         comps <- igraph::decompose(g)
         message("Whole-transciptome graph was split into ", length(comps), " components")
-        
-        #call clustering over the list of subgraphs
+
+        # call clustering over the list of subgraphs
         comps <- lapply(seq_along(comps), function(i) {
-          .compute_clusters_comp(comps[[i]], i)
+            .compute_clusters_comp(comps[[i]], i)
         })
         df_clustered <-
             tibble(
                 dg_id_raw = unlist(lapply(comps, function(x) {
-                  igraph::V(x)$cluster_group
+                    igraph::V(x)$cluster_group
                 })),
                 vert_id = as.integer(unlist(lapply(comps, function(x) {
                     names(igraph::V(x))
@@ -167,14 +168,13 @@ clusterDuplexGroups <- function(gi, graphdf = NULL, maxgap = 40,
 }
 
 #' Helper function to call clustering on each component
-#' 
+#'
 #' @details
-#' Call clustering on each independent graph component. 
+#' Call clustering on each independent graph component.
 #' Used when decompose==TRUE
 #' @keywords internal
 .compute_clusters_comp <- function(graph, index) {
-  wt <- cluster_louvain(graph, weights = igraph::E(graph)$weight)
-  igraph::V(graph)$cluster_group <- str_c(index, "_", igraph::membership(wt))
-  return(graph)  
+    wt <- cluster_louvain(graph, weights = igraph::E(graph)$weight)
+    igraph::V(graph)$cluster_group <- str_c(index, "_", igraph::membership(wt))
+    return(graph)
 }
-

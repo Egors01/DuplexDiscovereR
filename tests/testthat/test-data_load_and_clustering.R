@@ -31,10 +31,9 @@ test_that("Load bedpe format and crude clustering works", {
         df_chim <- df_chim %>% dplyr::filter(map_type == "2arm")
         gi_clusters <- collapse_duplex_groups(clusterDuplexGroups(makeGiFromDf(df_chim)))
         n_reads_clustered <- sum(gi_clusters$n_reads)
-        
-        gi_clusters_decomp <- collapse_duplex_groups(clusterDuplexGroups(makeGiFromDf(df_chim),decompose = TRUE))
+
+        gi_clusters_decomp <- collapse_duplex_groups(clusterDuplexGroups(makeGiFromDf(df_chim), decompose = TRUE))
         n_reads_clustered_decomp <- sum(gi_clusters_decomp$n_reads)
-        
     })
     expect_equal(n_reads_clustered, 1162, label = "clustering bedpe produced expected results")
     expect_equal(n_reads_clustered_decomp, 1162, label = "clustering+decomposition produced expected results")

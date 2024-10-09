@@ -169,20 +169,23 @@ setMethod("initialize", "DuplexTrack", function(.Object, ...) {
     return(.Object)
 })
 
-DuplexTrack <- function(
-        gi, start = NULL, end = NULL, gr_region = NULL,
-        group, id, strand, chromosome, fill = NULL, fill.column = "",
-        genome, stacking = "squish", name = "DuplexTrack", selectFun, importFunction,
-        stream = FALSE, ...) {
+DuplexTrack <- function(gi, start = NULL, end = NULL, gr_region = NULL,
+    group, id, strand, chromosome, fill = NULL, fill.column = "",
+    genome, stacking = "squish", name = "DuplexTrack", selectFun, importFunction,
+    stream = FALSE, ...) {
     message("constructor")
     ## Some defaults
     if (is.null(gr_region)) {
-        if (!any(c(is.null(start), is.null(strand),
-        is.null(strand),is.null(chromosome)))) {
-        gr_region <- GRanges(as.character(chromosome),
-            IRanges(start, end), strand = strand)
-        }else{
-          stop("start, end, chromosome and strand OR Granges should be provided")
+        if (!any(c(
+            is.null(start), is.null(strand),
+            is.null(strand), is.null(chromosome)
+        ))) {
+            gr_region <- GRanges(as.character(chromosome),
+                IRanges(start, end),
+                strand = strand
+            )
+        } else {
+            stop("start, end, chromosome and strand OR Granges should be provided")
         }
     } else {
         message("Using Granges for plot region")
@@ -241,7 +244,6 @@ DuplexTrack <- function(
         chromosome <- if (length(range) > 0) .chrName(as.character(seqnames(range)[1])) else "chrNA"
     }
     ## And finally the object instantiation, we have to distinguish between DetailsAnnotationTracks and normal ones
-    # genome <- Gviz:::.getGenomeFromGRange(range, ifelse(is.null(genome), character(), genome[1]))
     genome <- rtracklayer::genome(range)
     return(new("DuplexTrack",
         giobject = (gi), start, end,
@@ -372,7 +374,7 @@ setMethod("drawGD", signature("DuplexTrack"), function(GdObject, minBase, maxBas
             minSat <- max(0.25, 1 / max(dens))
             minDens <- min(dens)
             saturation <- minSat + ((dens - minDens) / rDens / (1 / (1 - minSat)))
-            bc <- unique(.getBiotypeColor(GdObject))
+            bc <- unique(Gviz:::.getBiotypeColor(GdObject))
             baseCol <- rgb2hsv(col2rgb(bc))
             desatCols <- unlist(lapply(saturation, function(x) hsv(baseCol[1, ], x, baseCol[3, ])))
             names(desatCols) <- paste(unique(feature(GdObject)), rep(dens, each = length(bc)), sep = "_")
@@ -452,7 +454,7 @@ setMethod("drawGD", signature("DuplexTrack"), function(GdObject, minBase, maxBas
         # Create a named vector with pairs and their corresponding colors
         pair_colors <- setNames(fill_vector, pair_indexes)
         # Map colors to each pair
-        pair_colors_vector <- vapply(sub("\\..*", "", rownames(box)), function(index) pair_colors[[index]],"")
+        pair_colors_vector <- vapply(sub("\\..*", "", rownames(box)), function(index) pair_colors[[index]], "")
         box$fill <- as.vector(pair_colors_vector)
     }
 
@@ -483,8 +485,7 @@ setMethod("drawGD", signature("DuplexTrack"), function(GdObject, minBase, maxBas
     # if no ars are to plot - don't try to call graphics to avoid confusion
     if (nrow(result) == 0) {
         stop("Cannot plot provided region. Possible reason: interactions overlap.
-           Suggestion: try to convert input to long GRanges and plot with
-           standard Gviz Annotation track")
+        Suggestion: try to convert input to long GRanges and plot with standard Gviz Annotation track")
     }
     pass_arcs <- result$group
 
@@ -709,12 +710,12 @@ availableDisplayPars <- function(class) {
     }
 }
 
-#' Set Gviz graphical parameters 
-#' 
+#' Set Gviz graphical parameters
+#'
 #' @details
-#' Non-exported from Gviz. Uses the same procedure as in AnnotationTrack 
+#' Non-exported from Gviz. Uses the same procedure as in AnnotationTrack
 #' to set defaults.
-#' 
+#'
 #' @importFrom Gviz getScheme
 #' @keywords internal
 #' @returns set default values inside class upon calling withn class constructor

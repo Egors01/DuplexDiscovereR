@@ -51,7 +51,6 @@ if (!require("BiocManager", quietly = TRUE)) install.packages("BiocManager")
 
 library(devtools)
 devtools::install_github("Egors01/DuplexDiscovereR")
-
 ```
 
 ## Installing RNAduplex 
@@ -162,7 +161,7 @@ data(RNADuplexesSampleData)
 Details on alignment of the reads of example dataset and fetching of the annotation data are
 described in the file, which could be found at 
 ```{r dataload2 }
-system.file("extdata","scripts", "DD_data_generation.R", package = "DuplexDiscovereR")
+system.file("extdata", "scripts", "DD_data_generation.R", package = "DuplexDiscovereR")
 ```
 
 ## Calling analysis
@@ -360,8 +359,9 @@ Result contains slot for the interaction superset and the overlap information
 We can visualize sample intersections via upset plot 
 ```{r comp4, eval=TRUE}
 # first, check if UpSetR is installed
-if (!requireNamespace('UpSetR', quietly = TRUE))
+if (!requireNamespace("UpSetR", quietly = TRUE)) {
     stop("Install 'UpSetR' to use this function.")
+}
 library(UpSetR)
 upset(res_comp$dt_upset, text.scale = 1.5)
 ```
