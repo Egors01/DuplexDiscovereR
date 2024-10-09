@@ -11,3 +11,4 @@ vignettes/*.R
 .Rhistory
 .Rbuildignore
 dev/
+tests/testthat/Rplots.pdf
