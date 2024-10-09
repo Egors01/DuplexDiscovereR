@@ -37,12 +37,14 @@
 #' # predict hybrids
 #' # In case ViennaRNA is installed
 #' \dontrun{
-#' getRNAHybrids(interaction, fasta_file)
+#' gi_with_hybrids = getRNAHybrids(interaction, fasta_file)
 #' }
 getRNAHybrids <- function(gi, fafile) {
-    # exit if not installed
+    # exit if not installed, warn about license if installed
     if (.checkRNAduplexinstalled() != 0) {
         return(gi)
+    }else{
+      message('Calling  RNAduplex from ViennaRNA.\nNote that ViennaRNA is distributed under its own licence.\nPlease refer to the https://www.tbi.univie.ac.at/RNA/ViennaRNA/doc/html/license.html for details ')
     }
 
     sq <- Biostrings::readBStringSet(fafile)
