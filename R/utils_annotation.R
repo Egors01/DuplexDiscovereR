@@ -218,7 +218,7 @@ calculateLigationPvalues <- function(gi, df_counts, id_col = "gene_id") {
 
 
 .checkRNAduplexinstalled <- function() {
-    returncode <- system("RNAduplex -h > /dev/null 2>&1")
+    returncode <- system2("RNAduplex", args = c("-h"), stdout = NULL, stderr = NULL)
     if (returncode != 0) {
         message("RNAduplex from ViennaRNA is not found.Unable to call hybrid predictions")
         return(1)
