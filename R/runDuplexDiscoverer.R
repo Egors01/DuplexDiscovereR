@@ -57,7 +57,7 @@
 #' library(DuplexDiscovereR)
 #' # load data
 #' data("RNADuplexesSampleData")
-#' res <- runDuplexDiscoverer(
+#' result <- runDuplexDiscoverer(
 #'     data = RNADuplexesRawChimSTAR,
 #'     junctions_gr = SampleSpliceJncGR,
 #'     anno_gr = SampleGeneAnnoGR,
@@ -68,7 +68,15 @@
 #'     lib_type = "SE",
 #'     table_type = "STAR"
 #' )
-#' names(res)
+#' # see results object
+#' print(result)
+#' # duplex groups
+#' dd_get_duplex_groups(result)
+#' # individual chimeric reads
+#' dd_get_chimeric_reads(result)
+#' # counts of detected read tyoes  
+#' dd_get_chimeric_reads_stats(result)
+#' 
 runDuplexDiscoverer <- function(data,
     table_type = "",
     junctions_gr = NULL,
@@ -348,12 +356,21 @@ runDuplexDiscoverer <- function(data,
                                     summary_stats_lens) 
     
     gc(reset = TRUE)
-    results <- list()
-    results$gi_clusters <- gi_final
-    results$gi_reads <- gi_2arm_full
-    results$df_readstats <- summary_stats_reads
-    results$df_runstats <- summary_stats_run
-    results$df_reads <- read_stats_df
+    # results <- list()
+    # results$gi_clusters <- gi_final
+    # results$gi_reads <- gi_2arm_full
+    # results$df_readstats <- summary_stats_reads
+    # results$df_runstats <- summary_stats_run
+    # results$df_reads <- read_stats_df
+    # 
+    results <- DuplexDiscovererResults(
+      duplex_groups = gi_final,
+      chimeric_reads = gi_2arm_full,
+      reads_classes = read_stats_df,
+      chimeric_reads_stats = summary_stats_reads,
+      run_stats = summary_stats_run
+    )
+    
     message("finished")
     return(results)
 }

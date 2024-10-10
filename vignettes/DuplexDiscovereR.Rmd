@@ -183,16 +183,19 @@ result <- DuplexDiscovereR::runDuplexDiscoverer(
 
 The `result` is a list object containing several outputs with different dimensions. 
 ```{r observe_results1,eval=TRUE}
-names(result)
+result  
 ```
 `gi_clusters` is a `GInteractions` with the collapsed duplex groups
 ```{r observe_results2,eval=TRUE}
-head(result$gi_clusters, 2)
+
+gi_clusters <- dd_get_duplex_groups(result)
+head(gi_clusters, 2)
 ```
 `gi_reads` is a `r Biocpkg("GInteractions")` where each entry is an individual read.
 
 ```{r observe_results3,eval=TRUE}
-head(result$gi_reads, 2)
+gi_reads <- dd_get_chimeric_reads(result)
+head(gi_reads, 2)
 ```
 Dimensions of the `gi_reads` does not have 1:1 correspondence to the size of the input, 
 as usually not every element in the input data can be represented as the 2-arm split alignment.
@@ -201,14 +204,15 @@ the same length as input. It has added fields as DG `dg_id` or `read_type`, show
 chimeric read classification and filtering.
 
 ```{r observe_results4,eval=TRUE}
-table(result$df_reads$read_type)
+df_reads <- dd_get_reads_classes(result)
+table(df_reads$read_type)
 ```
 Among the 2-arm alignments from `gi_reads`, only un-ambigously aligned reads without 
-self-ovelaps which pass splice-jucntions and minimum junction lenghtfilters are 
+self-ovelaps which pass splice-junctions and minimum junction length filters are 
 subjected to clustering into DGs. To see the determined types of 2-arm 
 alignments, we can check 'junction_type' metadata field
 ```{r observe_results5,eval=TRUE}
-table(result$gi_reads$junction_type)
+table(gi_reads$junction_type)
 ```
 
 ## Writing output 
@@ -220,14 +224,14 @@ There are several options available for outputting the results for other uses.
 ### Output to table 
 One can convert object with duplex groups to dataframe -like object and write to file
 ```{r write_table, eval=TRUE}
-clusters_dt <- makeDfFromGi(result$gi_clusters)
+clusters_dt <- makeDfFromGi(gi_clusters)
 write.table(clusters_dt, file = tempfile(pattern = "dgs_out", fileext = ".tab"))
 ```
 ### Output to .sam file 
 Saving results to .sam file can be useful tool for downstream 
 visualization with interactive viewers as IGV
 ```{r write_sam, eval=TRUE, message = FALSE}
-writeGiToSAMfile(result$gi_clusters, file_out = tempfile(pattern = "dgs_out", fileext = ".sam"), genome = "hg38")
+writeGiToSAMfile(gi_clusters, file_out = tempfile(pattern = "dgs_out", fileext = ".sam"), genome = "hg38")
 ```
 
 ## Visualization 
@@ -253,7 +257,7 @@ anno_track <- Gviz::GeneRegionTrack(SampleGeneAnnoGR,
 )
 # construct DuplexTrack
 duplex_track <- DuplexTrack(
-    gi = result$gi_clusters,
+    gi = gi_clusters,
     gr_region = plotrange,
     labels.fontsize = 12,
     arcConstrain = 4,
@@ -328,7 +332,7 @@ from the example data which we clustered above.
 
 We will firt select clustered reads and split them into three groups
 ```{r comp1, eval=TRUE}
-clust_reads <- result$gi_reads
+clust_reads <- gi_reads
 clust_reads <- clust_reads[!is.na(clust_reads$dg_id)]
 
 # Create separate pseudo-sample objects for each group

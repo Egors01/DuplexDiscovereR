@@ -7,7 +7,7 @@ test_that("Load test data object run small clustering works", {
     expect_equal(length(collapse_duplex_groups(gi)), 3)
     expect_equal(length(collapse_duplex_groups(gi, return_unclustered = T)), 6)
 })
-test_that("Load STAR format and classification works", {
+test_that("Load STAR format, classification and deduplication works", {
     suppressMessages({
         set.seed(123)
         test_reads_star <- read.table(system.file("extdata", "test_SPLASH_Chimeric.out.junction", package = "DuplexDiscovereR"), header = T)
@@ -16,10 +16,19 @@ test_that("Load STAR format and classification works", {
         two_arm_N <- typetable[["2arm"]]
         mm_N <- typetable[["multi_map"]]
         ms_N <- typetable[["multi_split"]]
+        # deduplication
+        gi = makeGiFromDf(df_chim)
+        gi_collapse_res = collapseIdenticalReads(gi)
+        n_after = length(gi_collapse_res$gi_collapsed)
+        collapse_counts = table(gi_collapse_res$stats_df$n_reads_collapsed)
+        n_after_in_stats = sum(unname(collapse_counts) / as.integer(names(collapse_counts)))
+        
     })
     expect_equal(two_arm_N, "expected" = 2090, label = "mapping type classification works 1 ")
     expect_equal(mm_N, "expected" = 218, label = "mapping type classification works 2")
     expect_equal(ms_N, "expected" = 285, label = "mapping type classification works 3")
+    expect_equal(n_after, "expected" = 4908, label = "deduplication works")
+    expect_equal(n_after_in_stats, "expected" = 4908, label = "deduplication stats works")
 })
 
 test_that("Load bedpe format and crude clustering works", {

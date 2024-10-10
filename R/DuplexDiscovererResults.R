@@ -51,7 +51,6 @@ DuplexDiscovererResults <- function(duplex_groups,
       chimeric_reads_stats = chimeric_reads_stats,
       run_stats = run_stats)
 }
-
 #' Show Method for DuplexDiscovererResults Class
 #'
 #' This method provides a summary of the DuplexDiscovererResults object.
@@ -86,8 +85,8 @@ setMethod("show", "DuplexDiscovererResults", function(object) {
 #' @param object A `DuplexDiscovererResults` object.
 #' @return GInteractions object from the `duplex_groups` slot.
 #' @export
-setGeneric("duplex_groups", function(object) standardGeneric("duplex_groups"))
-setMethod("duplex_groups", "DuplexDiscovererResults", function(object) object@duplex_groups)
+setGeneric("dd_get_duplex_groups", function(object) standardGeneric("dd_get_duplex_groups"))
+setMethod("dd_get_duplex_groups", "DuplexDiscovererResults", function(object) object@duplex_groups)
 
 #' Accessor for `chimeric_reads` Slot
 #'
@@ -95,8 +94,8 @@ setMethod("duplex_groups", "DuplexDiscovererResults", function(object) object@du
 #' @param object A `DuplexDiscovererResults` object.
 #' @return GInteractions object from the `chimeric_reads` slot.
 #' @export
-setGeneric("chimeric_reads", function(object) standardGeneric("chimeric_reads"))
-setMethod("chimeric_reads", "DuplexDiscovererResults", function(object) object@chimeric_reads)
+setGeneric("dd_get_chimeric_reads", function(object) standardGeneric("dd_get_chimeric_reads"))
+setMethod("dd_get_chimeric_reads", "DuplexDiscovererResults", function(object) object@chimeric_reads)
 
 #' Accessor for `reads_classes` Slot
 #'
@@ -104,8 +103,8 @@ setMethod("chimeric_reads", "DuplexDiscovererResults", function(object) object@c
 #' @param object A `DuplexDiscovererResults` object.
 #' @return Tibble from the `reads_classes` slot.
 #' @export
-setGeneric("reads_classes", function(object) standardGeneric("reads_classes"))
-setMethod("reads_classes", "DuplexDiscovererResults", function(object) object@reads_classes)
+setGeneric("dd_get_reads_classes", function(object) standardGeneric("dd_get_reads_classes"))
+setMethod("dd_get_reads_classes", "DuplexDiscovererResults", function(object) object@reads_classes)
 
 #' Accessor for `chimeric_reads_stats` Slot
 #'
@@ -113,8 +112,8 @@ setMethod("reads_classes", "DuplexDiscovererResults", function(object) object@re
 #' @param object A `DuplexDiscovererResults` object.
 #' @return Tibble from the `chimeric_reads_stats` slot.
 #' @export
-setGeneric("chimeric_reads_stats", function(object) standardGeneric("chimeric_reads_stats"))
-setMethod("chimeric_reads_stats", "DuplexDiscovererResults", function(object) object@chimeric_reads_stats)
+setGeneric("dd_get_chimeric_reads_stats", function(object) standardGeneric("dd_get_chimeric_reads_stats"))
+setMethod("dd_get_chimeric_reads_stats", "DuplexDiscovererResults", function(object) object@chimeric_reads_stats)
 
 #' Accessor for `run_stats` Slot
 #'
@@ -122,8 +121,8 @@ setMethod("chimeric_reads_stats", "DuplexDiscovererResults", function(object) ob
 #' @param object A `DuplexDiscovererResults` object.
 #' @return Tibble from the `run_stats` slot.
 #' @export
-setGeneric("run_stats", function(object) standardGeneric("run_stats"))
-setMethod("run_stats", "DuplexDiscovererResults", function(object) object@run_stats)
+setGeneric("dd_get_run_stats", function(object) standardGeneric("dd_get_run_stats"))
+setMethod("dd_get_run_stats", "DuplexDiscovererResults", function(object) object@run_stats)
 
 
 
