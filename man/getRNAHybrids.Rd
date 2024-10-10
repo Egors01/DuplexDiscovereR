@@ -46,6 +46,6 @@ interaction <- GInteractions(anchor1, anchor2)
 # predict hybrids
 # In case ViennaRNA is installed
 \dontrun{
-getRNAHybrids(interaction, fasta_file)
+gi_with_hybrids <- getRNAHybrids(interaction, fasta_file)
 }
 }

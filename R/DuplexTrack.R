@@ -45,8 +45,6 @@
 #'   \item{arcConstrain}{Numeric. Minimum gap distance between arms of the
 #'    interaction to draw arcs}
 #' }
-#' @importFrom Gviz .handleComposite
-#' @importFrom GenomicRanges GRanges
 #' @export DuplexTrack
 #' @examples
 #' library(InteractionSet)

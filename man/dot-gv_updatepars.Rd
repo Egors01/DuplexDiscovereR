@@ -2,7 +2,7 @@
 % Please edit documentation in R/DuplexTrack.R
 \name{.gv_updatepars}
 \alias{.gv_updatepars}
-\title{Takes  of inherited Gviz graphical parameters}
+\title{Set Gviz graphical parameters}
 \usage{
 .gv_updatepars(x, class)
 }
@@ -10,6 +10,10 @@
 set default values inside class upon calling withn class constructor
 }
 \description{
-Takes  of inherited Gviz graphical parameters
+Set Gviz graphical parameters
+}
+\details{
+Non-exported from Gviz. Uses the same procedure as in AnnotationTrack
+to set defaults.
 }
 \keyword{internal}
