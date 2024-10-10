@@ -34,12 +34,13 @@
 #' @importFrom stats median p.adjust pbinom setNames
 #' @importFrom utils head setTxtProgressBar txtProgressBar write.table
 #' @importFrom purrr set_names
-#' @import Gviz
+#' @importFrom GenomicRanges GRanges
+#' @import Gviz 
 #' @import grid
 #' @importFrom Biostrings readBStringSet RNAStringSet letterFrequency
 #' @importFrom ggsci pal_igv
 #' @author Egor Semenchenko
-#' @seealso [`browseVignettes("DuplexDiscovereR")`
+#' @seealso [`browseVignettes("DuplexDiscovereR")`]
 "_PACKAGE"
 
 # Quiets R CMD CHECK NOTES from tidyverse syntax and setters
@@ -51,8 +52,11 @@ varlist = c("A","AB","A_ovl","A_span","B","B_ovl","B_span",
             "cigar_str","cmp","col11","col1read1","col1read2","col2","col5",
             "col7","col8","col9","dg_id","dg_id_raw","distance","duplex_id",
             "end1","end2","endA","endB","feature_id",
-            "full_in_plot","gap","gene_count.A","gene_count.B","gi_trans",
-            "grp","grpvar","has_A","has_B","has_p","hg38_seqlengths","idcol.1",
+            'findOverlapPairs','subsetByOverlaps',
+            'mcols<-','punion','pintersect','subjectHits','IRanges',
+            "full_in_plot","gap","gene_count.A","gene_count.B",
+            "gi_trans","grp","grpvar","has_A","has_B","has_p",
+             "hg38_seqlengths","idcol.1",
             "idcol.2","in_range","junction_type","lengapsA","lengapsB",
             "map_type","minus_p","multigap","multimap","nA","nB",
             "n_i","n_m","n_n","n_p","n_reads","n_reads_dg","n_s",
@@ -64,7 +68,7 @@ varlist = c("A","AB","A_ovl","A_span","B","B_ovl","B_span",
             "seqnames1","seqnames2","sign_p","splicejnc","start1","start2",
             "startA","startB","start_alnA","start_alnB","strand1","strand2",
             "strandA","strandB","strand_acceptorB","strand_donorA",
-            "tag","this_chim_aln_score",'seqlengths','.',
+            "tag","this_chim_aln_score",'seqlengths<-','.',
             "vert_id","vert_id1","vert_id2","weight","width1","width2",
             "x1","x2","x3")
 
