@@ -46,6 +46,7 @@
 #'    interaction to draw arcs}
 #' }
 #' @importFrom Gviz .handleComposite
+#' @importFrom GenomicRanges GRanges
 #' @export DuplexTrack
 #' @examples
 #' library(InteractionSet)

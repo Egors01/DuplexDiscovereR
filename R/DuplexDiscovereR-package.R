@@ -43,14 +43,16 @@
 #' @seealso [`browseVignettes("DuplexDiscovereR")`]
 "_PACKAGE"
 
-# Quiets R CMD CHECK NOTES from tidyverse syntax and setters
+# Quiets R CMD CHECK NOTES from tidyverse syntax and func from pkg imported with
+# @import 
 varlist = c("A","AB","A_ovl","A_span","B","B_ovl","B_span",
             "Pa","Pb","ambig","ambig.A","ambig.B","ambig_list.A","ambig_list.B",
             "arc_max_y","arm","artCIGAR","artCIGAR1","artCIGAR2","artSEQ",
             "bad_junction","brkpt_acceptorB","brkpt_donorA","chr_acceptorB",
             "chr_donorA","chromA","chromB","cigar_alnA","cigar_alnB",
-            "cigar_str","cmp","col11","col1read1","col1read2","col2","col5",
-            "col7","col8","col9","dg_id","dg_id_raw","distance","duplex_id",
+            "cigar_str",".handleComposite","cmp","col11","col1read1",
+            "col1read2","col2","col5", "col7","col8","col9","dg_id",
+            "dg_id_raw","distance","duplex_id",
             "end1","end2","endA","endB","feature_id",
             'findOverlapPairs','subsetByOverlaps',
             'mcols<-','punion','pintersect','subjectHits','IRanges',
@@ -72,4 +74,4 @@ varlist = c("A","AB","A_ovl","A_span","B","B_ovl","B_span",
             "vert_id","vert_id1","vert_id2","weight","width1","width2",
             "x1","x2","x3")
 
-if(getRversion() >= "4.1")  utils::globalVariables(varlist,add = FALSE)
+if(getRversion() >= "2.15.1")  utils::globalVariables(varlist,add = FALSE)

@@ -25,8 +25,8 @@ Description:
    Data from multiple experiments or replicates can be processed separately 
    and further compared to check the reproducibility of the experimental method.
 License:  GPL-3
-URL: https://github.com/Egors01/Duplex_Explorer
-BugReports: https://github.com/Egors01/Duplex_Explorer
+URL: https://github.com/Egors01/DuplexDiscovereR/
+BugReports: https://github.com/Egors01/DuplexDiscovereR/
 Encoding: UTF-8
 NeedsCompilation: no
 Version: 0.99.0
