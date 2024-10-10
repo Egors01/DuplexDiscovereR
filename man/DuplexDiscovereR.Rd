@@ -24,7 +24,7 @@ and further compared to check the reproducibility of the experimental method.
 DuplexDiscovereR
 }
 \seealso{
-\code{\link{browseVignettes("DuplexDiscovereR")}}
+\link{DuplexDiscovereR vignette}\code{browseVignettes("DuplexDiscovereR")}
 }
 \author{
 Egor Semenchenko

@@ -40,7 +40,7 @@
 #' @importFrom Biostrings readBStringSet RNAStringSet letterFrequency
 #' @importFrom ggsci pal_igv
 #' @author Egor Semenchenko
-#' @seealso [`browseVignettes("DuplexDiscovereR")`]
+#' @seealso [DuplexDiscovereR vignette](`browseVignettes("DuplexDiscovereR")`)
 "_PACKAGE"
 
 # Quiets R CMD CHECK NOTES from tidyverse syntax and func from pkg imported with

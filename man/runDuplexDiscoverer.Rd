@@ -102,7 +102,7 @@ Keeps 2-arm chimeric reads for downstream analysis
 library(DuplexDiscovereR)
 # load data
 data("RNADuplexesSampleData")
-res <- runDuplexDiscoverer(
+result <- runDuplexDiscoverer(
     data = RNADuplexesRawChimSTAR,
     junctions_gr = SampleSpliceJncGR,
     anno_gr = SampleGeneAnnoGR,
@@ -113,5 +113,13 @@ res <- runDuplexDiscoverer(
     lib_type = "SE",
     table_type = "STAR"
 )
-names(res)
+# see results object
+print(result)
+# duplex groups
+dd_get_duplex_groups(result)
+# individual chimeric reads
+dd_get_chimeric_reads(result)
+# counts of detected read tyoes  
+dd_get_chimeric_reads_stats(result)
+
 }
