@@ -13,17 +13,15 @@ runDuplexDiscoPreproc(
 )
 }
 \arguments{
-\item{data}{Either dataframe-like object: Chimeric.out.junction from STAR or
-.bepde - formatted or \code{GInteractions} object from \pkg{InteractionSet} package}
+\item{data}{Either dataframe-like object: \emph{Chimeric.out.junction} from \emph{STAR} or
+\emph{.bedpe} - formatted or \code{GInteractions} object from \pkg{InteractionSet} package}
 
 \item{table_type}{in \code{c("STAR","bedpe")} for Chimeric.out.Junction or generic input}
 
 \item{library_type}{\code{c("SE","PE")} for pair- or single- end input}
 
-\item{keep_metadata}{\itemize{
-\item TRUE or FALSE. do not extra fields like
-CIGAR strings and junction coordinates
-}}
+\item{keep_metadata}{\code{c(TRUE,FALSE)} Whether extra fields like
+CIGAR strings and junction coordinates should be kept}
 
 \item{return_gi}{if the return object should be \code{GInteractions}}
 }
@@ -32,11 +30,15 @@ tibble with new metadata fields OR GInteractions if \code{return_gi} is
 set to TRUE
 }
 \description{
-Imports dataframe with reads (.bedpe or Chimeric.out.junction ) or \code{GInteractions}
-object. Adds necessary metadata
-If the input is
+Imports dataframe with reads (\emph{.bedpe} or \emph{Chimeric.out.junction} ) or \code{GInteractions}
+object.
 Checks column names or tries to quess them if not provided.
-For STAR input, calculates length of the alignment and annotates alignments types
+Adds necessary annotation depending on the input type,
+For \emph{STAR} input, calculates length of the alignments
+and marks unique 2-arm alignments.
+For the \emph{.bedpe} or \code{GInteractions} input, all entries are already represented as reads
+with two different aligned parts (2-arm), so only check for unique readname
+is performed.
 }
 \details{
 If not existed, adds fields required for the downstream steps:

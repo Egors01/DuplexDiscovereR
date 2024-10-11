@@ -428,12 +428,16 @@ preproc_generic_gi <- function(gi_raw, keep_all_columns = TRUE) {
 
 #' Run pre-processing of chimeric reads input
 #' @description
-#' Imports dataframe with reads (.bedpe or Chimeric.out.junction ) or `GInteractions`
-#' object. Adds necessary metadata
-#' If the input is
+#' Imports dataframe with reads (*.bedpe* or *Chimeric.out.junction* ) or `GInteractions`
+#' object. 
 #' Checks column names or tries to quess them if not provided.
-#' For STAR input, calculates length of the alignment and annotates alignments types
-#'
+#' Adds necessary annotation depending on the input type, 
+#' For *STAR* input, calculates length of the alignments
+#' and marks unique 2-arm alignments.
+#' For the *.bedpe* or `GInteractions` input, all entries are already represented as reads
+#' with two different aligned parts (2-arm), so only check for unique readname 
+#' is performed.
+#' 
 #' @details
 #' If not existed, adds fields required for the downstream steps:
 #' 'readname', 'map_type', 'score', 'n_reads'.
@@ -445,10 +449,10 @@ preproc_generic_gi <- function(gi_raw, keep_all_columns = TRUE) {
 #'   I.e alignments for both arms are continuous, but with 'backward' chimeric
 #'   junction was wrongly introduced in the mapping}
 #' }
-#' @param data Either dataframe-like object: Chimeric.out.junction from STAR or
-#' .bepde - formatted or `GInteractions` object from \pkg{InteractionSet} package
-#' @param keep_metadata - TRUE or FALSE. do not extra fields like
-#'  CIGAR strings and junction coordinates
+#' @param data Either dataframe-like object: *Chimeric.out.junction* from *STAR* or
+#' *.bedpe* - formatted or `GInteractions` object from \pkg{InteractionSet} package
+#' @param keep_metadata  `c(TRUE,FALSE)` Whether extra fields like
+#'  CIGAR strings and junction coordinates should be kept
 #' @param table_type in \code{c("STAR","bedpe")} for Chimeric.out.Junction or generic input
 #' @param library_type \code{c("SE","PE")} for pair- or single- end input
 #' @param return_gi if the return object should be `GInteractions`

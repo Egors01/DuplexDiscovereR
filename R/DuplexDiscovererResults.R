@@ -144,7 +144,7 @@ setMethod("dd_get_chimeric_reads", "DuplexDiscovererResults", function(object) o
 #'
 #' Retrieves the value of the `reads_classes` slot in a `DuplexDiscovererResults` object.
 #' @param object A `DuplexDiscovererResults` object.
-#' @return Tibble from the `reads_classes` slot.
+#' @return `tibble` from the `reads_classes` slot.
 #' @docType methods
 #' @rdname dd_get_reads_classes
 #' @inherit dd_get_duplex_groups examples
@@ -159,7 +159,7 @@ setMethod("dd_get_reads_classes", "DuplexDiscovererResults", function(object) ob
 #'
 #' Retrieves the value of the `chimeric_reads_stats` slot in a `DuplexDiscovererResults` object.
 #' @param object A `DuplexDiscovererResults` object.
-#' @return Tibble from the `chimeric_reads_stats` slot.
+#' @return `tibble` from the `chimeric_reads_stats` slot.
 #' @docType methods
 #' @rdname dd_get_chimeric_reads_stats
 #' @inherit dd_get_duplex_groups examples
@@ -175,7 +175,7 @@ setMethod("dd_get_chimeric_reads_stats", "DuplexDiscovererResults", function(obj
 #'
 #' Retrieves the value of the `run_stats` slot in a `DuplexDiscovererResults` object.
 #' @param object A `DuplexDiscovererResults` object.
-#' @return Tibble from the `run_stats` slot.
+#' @return `tibble` from the `run_stats` slot.
 #' @docType methods
 #' @rdname dd_get_run_stats
 #' @inherit dd_get_duplex_groups examples

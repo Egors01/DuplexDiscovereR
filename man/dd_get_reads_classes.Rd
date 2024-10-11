@@ -14,7 +14,7 @@ dd_get_reads_classes(object)
 \item{object}{A \code{DuplexDiscovererResults} object.}
 }
 \value{
-Tibble from the \code{reads_classes} slot.
+\code{tibble} from the \code{reads_classes} slot.
 }
 \description{
 Retrieves the value of the \code{reads_classes} slot in a \code{DuplexDiscovererResults} object.

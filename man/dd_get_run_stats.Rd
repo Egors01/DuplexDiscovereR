@@ -14,7 +14,7 @@ dd_get_run_stats(object)
 \item{object}{A \code{DuplexDiscovererResults} object.}
 }
 \value{
-Tibble from the \code{run_stats} slot.
+\code{tibble} from the \code{run_stats} slot.
 }
 \description{
 Retrieves the value of the \code{run_stats} slot in a \code{DuplexDiscovererResults} object.

@@ -14,7 +14,7 @@ dd_get_chimeric_reads_stats(object)
 \item{object}{A \code{DuplexDiscovererResults} object.}
 }
 \value{
-Tibble from the \code{chimeric_reads_stats} slot.
+\code{tibble} from the \code{chimeric_reads_stats} slot.
 }
 \description{
 Retrieves the value of the \code{chimeric_reads_stats} slot in a \code{DuplexDiscovererResults} object.
