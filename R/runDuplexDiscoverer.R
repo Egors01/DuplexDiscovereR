@@ -43,14 +43,16 @@
 #' Increasing this from i.e 0 to 5 reduces clustering time and memory for the libraries with many overlapping reads.
 #' @param gap_collapse_similar  Parameter for read clustering (iterative step). Analogous to the max_gap, but applied \code{collapse_n_inter} times during the iterative merging step.
 #' Reduce this to 1 or 2 to lower RAM usage for clustering the library with many similar reads.
-#' @return a list with the   following keys
+#' @return a `DuplexDiscovererResults` with the following output
 #' \describe{
-#'   \item{gi_clusters}{ \pkg{GInteractions} object with called duplex groups }
-#'   \item{gi_reads}{ \pkg{GInteractions} object with non-collapsed reads, where 'dg_id' column attributes reads to the duplex groups}
-#'   \item{df_reads}{ \pkg{tibble} parallel to the the input dataframe, annotated with read categories and duplex groups    }
-#'   \item{df_stats}{ \pkg{tibble} dataframe with the infromation about the run}
+#'   \item{`duplex_groups`}{ `GInteractions` object with chimeric reads clustered duplex groups }
+#'   \item{`chimeric_reads`}{ `GInteractions` object with non-collapsed chimeric reads }
+#'   \item{`reads_classes`}{ `tbl_df` dataframe parallel to the the input dataframe, annotated with read categories and duplex groups }
+#'   \item{`chimeric_reads_stats`}{ `tbl_df` dataframe containing read type classification statistics }
+#'   \item{`run_stats`}{ `tbl_df` dataframe with the time and memory info about the run }
 #' }
 #' @export
+#' @seealso [DuplexDiscovereR::DuplexDiscovererResults()]
 #'
 #' @examples
 #'
@@ -76,7 +78,6 @@
 #' dd_get_chimeric_reads(result)
 #' # counts of detected read tyoes
 #' dd_get_chimeric_reads_stats(result)
-#'
 runDuplexDiscoverer <- function(
         data,
         table_type = "",

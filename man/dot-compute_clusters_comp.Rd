@@ -6,6 +6,10 @@
 \usage{
 .compute_clusters_comp(graph, index)
 }
+\value{
+sub-graph with clusters labelled with
+sample-wise unique ids (cluster_group)
+}
 \description{
 Helper function to call clustering on each component
 }

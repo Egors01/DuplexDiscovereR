@@ -63,12 +63,13 @@ Reduce this to 1 or 2 to lower RAM usage for clustering the library with many si
 Increasing this from i.e 0 to 5 reduces clustering time and memory for the libraries with many overlapping reads.}
 }
 \value{
-a list with the   following keys
+a \code{DuplexDiscovererResults} with the following output
 \describe{
-\item{gi_clusters}{ \pkg{GInteractions} object with called duplex groups }
-\item{gi_reads}{ \pkg{GInteractions} object with non-collapsed reads, where 'dg_id' column attributes reads to the duplex groups}
-\item{df_reads}{ \pkg{tibble} parallel to the the input dataframe, annotated with read categories and duplex groups    }
-\item{df_stats}{ \pkg{tibble} dataframe with the infromation about the run}
+\item{\code{duplex_groups}}{ \code{GInteractions} object with chimeric reads clustered duplex groups }
+\item{\code{chimeric_reads}}{ \code{GInteractions} object with non-collapsed chimeric reads }
+\item{\code{reads_classes}}{ \code{tbl_df} dataframe parallel to the the input dataframe, annotated with read categories and duplex groups }
+\item{\code{chimeric_reads_stats}}{ \code{tbl_df} dataframe containing read type classification statistics }
+\item{\code{run_stats}}{ \code{tbl_df} dataframe with the time and memory info about the run }
 }
 }
 \description{
@@ -119,7 +120,9 @@ print(result)
 dd_get_duplex_groups(result)
 # individual chimeric reads
 dd_get_chimeric_reads(result)
-# counts of detected read tyoes  
+# counts of detected read tyoes
 dd_get_chimeric_reads_stats(result)
-
+}
+\seealso{
+\code{\link[=DuplexDiscovererResults]{DuplexDiscovererResults()}}
 }

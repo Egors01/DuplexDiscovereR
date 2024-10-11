@@ -2,7 +2,7 @@
 % Please edit documentation in R/DuplexDiscovererResults.R
 \name{show,DuplexDiscovererResults-method}
 \alias{show,DuplexDiscovererResults-method}
-\title{Show Method for DuplexDiscovererResults Class}
+\title{Show Method for DuplexDiscovererResults class}
 \usage{
 \S4method{show}{DuplexDiscovererResults}(object)
 }
