@@ -35,7 +35,7 @@
 #' @importFrom utils head setTxtProgressBar txtProgressBar write.table
 #' @importFrom purrr set_names
 #' @importFrom GenomicRanges GRanges
-#' @import Gviz 
+#' @import Gviz
 #' @import grid
 #' @importFrom Biostrings readBStringSet RNAStringSet letterFrequency
 #' @importFrom ggsci pal_igv
@@ -44,34 +44,36 @@
 "_PACKAGE"
 
 # Quiets R CMD CHECK NOTES from tidyverse syntax and func from pkg imported with
-# @import 
-varlist = c("A","AB","A_ovl","A_span","B","B_ovl","B_span",
-            "Pa","Pb","ambig","ambig.A","ambig.B","ambig_list.A","ambig_list.B",
-            "arc_max_y","arm","artCIGAR","artCIGAR1","artCIGAR2","artSEQ",
-            "bad_junction","brkpt_acceptorB","brkpt_donorA","chr_acceptorB",
-            "chr_donorA","chromA","chromB","cigar_alnA","cigar_alnB",
-            "cigar_str",".handleComposite","cmp","col11","col1read1",
-            "col1read2","col2","col5", "col7","col8","col9","dg_id",
-            "dg_id_raw","distance","duplex_id",
-            "end1","end2","endA","endB","feature_id",
-            'findOverlapPairs','subsetByOverlaps',"GRanges",
-            'mcols<-','punion','pintersect','subjectHits','IRanges',
-            "full_in_plot","gap","gene_count.A","gene_count.B",
-            "gi_trans","grp","grpvar","has_A","has_B","has_p",
-             "hg38_seqlengths","idcol.1",
-            "idcol.2","in_range","junction_type","lengapsA","lengapsB",
-            "map_type","minus_p","multigap","multimap","nA","nB",
-            "n_i","n_m","n_n","n_p","n_reads","n_reads_dg","n_s",
-            "new_duplex_id","ngapsA","ngapsB","nr","num_chim_aln",
-            "old_duplex_id","overlap_w","p.adj","pair_arm",
-            "queryHits","rDens","ratio.A","ratio.B","read_id",
-            "read_name","read_type","readname","region_id","rname",
-            "seq_anchor1","seq_anchor2","seqlengths","seqlengths",
-            "seqnames1","seqnames2","sign_p","splicejnc","start1","start2",
-            "startA","startB","start_alnA","start_alnB","strand1","strand2",
-            "strandA","strandB","strand_acceptorB","strand_donorA",
-            "tag","this_chim_aln_score",'seqlengths<-','.',
-            "vert_id","vert_id1","vert_id2","weight","width1","width2",
-            "x1","x2","x3")
+# @import
+varlist <- c(
+    "A", "AB", "A_ovl", "A_span", "B", "B_ovl", "B_span",
+    "Pa", "Pb", "ambig", "ambig.A", "ambig.B", "ambig_list.A", "ambig_list.B",
+    "arc_max_y", "arm", "artCIGAR", "artCIGAR1", "artCIGAR2", "artSEQ",
+    "bad_junction", "brkpt_acceptorB", "brkpt_donorA", "chr_acceptorB",
+    "chr_donorA", "chromA", "chromB", "cigar_alnA", "cigar_alnB",
+    "cigar_str", ".handleComposite", "cmp", "col11", "col1read1",
+    "col1read2", "col2", "col5", "col7", "col8", "col9", "dg_id",
+    "dg_id_raw", "distance", "duplex_id",
+    "end1", "end2", "endA", "endB", "feature_id",
+    "findOverlapPairs", "subsetByOverlaps", "GRanges",
+    "mcols<-", "punion", "pintersect", "subjectHits", "IRanges",
+    "full_in_plot", "gap", "gene_count.A", "gene_count.B",
+    "gi_trans", "grp", "grpvar", "has_A", "has_B", "has_p",
+    "hg38_seqlengths", "idcol.1",
+    "idcol.2", "in_range", "junction_type", "lengapsA", "lengapsB",
+    "map_type", "minus_p", "multigap", "multimap", "nA", "nB",
+    "n_i", "n_m", "n_n", "n_p", "n_reads", "n_reads_dg", "n_s",
+    "new_duplex_id", "ngapsA", "ngapsB", "nr", "num_chim_aln",
+    "old_duplex_id", "overlap_w", "p.adj", "pair_arm",
+    "queryHits", "rDens", "ratio.A", "ratio.B", "read_id",
+    "read_name", "read_type", "readname", "region_id", "rname",
+    "seq_anchor1", "seq_anchor2", "seqlengths", "seqlengths",
+    "seqnames1", "seqnames2", "sign_p", "splicejnc", "start1", "start2",
+    "startA", "startB", "start_alnA", "start_alnB", "strand1", "strand2",
+    "strandA", "strandB", "strand_acceptorB", "strand_donorA",
+    "tag", "this_chim_aln_score", "seqlengths<-", ".",
+    "vert_id", "vert_id1", "vert_id2", "weight", "width1", "width2",
+    "x1", "x2", "x3"
+)
 
-if(getRversion() >= "2.15.1")  utils::globalVariables(varlist,add = FALSE)
+if (getRversion() >= "2.15.1") utils::globalVariables(varlist, add = FALSE)

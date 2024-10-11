@@ -17,12 +17,11 @@ test_that("Load STAR format, classification and deduplication works", {
         mm_N <- typetable[["multi_map"]]
         ms_N <- typetable[["multi_split"]]
         # deduplication
-        gi = makeGiFromDf(df_chim)
-        gi_collapse_res = collapseIdenticalReads(gi)
-        n_after = length(gi_collapse_res$gi_collapsed)
-        collapse_counts = table(gi_collapse_res$stats_df$n_reads_collapsed)
-        n_after_in_stats = sum(unname(collapse_counts) / as.integer(names(collapse_counts)))
-        
+        gi <- makeGiFromDf(df_chim)
+        gi_collapse_res <- collapseIdenticalReads(gi)
+        n_after <- length(gi_collapse_res$gi_collapsed)
+        collapse_counts <- table(gi_collapse_res$stats_df$n_reads_collapsed)
+        n_after_in_stats <- sum(unname(collapse_counts) / as.integer(names(collapse_counts)))
     })
     expect_equal(two_arm_N, "expected" = 2090, label = "mapping type classification works 1 ")
     expect_equal(mm_N, "expected" = 218, label = "mapping type classification works 2")

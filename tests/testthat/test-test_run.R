@@ -13,17 +13,17 @@ test_that("Executing all steps in single-call works", {
             lib_type = "SE",
             table_type = "STAR"
         )
-        
+
         gi_clusters <- dd_get_duplex_groups(res)
         gi_reads <- dd_get_chimeric_reads(res)
         df_reads <- dd_get_reads_classes(res)
-        
+
         n_reads_clustered <- sum(gi_clusters$n_reads)
         n_reads_clustered_stats <- df_reads %>%
             dplyr::filter(!is.na(dg_id)) %>%
             pull(n_reads) %>%
             sum()
-        
+
         n_reads_unclustered <- df_reads %>%
             dplyr::filter(is.na(dg_id)) %>%
             distinct(readname) %>%

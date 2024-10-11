@@ -465,11 +465,10 @@ preproc_generic_gi <- function(gi_raw, keep_all_columns = TRUE) {
 #'     table_type = "STAR",
 #'     keep_metadata = FALSE
 #' )
-runDuplexDiscoPreproc <- function(
-        data, table_type,
-        library_type = "SE",
-        keep_metadata = TRUE,
-        return_gi = FALSE) {
+runDuplexDiscoPreproc <- function(data, table_type,
+    library_type = "SE",
+    keep_metadata = TRUE,
+    return_gi = FALSE) {
     # Start with determining the input data type
     if (is(data, "GInteractions")) {
         # GI input

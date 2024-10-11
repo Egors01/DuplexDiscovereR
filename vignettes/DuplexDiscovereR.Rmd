@@ -183,11 +183,10 @@ result <- DuplexDiscovereR::runDuplexDiscoverer(
 
 The `result` is a list object containing several outputs with different dimensions. 
 ```{r observe_results1,eval=TRUE}
-result  
+result
 ```
 `gi_clusters` is a `GInteractions` with the collapsed duplex groups
 ```{r observe_results2,eval=TRUE}
-
 gi_clusters <- dd_get_duplex_groups(result)
 head(gi_clusters, 2)
 ```

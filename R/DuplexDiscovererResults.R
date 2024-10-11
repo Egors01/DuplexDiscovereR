@@ -1,13 +1,13 @@
 #' DuplexDiscovererResults
 #'
-#' A helper S4 class to store the results of the full 
+#' A helper S4 class to store the results of the full
 #' DuplexDiscovereR analysis.
 #' @details
 #' This class contains the following slots:
 #' - `duplex_groups`:  clustered duplex groups.
-#' - `chimeric_reads`: individual two-regions chimeric reads. 
-#'    Contains both clustered and unclustered reads. 
-#'    Clustered reads are linked to the duplex groups though 'dg_id' field in metadata 
+#' - `chimeric_reads`: individual two-regions chimeric reads.
+#'    Contains both clustered and unclustered reads.
+#'    Clustered reads are linked to the duplex groups though 'dg_id' field in metadata
 #' - `reads_classes`: dataframe parallel to the the input containing classification result and detected mapping type for each entry in the input
 #' - `chimeric_reads_stats`: dataframe containing read type classification statistics
 #' - `run_stats`: data frame containing statistics about the time and memory used by the pipeline
@@ -16,16 +16,16 @@
 #' @slot reads_classes `tibble` (tbl_df) with read classification data.
 #' @slot chimeric_reads_stats `tibble` (tbl_df)  read type statistics.
 #' @slot run_stats `tibble` (tbl_df)  runtime and memory info
-#' 
+#'
 
 setClass("DuplexDiscovererResults",
-         slots = c(
-           duplex_groups = "GInteractions",
-           chimeric_reads = "GInteractions",
-           reads_classes = "tbl_df",
-           chimeric_reads_stats = "tbl_df",
-           run_stats = "tbl_df"
-         )
+    slots = c(
+        duplex_groups = "GInteractions",
+        chimeric_reads = "GInteractions",
+        reads_classes = "tbl_df",
+        chimeric_reads_stats = "tbl_df",
+        run_stats = "tbl_df"
+    )
 )
 #' Constructor for DuplexDiscovererResults Class
 #'
@@ -39,17 +39,18 @@ setClass("DuplexDiscovererResults",
 #'
 #' @return A `DuplexDiscovererResults` object.
 #' @export
-DuplexDiscovererResults <- function(duplex_groups, 
-                                    chimeric_reads, 
-                                    reads_classes, 
-                                    chimeric_reads_stats, 
-                                    run_stats) {
-  new("DuplexDiscovererResults",
-      duplex_groups = duplex_groups,
-      chimeric_reads = chimeric_reads,
-      reads_classes = reads_classes,
-      chimeric_reads_stats = chimeric_reads_stats,
-      run_stats = run_stats)
+DuplexDiscovererResults <- function(duplex_groups,
+    chimeric_reads,
+    reads_classes,
+    chimeric_reads_stats,
+    run_stats) {
+    new("DuplexDiscovererResults",
+        duplex_groups = duplex_groups,
+        chimeric_reads = chimeric_reads,
+        reads_classes = reads_classes,
+        chimeric_reads_stats = chimeric_reads_stats,
+        run_stats = run_stats
+    )
 }
 #' Show Method for DuplexDiscovererResults Class
 #'
@@ -61,22 +62,21 @@ DuplexDiscovererResults <- function(duplex_groups,
 #' @return None. Prints a formatted summary.
 #' @export
 setMethod("show", "DuplexDiscovererResults", function(object) {
-  
-  df  = object@chimeric_reads_stats
-  sname = df$sample_name[1]
-  df$sample_name = NULL
-  transposed <- as.data.frame(t(df))
-  transposed$feature = rownames(transposed)
-  colnames(transposed) = c("count",'feature')
-  transposed$count = round(transposed$count,2)
-  transposed = transposed[,c('feature',"count")] 
-  
-  # Pretty print the transposed tibble
-  message("DuplexDiscovereR Results")
-  message(paste0("Sample name: ",sname))
-  message("Chimeric reads statistics:")
-  print(transposed,row.names = FALSE)
-  message("Use class accessors to retrieve output. I.e duplex_groups(resultsObject) ")
+    df <- object@chimeric_reads_stats
+    sname <- df$sample_name[1]
+    df$sample_name <- NULL
+    transposed <- as.data.frame(t(df))
+    transposed$feature <- rownames(transposed)
+    colnames(transposed) <- c("count", "feature")
+    transposed$count <- round(transposed$count, 2)
+    transposed <- transposed[, c("feature", "count")]
+
+    # Pretty print the transposed tibble
+    message("DuplexDiscovereR Results")
+    message(paste0("Sample name: ", sname))
+    message("Chimeric reads statistics:")
+    print(transposed, row.names = FALSE)
+    message("Use class accessors to retrieve output. I.e duplex_groups(resultsObject) ")
 })
 
 #' Accessor for `duplex_groups` Slot
@@ -123,6 +123,3 @@ setMethod("dd_get_chimeric_reads_stats", "DuplexDiscovererResults", function(obj
 #' @export
 setGeneric("dd_get_run_stats", function(object) standardGeneric("dd_get_run_stats"))
 setMethod("dd_get_run_stats", "DuplexDiscovererResults", function(object) object@run_stats)
-
-
-

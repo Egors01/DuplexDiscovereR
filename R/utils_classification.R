@@ -37,9 +37,8 @@
 #' )
 #' table(gi$splicejnc)
 #' table(gi$junction_type)
-classifyTwoArmChimeras <- function(
-        gi, min_junction_len = 4,
-        junctions_gr, max_sj_shift = 4) {
+classifyTwoArmChimeras <- function(gi, min_junction_len = 4,
+    junctions_gr, max_sj_shift = 4) {
     gi <- getChimericJunctionTypes(gi, normal_gap_threshold = min_junction_len)
     gi <- getSpliceJunctionChimeras(gi, sj_gr = junctions_gr, sj_tolerance = max_sj_shift)
 

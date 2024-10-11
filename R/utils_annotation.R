@@ -21,9 +21,10 @@
 #' @examples
 #' data("RNADuplexesSampleData")
 #' annotateGI(gi = RNADuplexSampleDGs, anno_gr = SampleGeneAnnoGR)
-annotateGI <- function(gi, anno_gr,
-    keys = c("gene_name", "gene_type", "gene_id"),
-    save_ambig = TRUE) {
+annotateGI <- function(
+        gi, anno_gr,
+        keys = c("gene_name", "gene_type", "gene_id"),
+        save_ambig = TRUE) {
     orininal_columns <- colnames(mcols(gi))
 
     anno_gr <- anno_gr[, keys]

@@ -74,24 +74,25 @@
 #' dd_get_duplex_groups(result)
 #' # individual chimeric reads
 #' dd_get_chimeric_reads(result)
-#' # counts of detected read tyoes  
+#' # counts of detected read tyoes
 #' dd_get_chimeric_reads_stats(result)
-#' 
-runDuplexDiscoverer <- function(data,
-    table_type = "",
-    junctions_gr = NULL,
-    anno_gr = NULL,
-    fafile = NULL,
-    df_counts = NULL,
-    sample_name = "sample",
-    lib_type = "SE",
-    min_junction_len = 5,
-    max_gap = 50,
-    min_arm_ratio = 0.1,
-    min_overlap = 10,
-    max_sj_shift = 10,
-    gap_collapse_similar = 3,
-    collapse_n_inter = 5) {
+#'
+runDuplexDiscoverer <- function(
+        data,
+        table_type = "",
+        junctions_gr = NULL,
+        anno_gr = NULL,
+        fafile = NULL,
+        df_counts = NULL,
+        sample_name = "sample",
+        lib_type = "SE",
+        min_junction_len = 5,
+        max_gap = 50,
+        min_arm_ratio = 0.1,
+        min_overlap = 10,
+        max_sj_shift = 10,
+        gap_collapse_similar = 3,
+        collapse_n_inter = 5) {
     memstart <- sum(data.frame(gc(reset = TRUE))[, 6])
     start_time <- Sys.time()
     # STEP 1 pre-process------
@@ -216,10 +217,10 @@ runDuplexDiscoverer <- function(data,
         ratio.B >= min_arm_ratio
     )
     message("--- finding duplex groups  ---")
-    
+
     # clustering will add one column "dg_id"
     gi_fast <- clusterDuplexGroups(gi, graphdf = graphdf_fast, decompose = FALSE)
-    
+
     # add dg_id for duplexes which are aggregated locally, but not clustered globally
     gi_fast <- .addDGidsForTmpDGs(gi_fast)
 
@@ -294,14 +295,14 @@ runDuplexDiscoverer <- function(data,
     medA <- median(widthA)
     meanB <- mean(widthB)
     medB <- median(widthB)
-    n_dgs = length(gi_final)
-    
+    n_dgs <- length(gi_final)
+
     typetable <- table(read_stats_df$read_type)
-    count_stats = (t(data.frame(unname(typetable))[,2]))  
-    colnames(count_stats) = names(typetable)
-    
-    
-    
+    count_stats <- (t(data.frame(unname(typetable))[, 2]))
+    colnames(count_stats) <- names(typetable)
+
+
+
     end_time <- Sys.time()
     time_diff <- round(as.numeric(difftime(end_time, start_time,
         units = "secs"
@@ -310,9 +311,9 @@ runDuplexDiscoverer <- function(data,
     memdiff <- round((memend - memstart) / 1024, 3)
     maxmem <- round((memend) / 1024, 3)
     mem_initial <- round((memstart) / 1024, 3)
-    
 
-    
+
+
     time1 <- Sys.time()
     if (!is.null(fafile)) {
         message("--- calculating hybridization ---")
@@ -322,39 +323,41 @@ runDuplexDiscoverer <- function(data,
     time_hyb <- round(as.numeric(difftime(time2, time1,
         units = "secs"
     )), 3)
-    
-    summary_stats_run = tibble(
-      "sample_name" = sample_name,
-      "exec_time" = time_diff,
-      "memstart" = memstart,
-      "memend" = memend,
-      "memdiff" = round((memend - memstart) / 1024, 3),
-      "maxmem" = round((memend) / 1024, 3),
-      "mem_initial" = round((memstart) / 1024, 3),
-      "time_preproc" = time_preproc,
-      "time_classify" = time_classify,
-      "time_clust" = time_clust,
-      "time_hybrids" = time_hyb,
-      "time_anno" = time_anno
-      )
-    
+
+    summary_stats_run <- tibble(
+        "sample_name" = sample_name,
+        "exec_time" = time_diff,
+        "memstart" = memstart,
+        "memend" = memend,
+        "memdiff" = round((memend - memstart) / 1024, 3),
+        "maxmem" = round((memend) / 1024, 3),
+        "mem_initial" = round((memstart) / 1024, 3),
+        "time_preproc" = time_preproc,
+        "time_classify" = time_classify,
+        "time_clust" = time_clust,
+        "time_hybrids" = time_hyb,
+        "time_anno" = time_anno
+    )
+
     summary_stats_reads <- tibble(
         "sample_name" = sample_name,
         "n_reads_input" = n_reads_initial,
         "n_dgs" = n_dgs
-        )
-    
-    summary_stats_lens = tibble(
-      "mean_len_A" = meanA,
-      "median_len_A" = medA,
-      "mean_len_B" = meanB,
-      "median_len_B" = medB
-        )
-    
-    summary_stats_reads = bind_cols(summary_stats_reads,
-                                    as_tibble(count_stats),
-                                    summary_stats_lens) 
-    
+    )
+
+    summary_stats_lens <- tibble(
+        "mean_len_A" = meanA,
+        "median_len_A" = medA,
+        "mean_len_B" = meanB,
+        "median_len_B" = medB
+    )
+
+    summary_stats_reads <- bind_cols(
+        summary_stats_reads,
+        as_tibble(count_stats),
+        summary_stats_lens
+    )
+
     gc(reset = TRUE)
     # results <- list()
     # results$gi_clusters <- gi_final
@@ -362,15 +365,15 @@ runDuplexDiscoverer <- function(data,
     # results$df_readstats <- summary_stats_reads
     # results$df_runstats <- summary_stats_run
     # results$df_reads <- read_stats_df
-    # 
+    #
     results <- DuplexDiscovererResults(
-      duplex_groups = gi_final,
-      chimeric_reads = gi_2arm_full,
-      reads_classes = read_stats_df,
-      chimeric_reads_stats = summary_stats_reads,
-      run_stats = summary_stats_run
+        duplex_groups = gi_final,
+        chimeric_reads = gi_2arm_full,
+        reads_classes = read_stats_df,
+        chimeric_reads_stats = summary_stats_reads,
+        run_stats = summary_stats_run
     )
-    
+
     message("finished")
     return(results)
 }
