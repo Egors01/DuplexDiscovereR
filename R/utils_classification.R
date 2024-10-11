@@ -37,11 +37,14 @@
 #' )
 #' table(gi$splicejnc)
 #' table(gi$junction_type)
-classifyTwoArmChimeras <- function(gi, min_junction_len = 4,
-    junctions_gr, max_sj_shift = 4) {
+classifyTwoArmChimeras <- function(
+        gi, min_junction_len = 4,
+        junctions_gr, max_sj_shift = 4) {
     gi <- getChimericJunctionTypes(gi, normal_gap_threshold = min_junction_len)
-    gi <- getSpliceJunctionChimeras(gi, sj_gr = junctions_gr, 
-                    sj_tolerance = max_sj_shift,sj_tolerance_strict = max_sj_shift)
+    gi <- getSpliceJunctionChimeras(gi,
+        sj_gr = junctions_gr,
+        sj_tolerance = max_sj_shift, sj_tolerance_strict = max_sj_shift
+    )
 
     return(gi)
 }
@@ -151,9 +154,9 @@ getChimericJunctionTypes <- function(gi, normal_gap_threshold = 10) {
 #' sites and corresponding chimreic junction coordinates to count chimeric
 #' junction as splice junction
 #' @param sj_tolerance_strict maximum shift between either donor and acceptor splice
-#' sites irrespective of the particular splice junction. If both chimeric junction start 
+#' sites irrespective of the particular splice junction. If both chimeric junction start
 #' and end correspond to donor or acceptor of any known junction, it is marked
-#' as splice junction. Used to catch novel combinations of known 3' and 5' sites 
+#' as splice junction. Used to catch novel combinations of known 3' and 5' sites
 #' @return gi object with added 'splicejnc' and  field
 #' Additionally 'splicejnc_donor' 'splicejnc_acceptor' fields are added
 #' @export
@@ -161,10 +164,10 @@ getChimericJunctionTypes <- function(gi, normal_gap_threshold = 10) {
 #' data("RNADuplexesSampleData")
 #' gi <- getSpliceJunctionChimerasStrict(RNADuplexSampleGI, SampleSpliceJncGR)
 #' table(gi$splicejnc)
-#' table(gi$splicejnc_acceptor,gi$splicejnc_donor)
-getSpliceJunctionChimeras <- function(gi, sj_gr, 
-                                            sj_tolerance = 20,
-                                       sj_tolerance_strict = 10) {
+#' table(gi$splicejnc_acceptor, gi$splicejnc_donor)
+getSpliceJunctionChimeras <- function(gi, sj_gr,
+    sj_tolerance = 20,
+    sj_tolerance_strict = 10) {
     message("\n--- searching for the exon-exon junctions  ---")
     gi$idx <- seq_len(length(gi))
     gi$gap <- pairdist(gi, type = "gap")
@@ -174,61 +177,69 @@ getSpliceJunctionChimeras <- function(gi, sj_gr,
         replace(is.na(.), 0) %>%
         mutate(slct = x1 & x2 & x3) %>%
         pull(slct)
-    
+
     intragi <- gi[slct]
     intergi <- gi[!slct]
-    
+
     gr_chim <- get_chimeric_junctions_onestrand(intragi)
     gr_chim$idx <- intragi$idx
-    
-    
+
+
     SjHits <- findOverlaps(gr_chim, sj_gr, type = "equal", maxgap = sj_tolerance)
     duplexes_coincide_sj <- unique(gr_chim[queryHits(SjHits)]$idx)
-    
+
     gi$splicejnc <- left_join(tibble("idx" = gi$idx),
-                              tibble("idx" = duplexes_coincide_sj, "splicejnc" = 1),
-                              by = "idx"
+        tibble("idx" = duplexes_coincide_sj, "splicejnc" = 1),
+        by = "idx"
     ) %>%
         replace(is.na(.), 0) %>%
         pull("splicejnc")
-    
-    # strict mode which uses only single coordinate 
-    tol = sj_tolerance_strict
-    sj_gr_left = GRanges(IRanges(start = start(sj_gr), end = start(sj_gr)+1),
-                         seqnames = seqnames(sj_gr), strand = strand(sj_gr)) + 
+
+    # strict mode which uses only single coordinate
+    tol <- sj_tolerance_strict
+    sj_gr_left <- GRanges(IRanges(start = start(sj_gr), end = start(sj_gr) + 1),
+        seqnames = seqnames(sj_gr), strand = strand(sj_gr)
+    ) +
         sj_tolerance_strict
-    sj_gr_right = GRanges(IRanges(start = end(sj_gr), end = end(sj_gr)+1),
-                          seqnames = seqnames(sj_gr), strand = strand(sj_gr)) + 
+    sj_gr_right <- GRanges(IRanges(start = end(sj_gr), end = end(sj_gr) + 1),
+        seqnames = seqnames(sj_gr), strand = strand(sj_gr)
+    ) +
         sj_tolerance_strict
-    
-    gr_chim_start = GRanges(IRanges(start = start(gr_chim), end = start(gr_chim)+1),
-                            seqnames = seqnames(gr_chim), strand = strand(gr_chim))
-    gr_chim_end = GRanges(IRanges(start = end(gr_chim), end = end(gr_chim)+1),
-                          seqnames = seqnames(gr_chim), strand = strand(gr_chim))
-    mcols(gr_chim_start) = mcols(gr_chim)
-    mcols(gr_chim_end) = mcols(gr_chim)
-    
-    gi$splicejnc_donor = .getStartEndOvl(gi,gr_chim_start,sj_gr_left)
-    gi$splicejnc_acceptor = .getStartEndOvl(gi,gr_chim_end,sj_gr_right)
-    gi$both  =  (as.integer(gi$splicejnc_donor &  gi$splicejnc_acceptor))
-    gi$splicejnc =  (as.integer(gi$both |  gi$splicejnc))
-    gi$both = NULL
-   
+
+    gr_chim_start <- GRanges(IRanges(start = start(gr_chim), end = start(gr_chim) + 1),
+        seqnames = seqnames(gr_chim), strand = strand(gr_chim)
+    )
+    gr_chim_end <- GRanges(IRanges(start = end(gr_chim), end = end(gr_chim) + 1),
+        seqnames = seqnames(gr_chim), strand = strand(gr_chim)
+    )
+    mcols(gr_chim_start) <- mcols(gr_chim)
+    mcols(gr_chim_end) <- mcols(gr_chim)
+
+    gi$splicejnc_donor <- .getStartEndOvl(gi, gr_chim_start, sj_gr_left)
+    gi$splicejnc_acceptor <- .getStartEndOvl(gi, gr_chim_end, sj_gr_right)
+    gi$both <- (as.integer(gi$splicejnc_donor & gi$splicejnc_acceptor))
+    gi$splicejnc <- (as.integer(gi$both | gi$splicejnc))
+    gi$both <- NULL
+
     nsj <- sum(gi$splicejnc)
-    
+
     gi$idx <- NULL
     gi$intra <- NULL
     gi$gap <- NULL
     gi$same_strand <- NULL
-    
-    
+
+
     message("Chimeras to test against splice junctions: ", length(gi))
-    message("SJ entries  : ", nsj, ": ", round(nsj / length(gi) * 100, 3),
-            " % of all")
-    message("SJ entries / single chr entries: ", nsj, "/", 
-            length(intragi), " : ", round(nsj / length(intragi) * 100, 2),
-            " % of single chromosome chimeras")
-    
+    message(
+        "SJ entries  : ", nsj, ": ", round(nsj / length(gi) * 100, 3),
+        " % of all"
+    )
+    message(
+        "SJ entries / single chr entries: ", nsj, "/",
+        length(intragi), " : ", round(nsj / length(intragi) * 100, 2),
+        " % of single chromosome chimeras"
+    )
+
     return(gi)
 }
 #' Helper func for calculating one-side overlap of SJ and junctions of gi
@@ -236,20 +247,18 @@ getSpliceJunctionChimeras <- function(gi, sj_gr,
 #' @param gi GInteractions object
 #' @param gr_chim_c GRanges object with chimeric junctions of gi
 #' @param gr_sj_c GRanges with chimeric junctions
-#' @param tol overlap tolerance 
+#' @param tol overlap tolerance
 #' @keywords internal
 #' @return Granges object with the left (A) region
-.getStartEndOvl <- function(gi,gr_chim_c,gr_sj_c,tol=3){
-    
-    SjHits <- findOverlaps(gr_chim_c, gr_sj_c, type = "any",minoverlap = 1)
+.getStartEndOvl <- function(gi, gr_chim_c, gr_sj_c, tol = 3) {
+    SjHits <- findOverlaps(gr_chim_c, gr_sj_c, type = "any", minoverlap = 1)
     duplexes_coincide_sj <- unique(gr_chim_c[queryHits(SjHits)]$idx)
-    
+
     splicejnc_vec <- left_join(tibble("idx" = gi$idx),
-                               tibble("idx" = duplexes_coincide_sj, "splicejnc" = 1),
-                               by = "idx"
+        tibble("idx" = duplexes_coincide_sj, "splicejnc" = 1),
+        by = "idx"
     ) %>%
         replace(is.na(.), 0) %>%
         pull("splicejnc")
     return(splicejnc_vec)
 }
-

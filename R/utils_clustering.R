@@ -167,6 +167,7 @@ collapseSimilarChimeras <- function(
     return(future_clusters %>% dplyr::select(duplex_id, dg_id))
 }
 
+
 #' Collapses identical interactions
 #' @description
 #' Two entries (reads) are considered identical if they share start, end, strand and score vales
@@ -209,33 +210,30 @@ collapseIdenticalReads <- function(gi) {
         message("Created 'read_id' column as the unique index in  the provided object")
     }
 
-    if ("cigar_alnA" %in% colnames(gi)) {
+    if ("cigar_alnA" %in% colnames(gi_dt)) {
         dt1 <- gi_dt %>%
             tidyr::unite("grp", c(
                 chromA, strandA, startA, endA,
                 chromB, strandB, startB, endB, cigar_alnA, cigar_alnB, score
             ), remove = FALSE) %>%
-            mutate(num = digest2int(grp))
+            mutate(num = (grp))
     } else {
         dt1 <- gi_dt %>%
             tidyr::unite("grp", c(
                 chromA, strandA, startA, endA,
                 chromB, strandB, startB, endB, score
             ), remove = FALSE) %>%
-            mutate(num = digest2int(grp))
+            mutate(num = (grp))
     }
 
     dt1$n_reads <- NULL
-
+    # to avoid groupby, use duplicated count +1
     readcts <- dt1 %>%
         dplyr::filter(duplicated(num)) %>%
         dplyr::select(num)
     readcts <- table(readcts$num)
-    readcts <- tibble("num" = as.double(names(readcts)), "n_reads" = as.vector(readcts) + 1)
+    readcts <- tibble("num" = (names(readcts)), "n_reads" = as.vector(readcts) + 1)
 
-    # dt_or = dt1
-
-    # dt1 = dt1 %>% dplyr::distinct(num,.keep_all = TRUE)
     dt1 <- left_join(dt1, readcts, by = "num") %>%
         mutate(n_reads = tidyr::replace_na(n_reads, 1))
 
@@ -248,9 +246,7 @@ collapseIdenticalReads <- function(gi) {
     read2duplex_map <- left_join(read2duplex_map, dt1[, c("num", "duplex_id", "n_reads")], by = "num") %>%
         dplyr::rename(n_reads_collapsed = n_reads) %>%
         dplyr::select(-c(num))
-    # dt1 =dt1 %>%
-    #   dplyr::select(-c(grp,num,read_id))
-    #
+
     dt1 <- dt1 %>%
         dplyr::select(c(
             chromA, strandA, startA, endA,
@@ -273,6 +269,7 @@ collapseIdenticalReads <- function(gi) {
     res$stats_df <- read2duplex_map
     return(res)
 }
+
 
 .getConnectivity <- function(gi, dt_conn) {
     edg <- nrow(dt_conn)

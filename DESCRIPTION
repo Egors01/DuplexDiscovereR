@@ -43,7 +43,6 @@ Imports:
     Gviz,
     Biostrings,
     rtracklayer,
-    digest,
     GenomicAlignments,
     GenomicRanges,
     ggsci,

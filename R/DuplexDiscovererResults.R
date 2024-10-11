@@ -11,26 +11,26 @@
 #' - `chimeric_reads_stats`: dataframe containing read type classification statistics
 #' - `run_stats`: data frame containing statistics about the time and memory used by the pipeline
 #' @details
-#' Each output type has a corresponding accessor: 
+#' Each output type has a corresponding accessor:
 #'  - [DuplexDiscovereR::dd_get_duplex_groups()]
 #'  - [DuplexDiscovereR::dd_get_chimeric_reads()]
 #'  - [DuplexDiscovereR::dd_get_reads_classes()]
 #'  - [DuplexDiscovereR::dd_get_chimeric_reads_stats()]
 #'  - [DuplexDiscovereR::dd_get_run_stats()]
-#' @seealso 
+#' @seealso
 #'  [DuplexDiscovereR::dd_get_duplex_groups()] ,
 #'  [DuplexDiscovereR::dd_get_chimeric_reads()] ,
 #'  [DuplexDiscovereR::dd_get_reads_classes()] ,
 #'  [DuplexDiscovereR::dd_get_chimeric_reads_stats()] ,
 #'  [DuplexDiscovereR::dd_get_run_stats()]
-#'  
+#'
 #' @slot duplex_groups \pkg{GInteractions} object with duplex groups
 #' @slot chimeric_reads \pkg{GInteractions} object with chimeric reads
 #' @slot reads_classes `tibble` (tbl_df) with read classification data.
 #' @slot chimeric_reads_stats `tibble` (tbl_df)  read type statistics.
 #' @slot run_stats `tibble` (tbl_df)  runtime and memory info
 #' @rdname DuplexDiscovererResults
-#' @return A `DuplexDiscovererResults` object. 
+#' @return A `DuplexDiscovererResults` object.
 setClass("DuplexDiscovererResults",
     slots = c(
         duplex_groups = "GInteractions",
@@ -99,20 +99,20 @@ setMethod("show", "DuplexDiscovererResults", function(object) {
 #' @rdname dd_get_duplex_groups
 #' @export
 #' @examples
-#' 
-#' # load example input 
+#'
+#' # load example input
 #' data("RNADuplexesSmallGI")
 #' data("RNADuplexesSampleData")
 #' # run whole pipeline
 #' result <- runDuplexDiscoverer(
-#' data = SampleSmallGI,
-#' junctions_gr = SampleSpliceJncGR,
-#' anno_gr = SampleGeneAnnoGR,
-#' sample_name = "run_example",
-#' lib_type = "SE",
-#' table_type = "STAR"
+#'     data = SampleSmallGI,
+#'     junctions_gr = SampleSpliceJncGR,
+#'     anno_gr = SampleGeneAnnoGR,
+#'     sample_name = "run_example",
+#'     lib_type = "SE",
+#'     table_type = "STAR"
 #' )
-#' # access results 
+#' # access results
 #' show(result)
 #' gi_clusters <- dd_get_duplex_groups(result)
 #' gi_reads <- dd_get_chimeric_reads(result)

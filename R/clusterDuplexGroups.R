@@ -172,7 +172,7 @@ clusterDuplexGroups <- function(gi, graphdf = NULL, maxgap = 40,
 #' Call clustering on each independent graph component.
 #' Used when decompose==TRUE
 #' @keywords internal
-#' @return sub-graph with clusters labelled with 
+#' @return sub-graph with clusters labelled with
 #' sample-wise unique ids (cluster_group)
 .compute_clusters_comp <- function(graph, index) {
     wt <- cluster_louvain(graph, weights = igraph::E(graph)$weight)
