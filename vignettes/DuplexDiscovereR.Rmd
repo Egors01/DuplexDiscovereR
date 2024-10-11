@@ -14,7 +14,9 @@ bibliography: '`r system.file("references.bib", package = "DuplexDiscovereR")`'
 output:
   BiocStyle::html_document:
     toc: true
-    toc_depth: 2
+    toc_depth: 5
+    toc_float: true
+    number_sections: true
 vignette: |
   %\VignetteIndexEntry{DuplexDiscovereR tutorial}
   %\VignetteEncoding{UTF-8} 
@@ -23,6 +25,7 @@ editor_options:
   markdown: 
     wrap: 72
 ---
+
 
 ```{r style, echo = FALSE, results = 'asis'}
 BiocStyle::markdown(css.files = c("custom.css"))

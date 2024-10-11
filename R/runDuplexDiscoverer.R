@@ -92,7 +92,7 @@ runDuplexDiscoverer <- function(
         min_arm_ratio = 0.1,
         min_overlap = 10,
         max_sj_shift = 10,
-        gap_collapse_similar = 3,
+        gap_collapse_similar = 2,
         collapse_n_inter = 5) {
     memstart <- sum(data.frame(gc(reset = TRUE))[, 6])
     start_time <- Sys.time()

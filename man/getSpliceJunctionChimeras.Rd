@@ -4,7 +4,12 @@
 \alias{getSpliceJunctionChimeras}
 \title{Identify chimeric junctions coinciding with the splice junctions}
 \usage{
-getSpliceJunctionChimeras(gi, sj_gr, sj_tolerance = 20)
+getSpliceJunctionChimeras(
+  gi,
+  sj_gr,
+  sj_tolerance = 20,
+  sj_tolerance_strict = 10
+)
 }
 \arguments{
 \item{gi}{\pkg{GInteractions} object}
@@ -14,9 +19,15 @@ getSpliceJunctionChimeras(gi, sj_gr, sj_tolerance = 20)
 \item{sj_tolerance}{maximum shift between either donor and acceptor splice
 sites and corresponding chimreic junction coordinates to count chimeric
 junction as splice junction}
+
+\item{sj_tolerance_strict}{maximum shift between either donor and acceptor splice
+sites irrespective of the particular splice junction. If both chimeric junction start
+and end correspond to donor or acceptor of any known junction, it is marked
+as splice junction. Used to catch novel combinations of known 3' and 5' sites}
 }
 \value{
-gi object with added 'splicejnc' field
+gi object with added 'splicejnc' and  field
+Additionally 'splicejnc_donor' 'splicejnc_acceptor' fields are added
 }
 \description{
 Marks interactions which starts/ends within specified shift from the
@@ -24,6 +35,7 @@ known splice junctions.
 }
 \examples{
 data("RNADuplexesSampleData")
-gi <- getSpliceJunctionChimeras(RNADuplexSampleGI, SampleSpliceJncGR)
+gi <- getSpliceJunctionChimerasStrict(RNADuplexSampleGI, SampleSpliceJncGR)
 table(gi$splicejnc)
+table(gi$splicejnc_acceptor,gi$splicejnc_donor)
 }

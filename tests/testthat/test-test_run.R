@@ -38,6 +38,6 @@ test_that("Executing all steps in single-call works", {
     })
     expect_equal(n_reads_clustered, n_reads_clustered_stats, label = "read numbers match between stats and returned GI")
     expect_equal(n_reads_clustered + n_reads_passed_to_clustering_nodg, n_reads_passed_to_clustering, label = "no reads lost before clustering")
-    expect_equal(n_reads_clustered, 300, label = "correct number of reads clustered")
-    expect_equal(n_clusters, 79, label = "correct number of clusters found")
+    expect_equal(n_reads_clustered, 244, label = "correct number of reads clustered")
+    expect_equal(n_clusters, 70, label = "correct number of clusters found")
 })

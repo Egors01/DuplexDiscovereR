@@ -20,12 +20,11 @@ Tries to guess the column names, if colnames are not provided,
 but the types are correct
 }
 \details{
-Expected column names for bedpe file
-\code{ c("chromA","startA",'endA',"chromB",
-                    'startB','endB','readname','flag','strandA','strandB')}
-Expected colnames for STAR Chimeric junction input
-For the 'old' chimeric detection scheme
-\code{ c("chr_donorA","brkpt_donorA",
+\itemize{
+\item Expected column names for bedpe file
+\code{c("chromA","startA",'endA',"chromB", 'startB','endB','readname','flag','strandA','strandB')}
+\item Expected colnames for STAR Chimeric junction input:
+\item For the 'old' chimeric detection scheme: \code{ c("chr_donorA","brkpt_donorA",
 "strand_donorA","chr_acceptorB",
 "brkpt_acceptorB","strand_acceptorB",
 "junction_type","repeat_left_lenA",
@@ -35,7 +34,7 @@ For the 'old' chimeric detection scheme
 "num_chim_aln","max_poss_aln_score",
 "non_chim_aln_score","this_chim_aln_score",
 "bestall_chim_aln_score") }
-For the 'new' chimeric detection scheme
+\item For the 'new' chimeric detection scheme
 \code{c("chr_donorA","brkpt_donorA",
                   "strand_donorA","chr_acceptorB",
                   "brkpt_acceptorB","strand_acceptorB",
@@ -43,5 +42,6 @@ For the 'new' chimeric detection scheme
                   "repeat_right_lenB","read_name",
                   "start_alnA","cigar_alnA",
                   "start_alnB","cigar_alnB")}
+}
 }
 \keyword{internal}
