@@ -115,7 +115,7 @@ supports the exportof the results to the .sam file.
 
 # Quick start
 
-## Key analysis steps
+##  Analysis steps
 
 Key steps of RNA duplex data analysis with `DuplexDiscovereR` can be run
 through the single function call. It is expected that user already
@@ -149,7 +149,7 @@ Full `DuplexDiscovereR` workflow consists of the following steps:
 -   Prediction of the base-pairing hybridization energies
 -   Computing p-values from testing the probability of random ligation
 
-## Key input arguments
+## Input arguments
 
 Required inputs for minimal run are the following:
 
@@ -344,7 +344,7 @@ central to the analysis of RNA-RNA interaction data.
 To compute the structure formed by two stretches of RNA
 `DuplexDiscoverer` uses *RNAduplex* algorithm from ViennaRNA. Note
 that ViennaRNA is distributed under its own licence. Please refer to
-[ViennaRNA's license](https://www.tbi.univie.ac.at/RNA/ViennaRNA/doc/html/license.html)
+[ViennaRNA's license](https://viennarna.readthedocs.io/en/latest/license.html)
 for details.
 
 If the *RNAduplex* is installed, all steps of the
