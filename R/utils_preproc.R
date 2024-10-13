@@ -472,10 +472,11 @@ preproc_generic_gi <- function(gi_raw, keep_all_columns = TRUE) {
 #'     table_type = "STAR",
 #'     keep_metadata = FALSE
 #' )
-runDuplexDiscoPreproc <- function(data, table_type,
-    library_type = "SE",
-    keep_metadata = TRUE,
-    return_gi = FALSE) {
+runDuplexDiscoPreproc <- function(
+        data, table_type,
+        library_type = "SE",
+        keep_metadata = TRUE,
+        return_gi = FALSE) {
     # Start with determining the input data type
     if (is(data, "GInteractions")) {
         # GI input
@@ -491,7 +492,7 @@ runDuplexDiscoPreproc <- function(data, table_type,
             # Table input preproc
             if (!(table_type %in% c("STAR", "bedpe"))) {
                 message("Wrong type of the table provided. Use 'STAR' for
-              Chimeric.out.Junction or \n 'bedpe' for generic bedpe format \n")
+                Chimeric.out.Junction or \n 'bedpe' for generic bedpe format \n")
             }
             df <- data
             df <- col_check_rename(df, table_type)

@@ -365,10 +365,10 @@ writeLines(c(">test_chrA", sequence), con = fasta_file)
 # Create the GInteraction object
 # Define start and end positions for the base-pairing regions
 regions <- data.frame(
-  start1 = c(1, 11, 21, 31, 41),
-  end1 = c(10, 20, 30, 40, 50),
-  start2 = c(91, 81, 71, 61, 51),
-  end2 = c(100, 90, 80, 70, 60)
+    start1 = c(1, 11, 21, 31, 41),
+    end1 = c(10, 20, 30, 40, 50),
+    start2 = c(91, 81, 71, 61, 51),
+    end2 = c(100, 90, 80, 70, 60)
 )
 # GRanges objects for the anchors
 anchor1 <- GRanges(seqnames = chrom, ranges = IRanges(start = regions$start1, end = regions$end1))

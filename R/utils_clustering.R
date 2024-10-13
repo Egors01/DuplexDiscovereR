@@ -73,11 +73,10 @@
 #'    with the the infromation about time and memory reaquired for the function
 #'    call}
 #' }
-collapseSimilarChimeras <- function(
-        gi, read_stats_df,
-        maxgap = 5,
-        niter = 2,
-        minoverlap = 10) {
+collapseSimilarChimeras <- function(gi, read_stats_df,
+    maxgap = 5,
+    niter = 2,
+    minoverlap = 10) {
     message("--- Collapsing the reads shifted by <= ", maxgap, " nt ---")
     gi_base <- gi
     gi_base$dg_id <- NULL

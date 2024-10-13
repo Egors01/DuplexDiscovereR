@@ -84,12 +84,13 @@ set_hg19_seqlengths <- function(gr) {
 #'     distance_chim_junction = 1e5,
 #'     genome = "hg38"
 #' )
-writeGiToSAMfile <- function(gi_coords, file_out,
-    distance_chim_junction = 10000,
-    read_name_column = "readname",
-    id_column = "dg_id",
-    genome = "",
-    sample_name = 'noname_sample') {
+writeGiToSAMfile <- function(
+        gi_coords, file_out,
+        distance_chim_junction = 10000,
+        read_name_column = "readname",
+        id_column = "dg_id",
+        genome = "",
+        sample_name = "noname_sample") {
     # read names from metadata or generate
     if (read_name_column %in% colnames(mcols(gi_coords))) {
         gi_coords$rname <- mcols(gi_coords)[, read_name_column]
@@ -222,13 +223,17 @@ writeGiToSAMfile <- function(gi_coords, file_out,
     header_chr_sizes <- c("@HD\tVN:1.4\tSO:coordinate")
     # sizes from genome fasta
     header_chr_sizes <- c(header_chr_sizes, paste("@SQ\tSN:", names(seql), "\tLN:", unname(seql), sep = ""))
-    rg_tags = paste0("@RG\tID:",sample_name,"\tSM:",sample_name,collapse = '')
+    rg_tags <- paste0("@RG\tID:", sample_name, "\tSM:", sample_name, collapse = "")
     header_chr_sizes <- c(header_chr_sizes, rg_tags)
-    pkg_ver = utils::packageVersion('DuplexDiscovereR')
-   
-    header_chr_sizes <- c(header_chr_sizes,
-            paste0( "@PG\tID:DuplexDiscovereR\tPN:DuplexDiscovereR\tVN:",
-                    pkg_ver,collapse = ''))
+    pkg_ver <- utils::packageVersion("DuplexDiscovereR")
+
+    header_chr_sizes <- c(
+        header_chr_sizes,
+        paste0("@PG\tID:DuplexDiscovereR\tPN:DuplexDiscovereR\tVN:",
+            pkg_ver,
+            collapse = ""
+        )
+    )
 
     tibble_read1$seq_anchor1 <- unlist(tibble_read1$seq_anchor1)
     tibble_read2$seq_anchor2 <- unlist(tibble_read2$seq_anchor2)

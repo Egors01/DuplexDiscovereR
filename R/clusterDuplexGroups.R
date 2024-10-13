@@ -45,16 +45,17 @@
 #' gi <- clusterDuplexGroups(gi)
 #' # check dg_ids
 #' table(is.na(gi$dg_id))
-clusterDuplexGroups <- function(gi, graphdf = NULL, maxgap = 40,
-    minoverlap = 10,
-    id_column = "duplex_id",
-    weight_column = "weight",
-    fast_greedy = FALSE,
-    decompose = FALSE,
-    id_columns_grapdf = paste(id_column, c(1, 2), sep = "."),
-    min_arm_ratio = 0.3,
-    dump_graph = FALSE,
-    dump_path = "") {
+clusterDuplexGroups <- function(
+        gi, graphdf = NULL, maxgap = 40,
+        minoverlap = 10,
+        id_column = "duplex_id",
+        weight_column = "weight",
+        fast_greedy = FALSE,
+        decompose = FALSE,
+        id_columns_grapdf = paste(id_column, c(1, 2), sep = "."),
+        min_arm_ratio = 0.3,
+        dump_graph = FALSE,
+        dump_path = "") {
     gi$dg_id <- NULL
 
     if (is.null(graphdf)) {

@@ -159,11 +159,10 @@ setMethod("initialize", "DuplexTrack", function(.Object, ...) {
     return(.Object)
 })
 
-DuplexTrack <- function(
-        gi, start = NULL, end = NULL, gr_region = NULL,
-        group, id, strand, chromosome, fill = NULL, fill.column = "",
-        genome, stacking = "squish", name = "DuplexTrack", selectFun, importFunction,
-        stream = FALSE, ...) {
+DuplexTrack <- function(gi, start = NULL, end = NULL, gr_region = NULL,
+    group, id, strand, chromosome, fill = NULL, fill.column = "",
+    genome, stacking = "squish", name = "DuplexTrack", selectFun, importFunction,
+    stream = FALSE, ...) {
     message("constructor")
     ## Some defaults
     if (is.null(gr_region)) {
@@ -234,7 +233,7 @@ DuplexTrack <- function(
     if (missing(chromosome) || is.null(chromosome)) {
         chromosome <- if (length(range) > 0) .chrName(as.character(seqnames(range)[1])) else "chrNA"
     }
-    ## And finally the object instantiation, we have to distinguish between 
+    ## And finally the object instantiation, we have to distinguish between
     # DetailsAnnotationTracks and normal ones
     genome <- rtracklayer::genome(range)
     return(new("DuplexTrack",
