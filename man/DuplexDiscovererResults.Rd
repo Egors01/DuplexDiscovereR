@@ -68,19 +68,19 @@ Each output type has a corresponding accessor:
 
 \examples{
 
-# load example input 
+# load example input
 data("RNADuplexesSmallGI")
 data("RNADuplexesSampleData")
 # run whole pipeline
 result <- runDuplexDiscoverer(
-data = SampleSmallGI,
-junctions_gr = SampleSpliceJncGR,
-anno_gr = SampleGeneAnnoGR,
-sample_name = "run_example",
-lib_type = "SE",
-table_type = "STAR"
+    data = SampleSmallGI,
+    junctions_gr = SampleSpliceJncGR,
+    anno_gr = SampleGeneAnnoGR,
+    sample_name = "run_example",
+    lib_type = "SE",
+    table_type = "STAR"
 )
-# access results 
+# access results
 show(result)
 gi_clusters <- dd_get_duplex_groups(result)
 gi_reads <- dd_get_chimeric_reads(result)

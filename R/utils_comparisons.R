@@ -86,13 +86,6 @@ compareMultipleInteractions <- function(gi_samples_list,
             "duplex_id" = seq_len(length(gi_all))
         )
 
-        # message("DEBUG INTER:", length(gi_all))
-        # gi_all_inter = clusterDuplexGroups(gi = gi_all,
-        #                     maxgap =maxgap, minoverlap =  minoverlap,
-        #                     min_arm_ratio = min_ratio)
-        # gi_all_inter = collapse_duplex_groups(gi_all_inter,
-        #                                       return_unclustered = TRUE)
-
         gi_all_inter <- collapseSimilarChimeras(
             gi = gi_all, niter = niter, minoverlap = minoverlap,
             maxgap = maxgap, read_stats_df = statdf
@@ -129,15 +122,6 @@ compareMultipleInteractions <- function(gi_samples_list,
             maxgap = 100
         )
 
-        # weak_overlaps_n <- nrow(ovldt %>%
-        #     dplyr::filter(!(ratio.A >= min_ratio & ratio.B >= min_ratio)))
-
-        # message("Weak overlaps : ", weak_overlaps_n)
-        # message("n_overlaps b : ",nrow(ovldt) )
-        # ovldt <- ovldt %>%
-        #     dplyr::filter(ratio.A >= min_ratio & ratio.B >= min_ratio)
-
-        # message("n_overlaps f : ",nrow(ovldt) )
         if (nrow(ovldt) == 0) {
             message("no overlap")
             next
@@ -155,7 +139,6 @@ computeGIPairOverlaps <- function(gi1, gi2, minoverlap = 10,
     maxgap = 10) {
     # this is to unify levels
     # otherwise A-B B-A matches would be messed between query an dsubject
-
     mcols(gi1) <- NULL
     mcols(gi2) <- NULL
     runi <- unify_gi_levels(gi1, gi2)

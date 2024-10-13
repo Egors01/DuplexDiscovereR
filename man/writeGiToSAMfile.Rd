@@ -10,7 +10,8 @@ writeGiToSAMfile(
   distance_chim_junction = 10000,
   read_name_column = "readname",
   id_column = "dg_id",
-  genome = ""
+  genome = "",
+  sample_name = "noname_sample"
 )
 }
 \arguments{
@@ -35,6 +36,8 @@ For convenience, hg38 and hg19 chromosome lengths will be assigned
 automatically.
 If the value is not in c('hg38','hg19'), seqlengths will be looked for be in
 attribute in seqlengths() of regions(gi_coords)}
+
+\item{sample_name}{name to use in RG SAM tag in header}
 }
 \value{
 no object is returned

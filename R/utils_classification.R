@@ -162,7 +162,7 @@ getChimericJunctionTypes <- function(gi, normal_gap_threshold = 10) {
 #' @export
 #' @examples
 #' data("RNADuplexesSampleData")
-#' gi <- getSpliceJunctionChimerasStrict(RNADuplexSampleGI, SampleSpliceJncGR)
+#' gi <- getSpliceJunctionChimeras(RNADuplexSampleGI, SampleSpliceJncGR)
 #' table(gi$splicejnc)
 #' table(gi$splicejnc_acceptor, gi$splicejnc_donor)
 getSpliceJunctionChimeras <- function(gi, sj_gr,

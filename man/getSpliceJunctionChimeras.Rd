@@ -35,7 +35,7 @@ known splice junctions.
 }
 \examples{
 data("RNADuplexesSampleData")
-gi <- getSpliceJunctionChimerasStrict(RNADuplexSampleGI, SampleSpliceJncGR)
+gi <- getSpliceJunctionChimeras(RNADuplexSampleGI, SampleSpliceJncGR)
 table(gi$splicejnc)
-table(gi$splicejnc_acceptor,gi$splicejnc_donor)
+table(gi$splicejnc_acceptor, gi$splicejnc_donor)
 }

@@ -64,6 +64,7 @@ set_hg19_seqlengths <- function(gr) {
 #' If the value is not in c('hg38','hg19'), seqlengths will be looked for be in
 #' attribute in seqlengths() of regions(gi_coords)
 #' @param file_out path to write output file
+#' @param sample_name  name to use in RG SAM tag in header
 #' @returns no object is returned
 #' @export
 #' @examples
@@ -87,7 +88,8 @@ writeGiToSAMfile <- function(gi_coords, file_out,
     distance_chim_junction = 10000,
     read_name_column = "readname",
     id_column = "dg_id",
-    genome = "") {
+    genome = "",
+    sample_name = 'noname_sample') {
     # read names from metadata or generate
     if (read_name_column %in% colnames(mcols(gi_coords))) {
         gi_coords$rname <- mcols(gi_coords)[, read_name_column]
@@ -173,8 +175,6 @@ writeGiToSAMfile <- function(gi_coords, file_out,
         cis_inter_tibble <- tibble()
     }
 
-
-    ###
     message("Processing double-line sam records")
     trans_inter <- temp_gi_coords[is.na(partner1_dist)]
     trans_inter <- c(trans_inter, cis_inter_large_dist)
@@ -200,8 +200,7 @@ writeGiToSAMfile <- function(gi_coords, file_out,
         sep = "\t"
     )
 
-    # as_tibble(trans_inter) %>% dplyr::select(duplex_id) %>% dplyr::summarise()
-    # first I should have first pair of gi_coords
+    #  pairs of gi_coords
     tibble_read1 <- as_tibble(trans_inter) %>% dplyr::select(
         col1read1, col2,
         seqnames1, start1, col5,
@@ -217,15 +216,19 @@ writeGiToSAMfile <- function(gi_coords, file_out,
         col11, tag
     )
 
-    ################################################################################
+    ####
     # starting creating SAM fata.frame
     # header
     header_chr_sizes <- c("@HD\tVN:1.4\tSO:coordinate")
     # sizes from genome fasta
-    # @SQ  SN:chr1  LN:248956422
     header_chr_sizes <- c(header_chr_sizes, paste("@SQ\tSN:", names(seql), "\tLN:", unname(seql), sep = ""))
-    header_chr_sizes <- c(header_chr_sizes, "@RG\tID:sample1\tSM:sample1")
-    header_chr_sizes <- c(header_chr_sizes, "@PG\tID:example_program\tPN:example_program\tVN:1.0")
+    rg_tags = paste0("@RG\tID:",sample_name,"\tSM:",sample_name,collapse = '')
+    header_chr_sizes <- c(header_chr_sizes, rg_tags)
+    pkg_ver = utils::packageVersion('DuplexDiscovereR')
+   
+    header_chr_sizes <- c(header_chr_sizes,
+            paste0( "@PG\tID:DuplexDiscovereR\tPN:DuplexDiscovereR\tVN:",
+                    pkg_ver,collapse = ''))
 
     tibble_read1$seq_anchor1 <- unlist(tibble_read1$seq_anchor1)
     tibble_read2$seq_anchor2 <- unlist(tibble_read2$seq_anchor2)
@@ -237,76 +240,3 @@ writeGiToSAMfile <- function(gi_coords, file_out,
 
     message("SAM is written into: ", file_out)
 }
-##########################################################################################
-#
-# library(BSgenome)
-# gi = RNADuplexSampleClustReads
-#
-#
-# #chr22:43,166,652-43,167,521
-# gr_region = GRanges(IRanges(start=17504924,end=17524195),seqnames='chr22',strand = '+')
-# sam_test = subsetByOverlaps(gi,gr_region)
-# sam_test[sam_test$]
-#
-# sam_test = gi
-# sam_cis = sam_both[sam_both@elementMetadata$cis==1]
-#
-# message("Load GENOME")
-# #reference GENOME is required
-# reference = "/data/meyer/egor/duplex_workflow/chr22.fa"
-# genome <- readDNAStringSet(reference)
-#
-# gi = res$gi_reads
-# writeGIToSAMfile(gi_coords=gi,genome,file_out = '../testsam.sam',distance_chim_junction = 1e5)
-#
-# output_sam_cis = paste("SamCis/",index,".sam",sep="")
-# distance_chim_junction = 1000
-#
-# #classifyTwoArmChimeras(sam_test,min_junction_len = 10,junctions_gr = SampleSpliceJncGR,max_sj_shift = 5)
-# library(TxDb.Hsapiens.UCSC.hg38.knownGene)
-# library(SGSeq)
-# txdb_v44 <- makeTxDbFromGFF("/fast/AG_Meyer/esemenc/SequenceData/hg38_transcriptome/gencode.v44.annotation.gtf")
-# saveDb(txdb_v44,"../txdb_v44.txdb")
-# tx_gtf<-AnnotationDbi::loadDb("../txdb_v44.txdb")
-# txf <- convertToTxFeatures(tx_gtf)
-# SampleSpliceJncGR<-GRanges(txf[txf@type=='J'])
-#
-# refjnc = subsetByOverlaps(SampleSpliceJncGR,gr_region+1e4)
-# refjnc2 = subsetByOverlaps(txf[txf@type=='J'],gr_region+1e4)
-# chimjnc = get_chimeric_junctions_onestrand(sam_test)
-#
-# chimjnc
-# refjnc
-#
-# findOverlaps(chimjnc,jnc,maxgap = 5,type='equal')
-#
-# subsetByOverlaps(SampleSpliceJncGR,get_chimeric_junctions_onestrand(sam_test),type ='equal',maxgap=10)
-
-
-# library(AnnotationHub)
-# library(Biostrings)
-#
-# # Create an AnnotationHub object
-# ah <- AnnotationHub()
-#
-# # Query AnnotationHub for the hg38 chromosome 22 sequence
-# query_result <- query(ah, c("Homo sapiens",'fa','2bit'))
-#
-# ah2 <- query(ah, c("fasta", "homo sapiens", "Ensembl",'primary_assembly'))
-# ah2[[ah2[1]$ah_id]]
-# s = readDNAStringSet('../../chr22.fa')
-# rtracklayer::export.2bit(con = '../../chr22.2bit', test_2bit_out)
-#
-#
-# # Find the specific resource for the chromosome 22 FASTA file
-# # Here we assume the first hit is the desired one for simplicity, but you might want to check `query_result` for the exact resource
-# chr22_resource <- query_result[[1]]
-#
-# # Download the resource
-# chr22_fasta <- chr22_resource$resource
-# ah[query_result[1]$ah_id]
-# # Read the FASTA file into a DNAStringSet object
-# chr22_dna <- readDNAStringSet(query_result[1]$ah_id)
-#
-# # Return the DNAStringSet object
-# return(chr22_dna)

@@ -301,8 +301,6 @@ runDuplexDiscoverer <- function(data,
     count_stats <- (t(data.frame(unname(typetable))[, 2]))
     colnames(count_stats) <- names(typetable)
 
-
-
     end_time <- Sys.time()
     time_diff <- round(as.numeric(difftime(end_time, start_time,
         units = "secs"
@@ -312,8 +310,7 @@ runDuplexDiscoverer <- function(data,
     maxmem <- round((memend) / 1024, 3)
     mem_initial <- round((memstart) / 1024, 3)
 
-
-
+    # STEP 5 Calling hybrids if fafile is provided----
     time1 <- Sys.time()
     if (!is.null(fafile)) {
         message("--- calculating hybridization ---")
@@ -323,7 +320,7 @@ runDuplexDiscoverer <- function(data,
     time_hyb <- round(as.numeric(difftime(time2, time1,
         units = "secs"
     )), 3)
-
+    # Finally, aggregate stats on exec memory and time
     summary_stats_run <- tibble(
         "sample_name" = sample_name,
         "exec_time" = time_diff,
@@ -338,7 +335,7 @@ runDuplexDiscoverer <- function(data,
         "time_hybrids" = time_hyb,
         "time_anno" = time_anno
     )
-
+    # Aggregate stats on duplexes and reads
     summary_stats_reads <- tibble(
         "sample_name" = sample_name,
         "n_reads_input" = n_reads_initial,
@@ -359,13 +356,7 @@ runDuplexDiscoverer <- function(data,
     )
 
     gc(reset = TRUE)
-    # results <- list()
-    # results$gi_clusters <- gi_final
-    # results$gi_reads <- gi_2arm_full
-    # results$df_readstats <- summary_stats_reads
-    # results$df_runstats <- summary_stats_run
-    # results$df_reads <- read_stats_df
-    #
+
     results <- DuplexDiscovererResults(
         duplex_groups = gi_final,
         chimeric_reads = gi_2arm_full,

@@ -95,9 +95,8 @@ clusterDuplexGroups <- function(gi, graphdf = NULL, maxgap = 40,
     igraph::edge.attributes(g)$weight <- round(graphdf$weight, 3)
     g <- igraph::simplify(g, edge.attr.comb = list(weight = "sum"), remove.multiple = TRUE)
 
-
+    # do clustering by subgraphs
     if (decompose) {
-        # do clustering by subgraphs
         # here we split into subgraphs and cluster each
         comps <- igraph::decompose(g)
         message("Whole-transciptome graph was split into ", length(comps), " components")

@@ -20,7 +20,6 @@
 #'
 #' @import rtracklayer
 #' @import InteractionSet
-#' @import digest
 #' @import rlang
 #' @importFrom scales rescale
 #' @importFrom GenomicAlignments cigarWidthAlongReferenceSpace

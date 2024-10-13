@@ -69,7 +69,7 @@ annotateGI <- function(
         dplyr::select(-c(region_id, feature_id, overlap_w))
 
     cnames <- c(str_c(colnames(dt), ".A"), str_c(colnames(dt), ".B"))
-    # dt = bind_cols(dt[gi@anchor1,],dt[gi@anchor2,],.name_repair = 'minimal')
+
     dt <- cbind(dt[gi@anchor1, ], dt[gi@anchor2, ])
     colnames(dt) <- cnames
     dt <- dt %>% dplyr::select(order(colnames(dt)))
@@ -220,7 +220,6 @@ calculateLigationPvalues <- function(gi, df_counts, id_col = "gene_id") {
 .checkRNAduplexinstalled <- function() {
     returncode <- system2("RNAduplex", args = c("-h"), stdout = NULL, stderr = NULL)
     if (returncode != 0) {
-        message("RNAduplex from ViennaRNA is not found.Unable to call hybrid predictions")
         return(1)
     } else {
         return(0)
@@ -228,12 +227,10 @@ calculateLigationPvalues <- function(gi, df_counts, id_col = "gene_id") {
 }
 
 .runRNAduplex <- function(RNA1, RNA2) {
-    cmd <- paste0('echo -e "', RNA1, "\n", RNA2, '\n" | RNAduplex')
-    result <- system(cmd, intern = TRUE)
-    predicted_structure <- result[1]
+    input <- paste(RNA1, RNA2, sep = "\n")
+    result <- system2("RNAduplex", input = input, stdout = TRUE)
     return(result)
 }
-
 
 .getDuplexString <- function(gi, fafile) {
     s <- Biostrings::readBStringSet(fafile)
@@ -247,7 +244,7 @@ calculateLigationPvalues <- function(gi, df_counts, id_col = "gene_id") {
 
 
 .getGCContent <- function(seqrna) {
-    # seqrna is RNAstringset based on the arm s[get_arm_a(gi)]
+    # seqrna is a RNAstringset based on the arm
     gc_freq <- Biostrings::letterFrequency(seqrna, c("G", "C"))
     gc_content <- rowSums(gc_freq) / width(seqrna) * 100
     return(gc_content)

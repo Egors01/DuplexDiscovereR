@@ -119,14 +119,6 @@ setClass(
         giobject = "StrictGInteractions",
         name = "character",
         gr_region = "GenomicRanges"
-        #      fill = "vector"
-        #      variables = "list",
-        #      chromosome = "character",
-        #      start = "numeric",
-        #      end = "numeric",
-        #      stacking = "character",
-        #      initval = "character",
-        #      range = "GenomicRanges",
     ),
     prototype = prototype(
         name = "DuplexTrack",
@@ -154,13 +146,11 @@ setMethod("initialize", "DuplexTrack", function(.Object, ...) {
     if (is.null(list(...)$range) && is.null(list(...)$genome) && is.null(list(...)$chromosome)) {
         return(.Object)
     }
-    ## the display parameter defaults
-
+    # display parameter defaults
     .Object <- .gv_updatepars(.Object, "DuplexTrack")
     range <- list(...)$range
     giobject <- list(...)$giobject
     .Object@giobject <- giobject
-    # .Object@fill <- list(...)$fill
     .Object@gr_region <- list(...)$gr_region
 
     .Object <- callNextMethod()
@@ -244,7 +234,8 @@ DuplexTrack <- function(
     if (missing(chromosome) || is.null(chromosome)) {
         chromosome <- if (length(range) > 0) .chrName(as.character(seqnames(range)[1])) else "chrNA"
     }
-    ## And finally the object instantiation, we have to distinguish between DetailsAnnotationTracks and normal ones
+    ## And finally the object instantiation, we have to distinguish between 
+    # DetailsAnnotationTracks and normal ones
     genome <- rtracklayer::genome(range)
     return(new("DuplexTrack",
         giobject = (gi), start, end,
@@ -363,7 +354,6 @@ setMethod("drawGD", signature("DuplexTrack"), function(GdObject, minBase, maxBas
     res <- Gviz:::.pxResolution(coord = "x")
     curVp <- Gviz:::vpLocation()
 
-    # Q: I do not think we weed this warning
     if (curVp$size["height"] / stacks < Gviz:::.dpOrDefault(GdObject, "min.height", 3)) {
         stop("Too many stacks to draw. Either increase the device size or limit the drawing to a smaller region.")
     }
@@ -417,7 +407,7 @@ setMethod("drawGD", signature("DuplexTrack"), function(GdObject, minBase, maxBas
     bartext <- barsAndLab$labels
     shape <- "box"
 
-    # Take from AnnotationTrack
+    # Taken from AnnotationTrack
     col.line <- Gviz:::.dpOrDefault(GdObject, "col.line")[1]
     border <- Gviz:::.dpOrDefault(GdObject, "col")[1]
     lwd <- Gviz:::.dpOrDefault(GdObject, "lwd", 2)
@@ -531,7 +521,6 @@ setMethod("drawGD", signature("DuplexTrack"), function(GdObject, minBase, maxBas
                 default.units = "native",
                 gp = gpar(lwd = lwd, lty = lty, col = color.arcs)
             )
-            ############################################
         }
         df_arc_y <- df_arc_y %>% mutate("grp" = str_split_i(grpvar, "\\.", 1))
     }
@@ -559,7 +548,7 @@ setMethod("drawGD", signature("DuplexTrack"), function(GdObject, minBase, maxBas
         yOffset.A <- tmp.A$y
         yOffset.B <- tmp.B$y
         if (label.cis.above == TRUE) {
-            # CIS LABELS
+            # cis labels
             if (nrow(df_arc_y) != 0) {
                 cislabels <- left_join(tmp_box2, df_arc_y, by = c("id" = "grpvar"))
                 translabels <- cislabels %>% dplyr::filter(is.na(arc_max_y))
@@ -574,7 +563,7 @@ setMethod("drawGD", signature("DuplexTrack"), function(GdObject, minBase, maxBas
             } else {
                 translabels <- tmp_box2
             }
-            # TRANS LABELS
+            # trans labels
             if (nrow(translabels) != 0) {
                 translabels$joined_lab <- str_c(translabels$txt1, "_", translabels$txt2)
                 grid.text(translabels$joined_lab,

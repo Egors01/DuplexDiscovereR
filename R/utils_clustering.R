@@ -131,12 +131,6 @@ collapseSimilarChimeras <- function(
             ) %>%
             dplyr::select(c(new_duplex_id, old_duplex_id, dg_id))
 
-        #
-        # read_stats_df_upd =  bind_cols(
-        #   stats_df %>%  dplyr::select(-duplex_id),
-        #   new_original_stats %>%  dplyr::select(-c(old_duplex_id,dg_id))) %>%
-        #   dplyr::rename(duplex_id=new_duplex_id)
-
         read_stats_df_upd <- left_join(stats_df, new_original_stats,
             by = c("duplex_id" = "old_duplex_id")
         ) %>%

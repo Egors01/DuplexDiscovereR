@@ -42,9 +42,10 @@
 getRNAHybrids <- function(gi, fafile) {
     # exit if not installed, warn about license if installed
     if (.checkRNAduplexinstalled() != 0) {
+        message("RNAduplex from ViennaRNA is not found. Unable to call hybrid predictions")
         return(gi)
     } else {
-        message("Calling  RNAduplex from ViennaRNA.\nNote that ViennaRNA is distributed under its own licence.\nPlease refer to the https://www.tbi.univie.ac.at/RNA/ViennaRNA/doc/html/license.html for details ")
+        message("Calling  RNAduplex from ViennaRNA.\nNote that ViennaRNA is distributed under its own licence.\nPlease visit https://viennarna.readthedocs.io/en/latest/license.html for details ")
     }
 
     sq <- Biostrings::readBStringSet(fafile)
