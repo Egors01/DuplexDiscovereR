@@ -77,8 +77,25 @@ collapse_duplex_groups <- function(
         }
     }
 
+    
+    # #DEBUG
+    # df_reads =  as_tibble(data.frame(gi))
+    # df_bad = df_reads %>% filter(!is.na(dg_id))  
+    # if (nrow(df_bad)==0){
+    #   place = 56
+    #   browser()
+    # }
+    # df_bad = df_bad  %>% group_by(dg_id) %>%
+    #   mutate(n_seqnames = length(unique(c(seqnames1,seqnames2)))) %>%
+    #   filter(n_seqnames>=3)
+    # if (nrow(df_bad)!=0){
+    #   place = 55
+    #   browser()
+    # }
+    # 
+    
     future_clusters <- as_tibble(data.frame(gi))
-
+    
     future_clusters <- future_clusters %>%
         dplyr::filter(!is.na(dg_id)) %>%
         group_by(dg_id) %>%
@@ -92,7 +109,7 @@ collapse_duplex_groups <- function(
             endB = max(end2),
             strandB = dplyr::first(strand2),
             n_reads = sum(n_reads),
-            score = mean(score)
+            score = mean(score,na.rm = TRUE)
         ) %>%
         relocate(dg_id, .after = n_reads)
 

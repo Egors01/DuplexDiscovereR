@@ -129,13 +129,13 @@ compareMultipleInteractions <- function(gi_samples_list,
             maxgap = 100
         )
 
-        # weak_overlaps_n <- nrow(ovldt %>%
-        #     dplyr::filter(!(ratio.A >= min_ratio & ratio.B >= min_ratio)))
+        weak_overlaps_n <- nrow(ovldt %>%
+             dplyr::filter(!(ratio.A >= min_ratio & ratio.B >= min_ratio)))
 
-        # message("Weak overlaps : ", weak_overlaps_n)
-        # message("n_overlaps b : ",nrow(ovldt) )
-        # ovldt <- ovldt %>%
-        #     dplyr::filter(ratio.A >= min_ratio & ratio.B >= min_ratio)
+         message("Weak overlaps : ", weak_overlaps_n)
+         message("n_overlaps b : ",nrow(ovldt) )
+         ovldt <- ovldt %>%
+             dplyr::filter(ratio.A >= min_ratio & ratio.B >= min_ratio)
 
         # message("n_overlaps f : ",nrow(ovldt) )
         if (nrow(ovldt) == 0) {

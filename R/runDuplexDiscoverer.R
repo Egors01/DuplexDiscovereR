@@ -91,7 +91,7 @@ runDuplexDiscoverer <- function(
         min_arm_ratio = 0.1,
         min_overlap = 10,
         max_sj_shift = 10,
-        gap_collapse_similar = 3,
+        gap_collapse_similar = 2,
         collapse_n_inter = 5) {
     memstart <- sum(data.frame(gc(reset = TRUE))[, 6])
     start_time <- Sys.time()
@@ -176,7 +176,12 @@ runDuplexDiscoverer <- function(
     # 3.1 prepare clustering: reduce complexity -----------
     message("--- collapsing identical reads ---")
     res_collapse_ident <- collapseIdenticalReads(gi_2arm)
-
+    #DEBUG
+    #1  6724    330184 chr1   chr7   1820921
+    #2  6724    330184 chr2   chrX   4888364
+    #3  6724    330184 chr2   chrX   6233530
+    #browser()
+    
     # 3.1a get results of collapse: get new gi object, update read stats
     gi <- res_collapse_ident$gi_collapsed
     read_stats_df <- left_join(read_stats_df,
@@ -199,7 +204,6 @@ runDuplexDiscoverer <- function(
         gi <- res$gi_updated
         read_stats_df <- res$stats_df
     }
-
     # 3.3 Clustering on the whole-genome -----
     message("--- calculating total read overlaps ---")
 
@@ -226,6 +230,10 @@ runDuplexDiscoverer <- function(
     message("--- finding duplex groups  ---")
     # clustering will add one column "dg_id"
     gi_fast <- clusterDuplexGroups(gi, graphdf = graphdf_fast, decompose = FALSE)
+    
+    # DEBUG
+    gi_fast_save = gi_fast
+    
     # add dg_id for duplexes which are aggregated locally, but not clustered globally
     gi_fast <- .addDGidsForTmpDGs(gi_fast)
 
@@ -235,11 +243,18 @@ runDuplexDiscoverer <- function(
         return_collapsed = TRUE,
         keep_meta = FALSE
     )
+
+    #DEBUG
+    read_stats_df_old = read_stats_df
+    
+    
     # update read stats
     read_stats_df <- left_join(read_stats_df, .DGIdToDuplexId(gi_fast),
         by = "duplex_id"
     )
-
+    
+    
+    
     dt_2arm <- left_join(tibble("read_id" = gi_2arm$read_id), read_stats_df,
         by = "read_id"
     ) %>%
@@ -258,6 +273,27 @@ runDuplexDiscoverer <- function(
     gi_2arm_full <- c(gi_2arm, big_gi[big_gi$keep == FALSE])
     gi_2arm_full$was_clustered <- ifelse(!is.na(gi_2arm_full$was_clustered), 1, 0)
 
+    
+    #DEBUG
+    df_reads =  as_tibble(data.frame(gi_2arm_full))
+    df_bad = df_reads %>% filter(!is.na(dg_id)) %>% group_by(dg_id) %>%
+      mutate(n_seqnames = length(unique(c(seqnames1,seqnames2)))) %>%
+      filter(n_seqnames>=3)
+    if (nrow(df_bad)!=0){
+      place = 2
+      browser()
+    }
+    df_reads =   as_tibble(data.frame(gi_2arm_full))
+    df_bad = df_reads %>% filter(!is.na(duplex_id)) %>% group_by(duplex_id) %>%
+      mutate(n_seqnames = length(unique(c(seqnames1,seqnames2)))) %>%
+      filter(n_seqnames>=3)
+    if (nrow(df_bad)!=0){
+      place = 8
+      browser()
+    }
+    
+    
+    
     time2 <- Sys.time()
     time_clust <- round(as.numeric(difftime(time2, time1,
         units = "secs"
@@ -342,6 +378,7 @@ runDuplexDiscoverer <- function(
 
     gc(reset = TRUE)
     results <- list()
+    results$input = data
     results$gi_clusters <- gi_final
     results$gi_reads <- gi_2arm_full
     results$df_runstats <- summary_stats_case

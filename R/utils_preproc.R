@@ -625,7 +625,7 @@ trimAroundJunction <- function(dt,
   if (!any(dt1$any1>1) & !any(dt1$any1==0)){
     message('type detected')
   }else{
-    message('some problem occured in detectin jucntion type.
+    message('some problem occured in detection of junction type.
             Check alignment lengths')
   }
   

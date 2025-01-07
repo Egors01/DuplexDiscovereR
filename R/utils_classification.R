@@ -184,7 +184,7 @@ getSpliceJunctionChimerasStrict <- function(gi, sj_gr,
   gr_chim$idx <- intragi$idx
   
   
-  SjHits <- findOverlaps(gr_chim, sj_gr, type = "equal", maxgap = sj_tolerance)
+  SjHits <- findOverlaps(gr_chim, sj_gr, type = "equal", maxgap = sj_tolerance,ignore.strand=TRUE)
   duplexes_coincide_sj <- unique(gr_chim[queryHits(SjHits)]$idx)
   
   gi$splicejnc <- left_join(tibble("idx" = gi$idx),
@@ -210,8 +210,8 @@ getSpliceJunctionChimerasStrict <- function(gi, sj_gr,
   mcols(gr_chim_start) = mcols(gr_chim)
   mcols(gr_chim_end) = mcols(gr_chim)
   
-  gi$splicejnc_donor = .getStartEndOvl(gi,gr_chim_start,sj_gr_left)
-  gi$splicejnc_acceptor = .getStartEndOvl(gi,gr_chim_end,sj_gr_right)
+  gi$splicejnc_donor = .getStartEndOvl(gi,gr_chim_start,sj_gr_left,ignore_strand=TRUE)
+  gi$splicejnc_acceptor = .getStartEndOvl(gi,gr_chim_end,sj_gr_right,ignore_strand=TRUE)
   gi$both  =  (as.integer(gi$splicejnc_donor &  gi$splicejnc_acceptor))
   gi$splicejnc =  (as.integer(gi$both |  gi$splicejnc))
   gi$both = NULL
@@ -256,9 +256,10 @@ getSpliceJunctionChimerasStrict <- function(gi, sj_gr,
   return(gi)
 }
 
-.getStartEndOvl <- function(gi,gr_chim_c,gr_sj_c,tol=3){
+.getStartEndOvl <- function(gi,gr_chim_c,gr_sj_c,tol=3,ignore_strand=FALSE){
   
-  SjHits <- findOverlaps(gr_chim_c, gr_sj_c, type = "any",minoverlap = 1)
+  SjHits <- findOverlaps(gr_chim_c, gr_sj_c, type = "any",minoverlap = 1,
+                         ignore.strand = ignore_strand)
   duplexes_coincide_sj <- unique(gr_chim_c[queryHits(SjHits)]$idx)
   
   splicejnc_vec <- left_join(tibble("idx" = gi$idx),
