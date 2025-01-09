@@ -78,22 +78,21 @@
 #' dd_get_chimeric_reads(result)
 #' # counts of detected read tyoes
 #' dd_get_chimeric_reads_stats(result)
-runDuplexDiscoverer <- function(
-        data,
-        table_type = "",
-        junctions_gr = NULL,
-        anno_gr = NULL,
-        fafile = NULL,
-        df_counts = NULL,
-        sample_name = "sample",
-        lib_type = "SE",
-        min_junction_len = 5,
-        max_gap = 50,
-        min_arm_ratio = 0.1,
-        min_overlap = 10,
-        max_sj_shift = 10,
-        gap_collapse_similar = 2,
-        collapse_n_inter = 5) {
+runDuplexDiscoverer <- function(data,
+    table_type = "",
+    junctions_gr = NULL,
+    anno_gr = NULL,
+    fafile = NULL,
+    df_counts = NULL,
+    sample_name = "sample",
+    lib_type = "SE",
+    min_junction_len = 5,
+    max_gap = 50,
+    min_arm_ratio = 0.1,
+    min_overlap = 10,
+    max_sj_shift = 10,
+    gap_collapse_similar = 2,
+    collapse_n_inter = 5) {
     memstart <- sum(data.frame(gc(reset = TRUE))[, 6])
     start_time <- Sys.time()
     # STEP 1 pre-process------

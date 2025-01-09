@@ -54,9 +54,10 @@
 #' collapse_duplex_groups(ginodup, return_collapsed = TRUE)
 #' # Return DGs, but drop duplicated returns n=2 DGs
 #' collapse_duplex_groups(ginodup, return_collapsed = FALSE)
-collapse_duplex_groups <- function(gi, return_unclustered = FALSE,
-    return_collapsed = TRUE,
-    keep_meta = TRUE) {
+collapse_duplex_groups <- function(
+        gi, return_unclustered = FALSE,
+        return_collapsed = TRUE,
+        keep_meta = TRUE) {
     # check n_reads field
     if (!is.null(gi$n_reads)) {
         gi$n_reads <- as_tibble(mcols(gi)["n_reads"]) %>%

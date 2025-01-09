@@ -37,8 +37,9 @@
 #' )
 #' table(gi$splicejnc)
 #' table(gi$junction_type)
-classifyTwoArmChimeras <- function(gi, min_junction_len = 4,
-    junctions_gr, max_sj_shift = 4) {
+classifyTwoArmChimeras <- function(
+        gi, min_junction_len = 4,
+        junctions_gr, max_sj_shift = 4) {
     gi <- getChimericJunctionTypes(gi, normal_gap_threshold = min_junction_len)
     gi <- getSpliceJunctionChimeras(gi,
         sj_gr = junctions_gr,
@@ -164,10 +165,9 @@ getChimericJunctionTypes <- function(gi, normal_gap_threshold = 10) {
 #' gi <- getSpliceJunctionChimeras(RNADuplexSampleGI, SampleSpliceJncGR)
 #' table(gi$splicejnc)
 #' table(gi$splicejnc_acceptor, gi$splicejnc_donor)
-getSpliceJunctionChimeras <- function(
-        gi, sj_gr,
-        sj_tolerance = 20,
-        sj_tolerance_strict = 10) {
+getSpliceJunctionChimeras <- function(gi, sj_gr,
+    sj_tolerance = 20,
+    sj_tolerance_strict = 10) {
     message("\n--- searching for the exon-exon junctions  ---")
     gi$idx <- seq_len(length(gi))
     gi$gap <- pairdist(gi, type = "gap")

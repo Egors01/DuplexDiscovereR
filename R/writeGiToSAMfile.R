@@ -84,13 +84,12 @@ set_hg19_seqlengths <- function(gr) {
 #'     distance_chim_junction = 1e5,
 #'     genome = "hg38"
 #' )
-writeGiToSAMfile <- function(
-        gi_coords, file_out,
-        distance_chim_junction = 10000,
-        read_name_column = "readname",
-        id_column = "dg_id",
-        genome = "",
-        sample_name = "noname_sample") {
+writeGiToSAMfile <- function(gi_coords, file_out,
+    distance_chim_junction = 10000,
+    read_name_column = "readname",
+    id_column = "dg_id",
+    genome = "",
+    sample_name = "noname_sample") {
     # read names from metadata or generate
     if (read_name_column %in% colnames(mcols(gi_coords))) {
         gi_coords$rname <- mcols(gi_coords)[, read_name_column]

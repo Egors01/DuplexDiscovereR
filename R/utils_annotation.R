@@ -21,9 +21,10 @@
 #' @examples
 #' data("RNADuplexesSampleData")
 #' annotateGI(gi = RNADuplexSampleDGs, anno_gr = SampleGeneAnnoGR)
-annotateGI <- function(gi, anno_gr,
-    keys = c("gene_name", "gene_type", "gene_id"),
-    save_ambig = TRUE) {
+annotateGI <- function(
+        gi, anno_gr,
+        keys = c("gene_name", "gene_type", "gene_id"),
+        save_ambig = TRUE) {
     orininal_columns <- colnames(mcols(gi))
 
     anno_gr <- anno_gr[, keys]
@@ -153,7 +154,52 @@ annotateGI <- function(gi, anno_gr,
     return(gi)
 }
 
-
+#' Calculate p-values and abundance fractions for RNA duplexes
+#'
+#' Calculates p-values by applying Fisher test to each gene/transcript pair
+#' Uses BH correction, outputs duplex abundance relative to the per - gene/transcript
+#' count, and counts of other RNA duplexes formed by either or none gene/transcript
+#' in this pair.
+#'
+#' @param gi `GInteraction` object annotated with gene/transcript names
+#' @param df_counts `data.frame` A two- column dataframe with gene/transcript
+#' counts to. The first column should match the 'gene_id' feature in anno_gr.
+#' The second column is the respective count.
+#' @param id_col the prefix for gene/transcript metadata id fields in input gi.
+#' Two fields of <id_col>.A and <id.col>.B are expected. Otherwise throws error.
+#' @return `GInteractions` object with new fields
+#' @export
+#' @details
+#'
+#' H0: RNA duplex not existing and reported due to the random ligation of fragments
+#' H1: RNA duplex is true and formed because of existing the RNA-RNA interaction
+#'
+#' The probability of random ligation is modeled as \(P(a, b)\)
+#' given by the following equation:
+#' The probability \eqn{P(a, b)} is defined as:
+#'
+#' \eqn{
+#' P(a, b) \propto
+#' \begin{cases}
+#'     2 \cdot P(a) \cdot P(b) & \textnormal{if } a:b \textnormal{ is observed and } a \neq b \\
+#'     P(a) \cdot P(b) & \textnormal{if } a:b \textnormal{ is observed and } a = b \\
+#'     0 & \textnormal{else}
+#' \end{cases}
+#' }
+#'
+#'
+#' where The probability (P(a)) (same as for P(b) ) is calculated as:
+#' \eqn{
+#' P(a) = \frac{\textnormal{N reads(a)}}{\textnormal{total N reads}}
+#' }
+#'
+#' p-value calculated by comparing observed duplex abundance to the expected
+#' as the are under the curve distribution to the right of the observed.
+#' P(a, b) is normalized to sum up to one.
+#' @examples
+#' data("RNADuplexesSampleData")
+#' gi <- calculateLigationPvalues(RNADuplexSampleDGs, df_counts = RNADuplexesGeneCounts)
+#' hist(gi$p.adj, breaks = 20)
 calculateLigationPvalues <- function(gi, df_counts, id_col = "gene_id") {
     df_counts <- df_counts %>% as.data.frame()
     df_all_cts <- as_tibble(data.frame("RNA" = unname(df_counts[1]), "n" = unname(df_counts[2])))
@@ -200,20 +246,84 @@ calculateLigationPvalues <- function(gi, df_counts, id_col = "gene_id") {
         Pb = nB / N_total,
         Pab = ifelse(A != B, 2 * Pa * Pb, Pa * Pb)
     )
-    chim_df$Pab_norm <- scale(chim_df$Pab, center = FALSE, scale = sum(chim_df$Pab))[, 1]
-    chim_df$pval <- pbinom(chim_df$n_reads_chim_total, size = N_total, prob = chim_df$Pab_norm)
+
+    # adding extra abundance counts
+
+    df <- data.frame(chim_df[c("A", "B", "n_reads_chim_total")]) %>%
+        dplyr::rename("n" = "n_reads_chim_total")
+
+    chim_df$chim_withA_noB <- apply(df, 1, function(row) {
+        df %>%
+            dplyr::filter((A == row["A"] | B == row["A"]) & (A != row["B"] & B != row["B"])) %>%
+            pull(n) %>%
+            sum()
+    })
+    chim_df$chim_withB_noA <- apply(df, 1, function(row) {
+        df %>%
+            dplyr::filter((A == row["B"] | B == row["B"]) & (A != row["A"] & B != row["A"])) %>%
+            pull(n) %>%
+            sum()
+    })
+    chim_df$chim_noB_noA <- apply(df, 1, function(row) {
+        df %>%
+            dplyr::filter((A != row["B"] & B != row["B"]) & (A != row["A"] & B != row["A"])) %>%
+            pull(n) %>%
+            sum()
+    })
+    chim_df$nonchimA <- vapply(chim_df$A %>% as_character(), function(x) {
+        df_all_cts %>%
+            dplyr::filter(RNA == x) %>%
+            pull(n)
+    }, vector("double", 1))
+    chim_df$nonchimB <- vapply(chim_df$B %>% as_character(), function(x) {
+        df_all_cts %>%
+            dplyr::filter(RNA == x) %>%
+            pull(n)
+    }, vector("double", 1))
+
+
+    chim_df$Pab_norm <- scale(chim_df$Pab,
+        center = FALSE,
+        scale = sum(chim_df$Pab)
+    )[, 1]
+    chim_df$pval <- pbinom(chim_df$n_reads_chim_total,
+        size = N_total,
+        prob = chim_df$Pab_norm
+    )
     chim_df$p.adj <- p.adjust(chim_df$pval, method = "BH")
-    chimdf_save <- chimdf_save %>% left_join(chim_df[c("p.adj", "AB")], by = "AB")
 
+    counts_stats <- chim_df %>%
+        dplyr::select(
+            pval, p.adj, AB, Pa, Pb, chim_withA_noB,
+            chim_withB_noA, chim_noB_noA
+        ) %>%
+        dplyr::rename(
+            count.chim.notA.B = "chim_withB_noA",
+            count.chim.A.notB = "chim_withA_noB",
+            count.chim.notA.notB = chim_noB_noA
+        )
 
-    gi$p_val <- tibble("chim_id" = seq_len(length(gi))) %>%
+    chimdf_save <- chimdf_save %>%
+        left_join(counts_stats, by = "AB")
+
+    statcounts_final <- tibble("chim_id" = seq_len(length(gi))) %>%
         left_join(chimdf_save, by = "chim_id") %>%
-        pull(p.adj)
+        dplyr::rename(p_val = pval) %>% # back - compatibility
+        select(-c(chim_id, AB)) %>%
+        data.frame()
+
+    mcols_old <- mcols(gi) %>%
+        data.frame() %>%
+        as_tibble() %>%
+        select(-any_of(colnames(statcounts_final))) %>%
+        data.frame()
+
+    mcols(gi) <- cbind(mcols_old, statcounts_final)
+
     gi <- .addGeneCounts(gi, df_counts)
 
     return(gi)
 }
-
 
 
 .checkRNAduplexinstalled <- function() {
