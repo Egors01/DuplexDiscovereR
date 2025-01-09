@@ -24,14 +24,14 @@ Description:
    can be calculated to rank final set of RNA duplexes.
    Data from multiple experiments or replicates can be processed separately 
    and further compared to check the reproducibility of the experimental method.
-License:  GPL-3
+License: GPL-3
 URL: https://github.com/Egors01/DuplexDiscovereR/
 BugReports: https://github.com/Egors01/DuplexDiscovereR/issues/
 Encoding: UTF-8
 NeedsCompilation: no
 Version: 0.99.2
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 BiocType: Software
 biocViews: 
   Sequencing,
