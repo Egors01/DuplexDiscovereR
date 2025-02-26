@@ -47,10 +47,15 @@ install_github('Egors01/DuplexDiscovereR')
 
 ## Getting started
 
-See the tutorial by loading package vignette 
+Package tutorial is avaliable on [Bioconductor](https://www.bioconductor.org/packages/release/bioc/vignettes/DuplexDiscovereR/inst/doc/DuplexDiscovereR.html) 
+
+It can be loaded from R by 
+
 ```r
 browseVigenttes("DuplexDiscovereR")
 ```
+
+
 ## Citataion
 
 *Not avaliable before paper publication*
