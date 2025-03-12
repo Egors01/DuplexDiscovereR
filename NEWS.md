@@ -12,3 +12,7 @@ alt 3' and 5' ends
 # Version  1.1.1
 - Date: 2024-12-30
 - Added added raw abundance values and duplex counts for 2x2 contingency table to the p-value calculation output
+
+# Version  1.1.2
+- Date: 2025-03-12
+- Removed BiocCheck files 
