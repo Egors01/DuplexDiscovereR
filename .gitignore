@@ -1,6 +1,7 @@
 .Rproj.user
 inst/doc
 DuplexDiscovereR.Rcheck
+DuplexDiscovereR.BiocCheck
 build
 DuplexDiscovereR.Rproj
 /doc/
