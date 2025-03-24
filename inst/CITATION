@@ -1,0 +1,10 @@
+citEntry(
+    entry = "article",
+    author ="Semenchenko E, Tsybulsky V, Meyer IM",
+    title = "DuplexDiscovereR: a computational method for the analysis of experimental duplex RNA-RNA interaction data",
+    journal ="Nucleic Acids Research",
+    year="2025",
+    url="https://doi.org/10.1093/nar/gkaf266",
+    textVersion = "Semenchenko E, Tsybulsky V, Meyer IM (2025). DuplexDiscovereR: a computational method for the analysis of experimental duplex RNA-RNA interaction data. Nucleic Acids Research. https://doi.org/10.1093/nar/gkaf266"
+)
+

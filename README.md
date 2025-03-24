@@ -57,6 +57,17 @@ browseVigenttes("DuplexDiscovereR")
 
 
 ## Citataion
+Semenchenko E, Tsybulsky V, Meyer IM (2025). "DuplexDiscovereR: a computational method for the analysis of experimental duplex RNA-RNA interaction data". Nucleic Acids Research. 
+https://doi.org/10.1093/nar/gkaf266
+```
+@article{DuplexDiscovereR,
+  title={DuplexDiscovereR: a computational method for the analysis of experimental duplex RNA-RNA interaction data},
+  author={Semenchenko E, Tsybulsky V, Meyer IM},
+  journal={Nucleic Acids Research},
+  doi = {10.1093/nar/gkaf266}
+  year={2018},
+  publisher={Oxford University Press}
+}
+```
 
-*Not avaliable before paper publication*
 
