@@ -43,7 +43,12 @@
 #' Increasing this from i.e 0 to 5 reduces clustering time and memory for the libraries with many overlapping reads.
 #' @param gap_collapse_similar  Parameter for read clustering (iterative step). Analogous to the max_gap, but applied \code{collapse_n_inter} times during the iterative merging step.
 #' Reduce this to 1 or 2 to lower RAM usage for clustering the library with many similar reads.
-#' @return a `DuplexDiscovererResults` with the following output
+#' @param trim_alignments TRUE or FALSE. Whether to trim arms alignments to 
+#' 'trim_length' nucleotide around chimeric junction
+#' @param trim_length target size of trimmed alignment 
+#' @param min_arm_len minimum allowed length of the alignment arm.
+#' Read will be dropped if either arm is shorter
+#' @return a list with the   following keys
 #' \describe{
 #'   \item{`duplex_groups`}{ `GInteractions` object with chimeric reads clustered duplex groups }
 #'   \item{`chimeric_reads`}{ `GInteractions` object with non-collapsed chimeric reads }
@@ -100,7 +105,8 @@ runDuplexDiscoverer <- function(data,
     df <- runDuplexDiscoPreproc(data,
         table_type = table_type,
         library_type = lib_type,
-        keep_metadata = TRUE
+        keep_metadata = TRUE,
+        min_arm_len = min_arm_len
     )
 
     n_reads_initial <- sum(df$n_reads)
@@ -116,12 +122,18 @@ runDuplexDiscoverer <- function(data,
     # 2.1 filter out multi spli and multimap aln
     single_gap_df <- df %>%
         dplyr::filter(map_type == "2arm")
-    # 2.1a create stats
+    # 2.1.1 create stats
     read_stats_df <- df %>%
         dplyr::select(readname, n_reads, map_type) %>%
         mutate(read_id = c(seq_len(nrow(df)))) %>%
         relocate(read_id, .after = n_reads)
-
+    
+    #2.1.2 trim alignments 
+    if (trim_alignments){
+      single_gap_df = trimAroundJunction(single_gap_df,
+                                         extract_len = trim_length)
+    }
+    
     # 2.2 convert to GInteractions and mark short/overlapping/splice junction reads
     big_gi <- makeGiFromDf(single_gap_df)
     if (!is.null(junctions_gr)) {
@@ -169,7 +181,12 @@ runDuplexDiscoverer <- function(data,
     # 3.1 prepare clustering: reduce complexity -----------
     message("--- collapsing identical reads ---")
     res_collapse_ident <- collapseIdenticalReads(gi_2arm)
-
+    #DEBUG
+    #1  6724    330184 chr1   chr7   1820921
+    #2  6724    330184 chr2   chrX   4888364
+    #3  6724    330184 chr2   chrX   6233530
+    #browser()
+    
     # 3.1a get results of collapse: get new gi object, update read stats
     gi <- res_collapse_ident$gi_collapsed
     read_stats_df <- left_join(read_stats_df,
@@ -192,7 +209,6 @@ runDuplexDiscoverer <- function(data,
         gi <- res$gi_updated
         read_stats_df <- res$stats_df
     }
-
     # 3.3 Clustering on the whole-genome -----
     message("--- calculating total read overlaps ---")
 
@@ -230,11 +246,18 @@ runDuplexDiscoverer <- function(data,
         return_collapsed = TRUE,
         keep_meta = FALSE
     )
+
+    #DEBUG
+    read_stats_df_old = read_stats_df
+    
+    
     # update read stats
     read_stats_df <- left_join(read_stats_df, .DGIdToDuplexId(gi_fast),
         by = "duplex_id"
     )
-
+    
+    
+    
     dt_2arm <- left_join(tibble("read_id" = gi_2arm$read_id), read_stats_df,
         by = "read_id"
     ) %>%
@@ -253,6 +276,27 @@ runDuplexDiscoverer <- function(data,
     gi_2arm_full <- c(gi_2arm, big_gi[big_gi$keep == FALSE])
     gi_2arm_full$was_clustered <- ifelse(!is.na(gi_2arm_full$was_clustered), 1, 0)
 
+    
+    #DEBUG
+    df_reads =  as_tibble(data.frame(gi_2arm_full))
+    df_bad = df_reads %>% filter(!is.na(dg_id)) %>% group_by(dg_id) %>%
+      mutate(n_seqnames = length(unique(c(seqnames1,seqnames2)))) %>%
+      filter(n_seqnames>=3)
+    if (nrow(df_bad)!=0){
+      place = 2
+      browser()
+    }
+    df_reads =   as_tibble(data.frame(gi_2arm_full))
+    df_bad = df_reads %>% filter(!is.na(duplex_id)) %>% group_by(duplex_id) %>%
+      mutate(n_seqnames = length(unique(c(seqnames1,seqnames2)))) %>%
+      filter(n_seqnames>=3)
+    if (nrow(df_bad)!=0){
+      place = 8
+      browser()
+    }
+    
+    
+    
     time2 <- Sys.time()
     time_clust <- round(as.numeric(difftime(time2, time1,
         units = "secs"

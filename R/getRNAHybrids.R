@@ -49,6 +49,7 @@ getRNAHybrids <- function(gi, fafile) {
     }
 
     sq <- Biostrings::readBStringSet(fafile)
+    sq <- Biostrings::DNAStringSet(sq)
     sq <- Biostrings::RNAStringSet(sq)
     if (!all(as.character(seqnames(regions(refresh_gi(gi)))) %in% names(sq))) {
         stop("Calling hybrids: Seqnames in fasta file do not contain all seqnames of the input gi ")
