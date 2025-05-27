@@ -21,7 +21,9 @@ group3 <- interaction[interaction$groups == 3]
 test_that("comparing samples works", {
     suppressMessages({
         a <- list("sample1" = group1, "sample2" = group2, "sample3" = group3)
-        res <- compareMultipleInteractions(a)
+        res <- compareMultipleInteractions(a,
+                                           min_ratio = 0.0,
+                                           minoverlap = 1)
         n_reads_real <- sum(res$gi_all$n_reads)
         len_superset <- length(res$gi_all)
         df_res <- res$dt_upset
@@ -36,20 +38,6 @@ test_that("comparing samples works", {
         label = "test overlap correct:1"
     )
     expect_equal(real_olv_six, 1,
-        label = "test overlap correct:1"
+        label = "test overlap correct:6"
     )
 })
-
-
-# format input and call comparison
-#
-#
-# at = DuplexTrack(interaction,gr_region = range(regions(interaction)))
-# ct = DuplexTrack(cl,gr_region = range(regions(cl)))
-# bt = DuplexTrack( res$gi_all,gr_region = range(regions( res$gi_all)),annotation.column1 = 'n_reads')
-#
-# plotTracks(list(at,ct,bt))
-# res$gi_all
-# res$dt_upset
-#
-# expect_equal(nrow(res$dt_upset),5,'superset is of the correct size')

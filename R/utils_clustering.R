@@ -78,7 +78,7 @@ collapseSimilarChimeras <- function(
         maxgap = 5,
         niter = 2,
         minoverlap = 10,
-        min_nodes = 20) {
+        min_nodes = 10) {
     message("--- Collapsing the reads shifted by <= ", maxgap, " nt ---")
     gi_base <- gi
     gi_base$dg_id <- NULL
