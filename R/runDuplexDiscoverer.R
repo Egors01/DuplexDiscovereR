@@ -28,7 +28,7 @@
 #' @param anno_gr \pkg{GRanges} object to use for the annotation of the interactions.
 #' The c('gene_id','gene_name','gene_types') columns in anno_gr are used by default. Optional
 #' @param fafile path to the genome .fasta file. Used to calculate hybridization energy with *RNADuplex*. Sequence names should correspond to the sequences from which the mapping index was created. Optional
-#' @param df_counts A two- column dataframe with counts to use for p-value calculation. The first column should match the 'gene_id' feature in anno_gr. The second column is the respective count. Optional
+#' @param df_counts A two- column dataframe with counts. Counts are used for p-value calculation. The first column should match the 'gene_id' feature in anno_gr. The second column is the respective count. Optional
 #' @param sample_name A name of the sample, used for assembling the analysis statistics dataframe
 #' @param lib_type one in c('SE','PE'). Type of the seqeuncing library. Default is 'SE'
 #' @param max_sj_shift Maximum shift between either donor and acceptor splice sites and chimeric junction coordinates to count chimeric junction as splice junction
@@ -48,7 +48,8 @@
 #' @param trim_length target size of trimmed alignment 
 #' @param min_arm_len minimum allowed length of the alignment arm.
 #' Read will be dropped if either arm is shorter
-#' @return a list with the   following keys
+#' @param compute_p_values TRUE or FALSE. whether to calcualte random ligation test
+#' @return a list with the  following keys
 #' \describe{
 #'   \item{`duplex_groups`}{ `GInteractions` object with chimeric reads clustered duplex groups }
 #'   \item{`chimeric_reads`}{ `GInteractions` object with non-collapsed chimeric reads }
@@ -100,7 +101,8 @@ runDuplexDiscoverer <- function(data,
     collapse_n_inter = 5,
     trim_alignments = FALSE,
     trim_length = 40,
-    min_arm_len = 9) {
+    min_arm_len = 9,
+    compute_p_values = TRUE) {
     memstart <- sum(data.frame(gc(reset = TRUE))[, 6])
     start_time <- Sys.time()
     # STEP 1 pre-process------
@@ -285,18 +287,19 @@ runDuplexDiscoverer <- function(data,
     df_bad = df_reads %>% filter(!is.na(dg_id)) %>% group_by(dg_id) %>%
       mutate(n_seqnames = length(unique(c(seqnames1,seqnames2)))) %>%
       filter(n_seqnames>=3)
-    if (nrow(df_bad)!=0){
-      place = 2
-      browser()
-    }
-    df_reads =   as_tibble(data.frame(gi_2arm_full))
-    df_bad = df_reads %>% filter(!is.na(duplex_id)) %>% group_by(duplex_id) %>%
-      mutate(n_seqnames = length(unique(c(seqnames1,seqnames2)))) %>%
-      filter(n_seqnames>=3)
-    if (nrow(df_bad)!=0){
-      place = 8
-      browser()
-    }
+
+    # if (nrow(df_bad)!=0){
+    #   place = 2
+    #   browser()
+    # }
+    # df_reads =   as_tibble(data.frame(gi_2arm_full))
+    # df_bad = df_reads %>% filter(!is.na(duplex_id)) %>% group_by(duplex_id) %>%
+    #   mutate(n_seqnames = length(unique(c(seqnames1,seqnames2)))) %>%
+    #   filter(n_seqnames>=3)
+    # if (nrow(df_bad)!=0){
+    #   place = 8
+    #   browser()
+    # }
     
     
     
@@ -317,15 +320,18 @@ runDuplexDiscoverer <- function(data,
         message("N annotated duplex groups: ", annotated)
         message("N duplex groups with at least one arm missing annotaton: ", not_annotated)
         message("N duplex groups with at both arms missing annotaton: ", not_annotated_full)
-
-        if (!is.null(df_counts)) {
+        if (compute_p_values){
             message("--- computing random ligation p-values ---")
-            # gi_final = calculateLigationPvalues(gi_final,df_counts)
             gi_final <- calculateLigationPvalues(gi_final, df_counts)
-        }
-    } else {
+        }else{
+            if (!is.null(df_counts)) {
+                        message("--- adding counts from df_counts without p-value calculation  ---")
+                        gi_final <- .addGeneCounts(gi_final, df_counts)
+                }
+            }
+    }else {
         message("No annotation provided")
-    }
+        }
     time2 <- Sys.time()
     time_anno <- round(as.numeric(difftime(time2, time1,
         units = "secs"
