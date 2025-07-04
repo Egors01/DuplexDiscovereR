@@ -25,10 +25,11 @@
 #' @param table_type one in c("STAR","bedpe") Defines the type of the input dataframe.
 #' ignored if input data is `GInteractions`
 #' @param junctions_gr \pkg{GRanges} object with the splice junction coordinates
-#' @param anno_gr \pkg{GRanges} object to use for the annotation of the interactions.
-#' The c('gene_id','gene_name','gene_types') columns in anno_gr are used by default. Optional
+#' @param anno_gr \pkg{GRanges} object to use for the annotation of the interactions. Optional
+#' @param anno_gr_keys c() vector with names of metadata fields in anno_gr which will be used for the annotation. Argument passed to 
+#' \code{annotateGI()} function. The c('gene_id','gene_name','gene_type') columns in anno_gr are used by default.
 #' @param fafile path to the genome .fasta file. Used to calculate hybridization energy with *RNADuplex*. Sequence names should correspond to the sequences from which the mapping index was created. Optional
-#' @param df_counts A two- column dataframe with counts to use for p-value calculation. The first column should match the 'gene_id' feature in anno_gr. The second column is the respective count. Optional
+#' @param df_counts A two- column dataframe with counts. Counts are used for p-value calculation. The first column should match the 'gene_id' feature in anno_gr. The second column is the respective count. Optional
 #' @param sample_name A name of the sample, used for assembling the analysis statistics dataframe
 #' @param lib_type one in c('SE','PE'). Type of the seqeuncing library. Default is 'SE'
 #' @param max_sj_shift Maximum shift between either donor and acceptor splice sites and chimeric junction coordinates to count chimeric junction as splice junction
@@ -43,7 +44,13 @@
 #' Increasing this from i.e 0 to 5 reduces clustering time and memory for the libraries with many overlapping reads.
 #' @param gap_collapse_similar  Parameter for read clustering (iterative step). Analogous to the max_gap, but applied \code{collapse_n_inter} times during the iterative merging step.
 #' Reduce this to 1 or 2 to lower RAM usage for clustering the library with many similar reads.
-#' @return a `DuplexDiscovererResults` with the following output
+#' @param trim_alignments TRUE or FALSE. Whether to trim arms alignments to 
+#' 'trim_length' nucleotide around chimeric junction
+#' @param trim_length target size of trimmed alignment 
+#' @param min_arm_len minimum allowed length of the alignment arm.
+#' Read will be dropped if either arm is shorter
+#' @param compute_p_values TRUE or FALSE. whether to calcualte random ligation test
+#' @return a list with the  following keys
 #' \describe{
 #'   \item{`duplex_groups`}{ `GInteractions` object with chimeric reads clustered duplex groups }
 #'   \item{`chimeric_reads`}{ `GInteractions` object with non-collapsed chimeric reads }
@@ -82,6 +89,7 @@ runDuplexDiscoverer <- function(data,
     table_type = "",
     junctions_gr = NULL,
     anno_gr = NULL,
+    anno_gr_keys = c('gene_id','gene_name','gene_type'),
     fafile = NULL,
     df_counts = NULL,
     sample_name = "sample",
@@ -92,7 +100,11 @@ runDuplexDiscoverer <- function(data,
     min_overlap = 10,
     max_sj_shift = 10,
     gap_collapse_similar = 2,
-    collapse_n_inter = 5) {
+    collapse_n_inter = 5,
+    trim_alignments = FALSE,
+    trim_length = 40,
+    min_arm_len = 9,
+    compute_p_values = TRUE) {
     memstart <- sum(data.frame(gc(reset = TRUE))[, 6])
     start_time <- Sys.time()
     # STEP 1 pre-process------
@@ -100,7 +112,8 @@ runDuplexDiscoverer <- function(data,
     df <- runDuplexDiscoPreproc(data,
         table_type = table_type,
         library_type = lib_type,
-        keep_metadata = TRUE
+        keep_metadata = TRUE,
+        min_arm_len = min_arm_len
     )
 
     n_reads_initial <- sum(df$n_reads)
@@ -116,12 +129,18 @@ runDuplexDiscoverer <- function(data,
     # 2.1 filter out multi spli and multimap aln
     single_gap_df <- df %>%
         dplyr::filter(map_type == "2arm")
-    # 2.1a create stats
+    # 2.1.1 create stats
     read_stats_df <- df %>%
         dplyr::select(readname, n_reads, map_type) %>%
         mutate(read_id = c(seq_len(nrow(df)))) %>%
         relocate(read_id, .after = n_reads)
-
+    
+    #2.1.2 trim alignments 
+    if (trim_alignments){
+      single_gap_df = trimAroundJunction(single_gap_df,
+                                         extract_len = trim_length)
+    }
+    
     # 2.2 convert to GInteractions and mark short/overlapping/splice junction reads
     big_gi <- makeGiFromDf(single_gap_df)
     if (!is.null(junctions_gr)) {
@@ -169,7 +188,12 @@ runDuplexDiscoverer <- function(data,
     # 3.1 prepare clustering: reduce complexity -----------
     message("--- collapsing identical reads ---")
     res_collapse_ident <- collapseIdenticalReads(gi_2arm)
-
+    #DEBUG
+    #1  6724    330184 chr1   chr7   1820921
+    #2  6724    330184 chr2   chrX   4888364
+    #3  6724    330184 chr2   chrX   6233530
+    #browser()
+    
     # 3.1a get results of collapse: get new gi object, update read stats
     gi <- res_collapse_ident$gi_collapsed
     read_stats_df <- left_join(read_stats_df,
@@ -192,7 +216,6 @@ runDuplexDiscoverer <- function(data,
         gi <- res$gi_updated
         read_stats_df <- res$stats_df
     }
-
     # 3.3 Clustering on the whole-genome -----
     message("--- calculating total read overlaps ---")
 
@@ -230,11 +253,18 @@ runDuplexDiscoverer <- function(data,
         return_collapsed = TRUE,
         keep_meta = FALSE
     )
+
+    #DEBUG
+    read_stats_df_old = read_stats_df
+    
+    
     # update read stats
     read_stats_df <- left_join(read_stats_df, .DGIdToDuplexId(gi_fast),
         by = "duplex_id"
     )
-
+    
+    
+    
     dt_2arm <- left_join(tibble("read_id" = gi_2arm$read_id), read_stats_df,
         by = "read_id"
     ) %>%
@@ -253,6 +283,28 @@ runDuplexDiscoverer <- function(data,
     gi_2arm_full <- c(gi_2arm, big_gi[big_gi$keep == FALSE])
     gi_2arm_full$was_clustered <- ifelse(!is.na(gi_2arm_full$was_clustered), 1, 0)
 
+    
+    #DEBUG
+    df_reads =  as_tibble(data.frame(gi_2arm_full))
+    df_bad = df_reads %>% filter(!is.na(dg_id)) %>% group_by(dg_id) %>%
+      mutate(n_seqnames = length(unique(c(seqnames1,seqnames2)))) %>%
+      filter(n_seqnames>=3)
+
+    # if (nrow(df_bad)!=0){
+    #   place = 2
+    #   browser()
+    # }
+    # df_reads =   as_tibble(data.frame(gi_2arm_full))
+    # df_bad = df_reads %>% filter(!is.na(duplex_id)) %>% group_by(duplex_id) %>%
+    #   mutate(n_seqnames = length(unique(c(seqnames1,seqnames2)))) %>%
+    #   filter(n_seqnames>=3)
+    # if (nrow(df_bad)!=0){
+    #   place = 8
+    #   browser()
+    # }
+    
+    
+    
     time2 <- Sys.time()
     time_clust <- round(as.numeric(difftime(time2, time1,
         units = "secs"
@@ -262,7 +314,7 @@ runDuplexDiscoverer <- function(data,
     time1 <- Sys.time()
     if (!is.null(anno_gr)) {
         message("--- annotation --- ")
-        gi_final <- annotateGI(gi_final, anno_gr)
+        gi_final <- annotateGI(gi_final, anno_gr,keys = anno_gr_keys)
         gi_final <- .annotateCisTrans(gi_final)
         not_annotated <- sum(as.integer(is.na(gi_final$gene_id.A) | is.na(gi_final$gene_id.B)))
         not_annotated_full <- sum(as.integer(is.na(gi_final$gene_id.A) & is.na(gi_final$gene_id.B)))
@@ -270,15 +322,18 @@ runDuplexDiscoverer <- function(data,
         message("N annotated duplex groups: ", annotated)
         message("N duplex groups with at least one arm missing annotaton: ", not_annotated)
         message("N duplex groups with at both arms missing annotaton: ", not_annotated_full)
-
-        if (!is.null(df_counts)) {
+        if (compute_p_values){
             message("--- computing random ligation p-values ---")
-            # gi_final = calculateLigationPvalues(gi_final,df_counts)
             gi_final <- calculateLigationPvalues(gi_final, df_counts)
-        }
-    } else {
+        }else{
+            if (!is.null(df_counts)) {
+                        message("--- adding counts from df_counts without p-value calculation  ---")
+                        gi_final <- .addGeneCounts(gi_final, df_counts)
+                }
+            }
+    }else {
         message("No annotation provided")
-    }
+        }
     time2 <- Sys.time()
     time_anno <- round(as.numeric(difftime(time2, time1,
         units = "secs"
