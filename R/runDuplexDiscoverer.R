@@ -25,8 +25,9 @@
 #' @param table_type one in c("STAR","bedpe") Defines the type of the input dataframe.
 #' ignored if input data is `GInteractions`
 #' @param junctions_gr \pkg{GRanges} object with the splice junction coordinates
-#' @param anno_gr \pkg{GRanges} object to use for the annotation of the interactions.
-#' The c('gene_id','gene_name','gene_types') columns in anno_gr are used by default. Optional
+#' @param anno_gr \pkg{GRanges} object to use for the annotation of the interactions. Optional
+#' @param anno_gr_keys c() vector with names of metadata fields in anno_gr which will be used for the annotation. Argument passed to 
+#' \code{annotateGI()} function. The c('gene_id','gene_name','gene_type') columns in anno_gr are used by default.
 #' @param fafile path to the genome .fasta file. Used to calculate hybridization energy with *RNADuplex*. Sequence names should correspond to the sequences from which the mapping index was created. Optional
 #' @param df_counts A two- column dataframe with counts. Counts are used for p-value calculation. The first column should match the 'gene_id' feature in anno_gr. The second column is the respective count. Optional
 #' @param sample_name A name of the sample, used for assembling the analysis statistics dataframe
@@ -88,6 +89,7 @@ runDuplexDiscoverer <- function(data,
     table_type = "",
     junctions_gr = NULL,
     anno_gr = NULL,
+    anno_gr_keys = c('gene_id','gene_name','gene_type'),
     fafile = NULL,
     df_counts = NULL,
     sample_name = "sample",
@@ -312,7 +314,7 @@ runDuplexDiscoverer <- function(data,
     time1 <- Sys.time()
     if (!is.null(anno_gr)) {
         message("--- annotation --- ")
-        gi_final <- annotateGI(gi_final, anno_gr)
+        gi_final <- annotateGI(gi_final, anno_gr,keys = anno_gr_keys)
         gi_final <- .annotateCisTrans(gi_final)
         not_annotated <- sum(as.integer(is.na(gi_final$gene_id.A) | is.na(gi_final$gene_id.B)))
         not_annotated_full <- sum(as.integer(is.na(gi_final$gene_id.A) & is.na(gi_final$gene_id.B)))
