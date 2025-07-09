@@ -245,7 +245,7 @@ preproc_chim_junction_out_se <- function(dt, keep_all_columns = FALSE) {
 #' @return tibble with annotated reads
 preproc_chim_junction_out_pe <- function(dt, keep_all_columns = FALSE) {
     message("processing raw Chimeric.junction.out... PE")
-
+    bad_junction_tr = 6
     if (!keep_all_columns) {
         dt <- dt %>% dplyr::select(c(
             read_name,
@@ -293,7 +293,8 @@ preproc_chim_junction_out_pe <- function(dt, keep_all_columns = FALSE) {
         mutate(
             lengapsA = n_n,
             endA_along = startA + cigarWidthAlongReferenceSpace(cigar_str),
-            endA = startA + n_m + n_p * sign_p + n_n - 1
+            lA =  n_m + n_p * sign_p + n_n,
+            endA = startA + lA - 1
         ) %>%
         mutate(
             cigar_str = cigar_alnB,
@@ -308,8 +309,9 @@ preproc_chim_junction_out_pe <- function(dt, keep_all_columns = FALSE) {
         ) %>%
         mutate(
             lengapsB = n_n,
+            lB = n_m + n_p * sign_p + n_n,
             endB_along = startB + cigarWidthAlongReferenceSpace(cigar_str),
-            endB = startB + n_m + n_p * sign_p + n_n - 1
+            endB = startB + lB - 1
         ) %>%
         mutate(
             bad_junction = ifelse(chromA == chromB &
@@ -324,7 +326,7 @@ preproc_chim_junction_out_pe <- function(dt, keep_all_columns = FALSE) {
         dplyr::select(-c(
             cigar_str, has_p, minus_p, sign_p,
             n_p, n_s, n_m, n_i, n_n,
-            ngapsA, ngapsB, lengapsA, lengapsB
+            ngapsA, ngapsB, lengapsA, lengapsB,lA, lB
         ))
 
     if (!keep_all_columns) {
@@ -459,6 +461,8 @@ preproc_generic_gi <- function(gi_raw, keep_all_columns = TRUE) {
 #' @param table_type in \code{c("STAR","bedpe")} for Chimeric.out.Junction or generic input
 #' @param library_type \code{c("SE","PE")} for pair- or single- end input
 #' @param return_gi if the return object should be `GInteractions`
+#' @param  min_arm_len minimum allowed length of the alignment arm.
+#' Read will be dropped if either arm is shorter
 #' @return tibble with new metadata fields OR GInteractions if `return_gi` is
 #' set to TRUE
 #' @export
@@ -475,7 +479,8 @@ preproc_generic_gi <- function(gi_raw, keep_all_columns = TRUE) {
 runDuplexDiscoPreproc <- function(data, table_type,
     library_type = "SE",
     keep_metadata = TRUE,
-    return_gi = FALSE) {
+    return_gi = FALSE,
+    min_arm_len = 15) {
     # Start with determining the input data type
     if (is(data, "GInteractions")) {
         # GI input
@@ -510,7 +515,11 @@ runDuplexDiscoPreproc <- function(data, table_type,
             stop("cannot determine input data type. Provided : ", class(data)[1])
         }
     }
-
+    
+    # Add alignment length 
+    df <- df %>% mutate(aln_lenA = endA - startA,
+                         aln_lenB = endB - startB)
+  
     # Add number of reads per record (should be 1, but check in case of collapsed input)
     if (!("n_reads" %in% colnames(df))) {
         df <- df %>% mutate(
@@ -520,12 +529,16 @@ runDuplexDiscoPreproc <- function(data, table_type,
     } else {
         df <- df %>% add_column(read_id = seq_len(nrow(df)))
     }
-
+    df = df %>%  mutate(
+        len_too_short = as.integer(!(aln_lenA > min_arm_len &
+                                     aln_lenB > min_arm_len)))
+    
     df <- df %>% mutate(map_type = case_when(
         multigap == 0 & multimap == 1 & bad_junction == 0 ~ "multi_map",
         multigap == 1 & multimap == 0 & bad_junction == 0 ~ "multi_split",
         multigap == 1 & multimap == 1 & bad_junction == 0 ~ "multi_split&map",
         bad_junction == 1 ~ "not_chim",
+        len_too_short == 1 ~ "too_short",
         multigap == 0 & multimap == 0 & bad_junction == 0 ~ "2arm",
         .default = "notype"
     ))
@@ -541,3 +554,129 @@ runDuplexDiscoPreproc <- function(data, table_type,
     }
     return(df)
 }
+
+
+.filterAlignmentLength <- function(dt,minlen){
+  
+  dt = dt %>% dplyr::mutate(len_not_ok=!(aln_lenA > minlen & aln_lenB > minlen))
+  nf = sum(as.integer(dt$len_not_ok))
+  nr = nrow(dt)
+  dt  = dt %>% dplyr::filter(!len_not_ok)
+  dt$len_not_ok = NULL
+  message("Filtered out : ",nf,
+          " too short alignments out of ", nr," : ", round(nf/nr*100,2) , ' %')
+  return(dt)
+}
+
+# accepts single gap df
+# integrate after preproc, and after SJ ? 
+#' Extract regions around chimeric junction 
+#'  
+#' Trim alignements to contain only 'extract len' nucleotides adajcent
+#' to the chimeric junction
+#'  
+#' @details
+#' In case of the long alignemtns, it may be necessary trim chimeric alignments
+#' to identify RNA duplex. If 'extract_len' is longer than the read 
+#' alignemnt length, then no trimmin is performed
+#'   
+#' @param dt table with the 
+#' @param extract_len 
+#'
+#' @return dataframe with the trimmed alignments 
+#' @export
+#' @examples
+#' data("RNADuplexesSampleData")
+#' dt_preproc = runDuplexDiscoPreproc(RNADuplexesRawChimSTAR,
+#' table_type = 'STAR',library_type = 'SE')
+#' trimAroundJunction(dt_preproc,40)
+#' 
+trimAroundJunction <- function(dt,
+                               extract_len = 30){
+  cnames = c('brkpt_donorA','brkpt_acceptorB')
+  dift = 2 
+  extract_len = extract_len -1
+  
+  if (!all(cnames %in% colnames(dt))){
+    message("cannot extract region around junction
+            because junction fields are not present")
+    return(dt)
+  }
+  
+  # Types of junction arrangement (point of ligation)
+  # t1: normal ==* *==
+  # t2: backwards *== ==*
+  # t3: A normal B backwards  ==* ==*
+  # t2: B normal A backwards *== *==
+  if (all(c("jA","jB") %in% colnames(dt))){
+    #pass
+  }else{
+    if (all(cnames %in% colnames(dt))){
+      dt <- dt %>% rename(jA = brkpt_donorA,jB = brkpt_acceptorB )
+    }else{
+      message("Junction fields not found: Possible filed names are jA and JB or 
+             brkpt_donorA and brkpt_acceptorB ")
+    }
+  }
+  
+  dt1 = dt  %>%
+    mutate(t1 = if_else( (abs(endA - jA) <= dift ) & (abs(startB - jB) <= dift),1,0 ),
+           t2 = if_else( (abs(startA - jA)<= dift) & (abs(endB - jB) <= dift) ,1,0),
+           t3 = if_else( (abs(endA - jA)<= dift) & (abs(endB - jB) <= dift) ,1,0),
+           t4 = if_else( (abs(startA - jA)<= dift) & (abs(startB - jB) <= dift) ,1,0),
+           any1 = t1+t2+t3+t4) 
+  
+  
+  if (!any(dt1$any1>1) & !any(dt1$any1==0)){
+    message('type detected')
+  }else{
+    message('some problem occured in detection of junction type.
+            Check alignment lengths')
+  }
+  
+  dt2 = dt1 %>%
+    tidyr::pivot_longer(
+      cols = all_of(c('t1','t2','t3','t4')),
+      names_to = "junctype",
+      values_to = "value"
+    ) %>%
+    filter(value == 1) %>%
+    select(-value)
+  
+
+   dt_modified <- dt2 %>%
+    mutate(
+      aln_lenA = endA - startA,
+      aln_lenB = endB - startB,
+      extrA = pmin(aln_lenA, extract_len),
+      extrB = pmin(aln_lenB, extract_len)) %>%
+    mutate(
+      startA = case_when(
+        junctype == 't1' ~ endA - extrA,
+        junctype == 't2' ~ startA,
+        junctype == 't3' ~ endA - extrA,
+        junctype == 't4' ~ startA
+      ),
+      endA = case_when(
+        junctype == 't1' ~ endA,
+        junctype == 't2' ~ startA + extrA,
+        junctype == 't3' ~ endA,
+        junctype == 't4' ~ startA + extrA
+      ),
+      startB = case_when(
+        junctype == 't1' ~ startB,
+        junctype == 't2' ~ endB - extrB,
+        junctype == 't3' ~ endB - extrB,
+        junctype == 't4' ~ startB
+      ),
+      endB = case_when(
+        junctype == 't1' ~ startB + extrB,
+        junctype == 't2' ~ endB,
+        junctype == 't3' ~ endB,
+        junctype == 't4' ~ startB + extrB
+      )
+    )
+  #dt_modified$junctype = NULL
+  return(dt_modified)
+}
+
