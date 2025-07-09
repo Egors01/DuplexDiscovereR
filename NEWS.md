@@ -22,5 +22,7 @@ alt 3' and 5' ends
 - Added trimming of the PE alignments relative to the ligation point. 
     - For the PE reads processed by STAR, the type of the junction is detected. 
     - To narrow down the hybrid prediction, user can trim reads - N_trim nt will be left adjacent to the ligation point.
-- Added missing arguments to the function `runDuplexDiscoverer` which runs the whole pipeline. Keys for annotation, trimming and minimum chimeric length cutoffs can be set by user and will be passed to the functions called from inside.
+- Added missing arguments to the function `runDuplexDiscoverer` which runs the whole pipeline. 
+  Keys for annotation features, trimming and minimum chimeric length cutoffs have defaults, also can be set by user 
+  to be passed to the functions called from inside the `runDuplexDiscoverer`.
 
