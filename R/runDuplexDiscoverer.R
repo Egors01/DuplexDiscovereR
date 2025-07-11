@@ -322,7 +322,7 @@ runDuplexDiscoverer <- function(data,
         message("N annotated duplex groups: ", annotated)
         message("N duplex groups with at least one arm missing annotaton: ", not_annotated)
         message("N duplex groups with at both arms missing annotaton: ", not_annotated_full)
-        if (compute_p_values){
+        if (compute_p_values & !is.null(df_counts)){
             message("--- computing random ligation p-values ---")
             gi_final <- calculateLigationPvalues(gi_final, df_counts)
         }else{
