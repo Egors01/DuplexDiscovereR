@@ -34,11 +34,11 @@ given by the following equation:
 The probability \eqn{P(a, b)} is defined as:
 
 \eqn{
-P(a, b) \propto 
-\begin{cases} 
-    2 \cdot P(a) \cdot P(b) & \textnormal{if } a:b \textnormal{ is observed and } a \neq b \\ 
-    P(a) \cdot P(b) & \textnormal{if } a:b \textnormal{ is observed and } a = b \\ 
-    0 & \textnormal{else} 
+P(a, b) \propto
+\begin{cases}
+    2 \cdot P(a) \cdot P(b) & \textnormal{if } a:b \textnormal{ is observed and } a \neq b \\
+    P(a) \cdot P(b) & \textnormal{if } a:b \textnormal{ is observed and } a = b \\
+    0 & \textnormal{else}
 \end{cases}
 }
 
@@ -53,6 +53,6 @@ P(a, b) is normalized to sum up to one.
 }
 \examples{
 data("RNADuplexesSampleData")
-gi = calculateLigationPvalues(RNADuplexSampleDGs,df_counts = RNADuplexesGeneCounts)
-hist(gi$p.adj,breaks = 20)
+gi <- calculateLigationPvalues(RNADuplexSampleDGs, df_counts = RNADuplexesGeneCounts)
+hist(gi$p.adj, breaks = 20)
 }

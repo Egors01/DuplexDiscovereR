@@ -9,7 +9,8 @@ collapseSimilarChimeras(
   read_stats_df,
   maxgap = 5,
   niter = 2,
-  minoverlap = 10
+  minoverlap = 10,
+  min_nodes = 10
 )
 }
 \arguments{

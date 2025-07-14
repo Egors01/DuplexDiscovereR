@@ -9,6 +9,7 @@ runDuplexDiscoverer(
   table_type = "",
   junctions_gr = NULL,
   anno_gr = NULL,
+  anno_gr_keys = c("gene_id", "gene_name", "gene_type"),
   fafile = NULL,
   df_counts = NULL,
   sample_name = "sample",
@@ -19,7 +20,11 @@ runDuplexDiscoverer(
   min_overlap = 10,
   max_sj_shift = 10,
   gap_collapse_similar = 2,
-  collapse_n_inter = 5
+  collapse_n_inter = 5,
+  trim_alignments = FALSE,
+  trim_length = 40,
+  min_arm_len = 9,
+  compute_p_values = TRUE
 )
 }
 \arguments{
@@ -32,12 +37,14 @@ ignored if input data is \code{GInteractions}}
 
 \item{junctions_gr}{\pkg{GRanges} object with the splice junction coordinates}
 
-\item{anno_gr}{\pkg{GRanges} object to use for the annotation of the interactions.
-The c('gene_id','gene_name','gene_types') columns in anno_gr are used by default. Optional}
+\item{anno_gr}{\pkg{GRanges} object to use for the annotation of the interactions. Optional}
+
+\item{anno_gr_keys}{c() vector with names of metadata fields in anno_gr which will be used for the annotation. Argument passed to
+\code{annotateGI()} function. The c('gene_id','gene_name','gene_type') columns in anno_gr are used by default.}
 
 \item{fafile}{path to the genome .fasta file. Used to calculate hybridization energy with \emph{RNADuplex}. Sequence names should correspond to the sequences from which the mapping index was created. Optional}
 
-\item{df_counts}{A two- column dataframe with counts to use for p-value calculation. The first column should match the 'gene_id' feature in anno_gr. The second column is the respective count. Optional}
+\item{df_counts}{A two- column dataframe with counts. Counts are used for p-value calculation. The first column should match the 'gene_id' feature in anno_gr. The second column is the respective count. Optional}
 
 \item{sample_name}{A name of the sample, used for assembling the analysis statistics dataframe}
 
@@ -61,9 +68,19 @@ Reduce this to 1 or 2 to lower RAM usage for clustering the library with many si
 
 \item{collapse_n_inter}{Parameter for read clustering  (iterative step). Number of iterations to repeat step of collapsing of the highly similar chimeric reads.
 Increasing this from i.e 0 to 5 reduces clustering time and memory for the libraries with many overlapping reads.}
+
+\item{trim_alignments}{TRUE or FALSE. Whether to trim arms alignments to
+'trim_length' nucleotide around chimeric junction}
+
+\item{trim_length}{target size of trimmed alignment}
+
+\item{min_arm_len}{minimum allowed length of the alignment arm.
+Read will be dropped if either arm is shorter}
+
+\item{compute_p_values}{TRUE or FALSE. whether to calcualte random ligation test}
 }
 \value{
-a \code{DuplexDiscovererResults} with the following output
+a list with the  following keys
 \describe{
 \item{\code{duplex_groups}}{ \code{GInteractions} object with chimeric reads clustered duplex groups }
 \item{\code{chimeric_reads}}{ \code{GInteractions} object with non-collapsed chimeric reads }

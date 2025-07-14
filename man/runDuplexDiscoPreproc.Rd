@@ -9,7 +9,8 @@ runDuplexDiscoPreproc(
   table_type,
   library_type = "SE",
   keep_metadata = TRUE,
-  return_gi = FALSE
+  return_gi = FALSE,
+  min_arm_len = 15
 )
 }
 \arguments{
@@ -24,6 +25,9 @@ runDuplexDiscoPreproc(
 CIGAR strings and junction coordinates should be kept}
 
 \item{return_gi}{if the return object should be \code{GInteractions}}
+
+\item{min_arm_len}{minimum allowed length of the alignment arm.
+Read will be dropped if either arm is shorter}
 }
 \value{
 tibble with new metadata fields OR GInteractions if \code{return_gi} is
