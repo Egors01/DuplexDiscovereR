@@ -159,11 +159,10 @@ setMethod("initialize", "DuplexTrack", function(.Object, ...) {
     return(.Object)
 })
 
-DuplexTrack <- function(
-        gi, start = NULL, end = NULL, gr_region = NULL,
-        group, id, strand, chromosome, fill = NULL, fill.column = "",
-        genome, stacking = "squish", name = "DuplexTrack", selectFun, importFunction,
-        stream = FALSE, ...) {
+DuplexTrack <- function(gi, start = NULL, end = NULL, gr_region = NULL,
+    group, id, strand, chromosome, fill = NULL, fill.column = "",
+    genome, stacking = "squish", name = "DuplexTrack", selectFun, importFunction,
+    stream = FALSE, ...) {
     message("constructor")
     ## Some defaults
     if (is.null(gr_region)) {

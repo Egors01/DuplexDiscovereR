@@ -26,6 +26,8 @@ the single duplex_id with n_reads=2}
 \item{niter}{Number of times clustering will be called}
 
 \item{minoverlap}{Minimum required overlap between either read arm}
+
+\item{min_nodes}{Minimum count of nodes to finish the interaction merging}
 }
 \value{
 a list with the following keys
@@ -34,7 +36,8 @@ a list with the following keys
 and not-collapsed unchanged reads}
 \item{stats_df}{ \code{tibble} With the mapping from the unique read -
 with the the infromation about time and memory reaquired for the function
-call}
+call
+}
 }
 }
 \description{

@@ -50,11 +50,12 @@ setClass("DuplexDiscovererResults",
 #' @rdname DuplexDiscovererResults
 #' @inherit dd_get_duplex_groups examples
 #' @export
-DuplexDiscovererResults <- function(duplex_groups,
-    chimeric_reads,
-    reads_classes,
-    chimeric_reads_stats,
-    run_stats) {
+DuplexDiscovererResults <- function(
+        duplex_groups,
+        chimeric_reads,
+        reads_classes,
+        chimeric_reads_stats,
+        run_stats) {
     new("DuplexDiscovererResults",
         duplex_groups = duplex_groups,
         chimeric_reads = chimeric_reads,
