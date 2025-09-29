@@ -619,7 +619,7 @@ trimAroundJunction <- function(dt,
     }
   }
   
-  dt1 = dt  %>%
+  dt1 <- dt  %>%
     mutate(t1 = if_else( (abs(endA - jA) <= dift ) & (abs(startB - jB) <= dift),1,0 ),
            t2 = if_else( (abs(startA - jA)<= dift) & (abs(endB - jB) <= dift) ,1,0),
            t3 = if_else( (abs(endA - jA)<= dift) & (abs(endB - jB) <= dift) ,1,0),
@@ -634,7 +634,7 @@ trimAroundJunction <- function(dt,
             Check alignment lengths')
   }
   
-  dt2 = dt1 %>%
+  dt2 <- dt1 %>%
     tidyr::pivot_longer(
       cols = all_of(c('t1','t2','t3','t4')),
       names_to = "junctype",

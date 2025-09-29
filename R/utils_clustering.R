@@ -104,18 +104,8 @@ collapseSimilarChimeras <- function(
         )
         message("N nodes after collapse: ", length(grc))
         
-        #grc
-        
         df_reads =  makeDfFromGi(grc)
-        df_bad = df_reads %>% filter(!is.na(dg_id)) %>% group_by(dg_id) %>%
-          mutate(n_seqnames = length(unique(c(chromA,chromB)))) %>%
-          filter(n_seqnames>=3)
-        if (nrow(df_bad)!=0){
-          place = 1
-          browser()
-        }
-
-      
+        
         # update duplex_ids
         orig_mcols <- as_tibble(data.frame(mcols(gi_clustered)[c("duplex_id", "dg_id")]))
         new_mcols <- as_tibble(data.frame(mcols(grc)[c("duplex_id", "dg_id")]))
@@ -348,11 +338,11 @@ computeGISelfOverlaps <- function(gi, id_column = "duplex_id", maxgap = 40, mino
         A_span = width(punion(
             gi@regions[gi[queryHits(fo)]@anchor1],
             gi@regions[gi[subjectHits(fo)]@anchor1],
-            fill.gap = T)),
+            fill.gap = TRUE)),
         B_span = width(punion(
             gi@regions[gi[queryHits(fo)]@anchor2],
             gi@regions[gi[subjectHits(fo)]@anchor2],
-            fill.gap = T
+            fill.gap = TRUE
         )),
         A_ovl = width(pintersect(
             gi@regions[gi[queryHits(fo)]@anchor1],

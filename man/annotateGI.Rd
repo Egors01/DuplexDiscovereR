@@ -8,7 +8,10 @@ annotateGI(
   gi,
   anno_gr,
   keys = c("gene_name", "gene_type", "gene_id"),
-  save_ambig = TRUE
+  ambig_key = keys[1],
+  save_ambig = TRUE,
+  order_key = NULL,
+  order_vec = NULL
 )
 }
 \arguments{
@@ -16,14 +19,16 @@ annotateGI(
 
 \item{anno_gr}{\code{GRanges} object with the \code{keys} columns in the metadata}
 
-\item{keys}{names of the features to use for annotation.}
+\item{keys}{vectors with the names of the features to use for annotation.}
 
-\item{save_ambig}{in case RNA duplex overlaps multiple features of the first key,
-mark the existense of ambiguous annotation in the fields
-\code{ambig.A} and \code{ambig.B}. Fields \code{ambig_list.A} and \code{ambig_list.B} will be
-store the list of overlapping features
-Only the first filed from \code{keys} is checked for possible annotation
-ambiguities.}
+\item{ambig_key}{a which feature to use for recording the annotation ambiguity. Determines the values in \code{ambig_list.A} and \code{ambig_list.B}.}
+
+\item{save_ambig}{When RNA duplex overlaps multiple features, ambiguous annotation for a single key
+can be stored in \code{ambig_list.A} and \code{ambig_list.B}. \code{ambig.A} and `ambig.B' fields will be added as the 0/1 label}
+
+\item{order_key}{Experimental. In case RNA duplex overlaps multiple features, this key will be used to sort the overlapping features.}
+
+\item{order_vec}{Experimental. An ordered vector of values in \code{order_key} annotation feature, which sets the priority in case of feature overlap.}
 }
 \value{
 \code{GInteractions} object with new fields
@@ -40,4 +45,11 @@ If no overlap is found for the feature, then filed will have NA
 \examples{
 data("RNADuplexesSampleData")
 annotateGI(gi = RNADuplexSampleDGs, anno_gr = SampleGeneAnnoGR)
+
+# Prioritisation of the snRNA and lncRNA before mRNA if genes overlap 
+annotateGI(gi = RNADuplexSampleDGs, anno_gr = SampleGeneAnnoGR,
+                 keys = c('gene_id','gene_name','gene_type'),
+                 order_key = 'gene_type',
+                 order_vec = c("snRNA","lncRNA", "protein_coding"),
+                 save_ambig = TRUE)
 }

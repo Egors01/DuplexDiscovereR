@@ -4,15 +4,14 @@
 #'
 #' @param gi `GInteraction` object to annotate
 #' @param anno_gr `GRanges` object with the `keys` columns in the metadata
-#' @param keys names of the features to use for annotation.
-#' @param save_ambig in case RNA duplex overlaps multiple features of the first key,
-#' mark the existense of ambiguous annotation in the fields
-#' `ambig.A` and `ambig.B`. Fields `ambig_list.A` and `ambig_list.B` will be
-#' store the list of overlapping features
-#' Only the first filed from `keys` is checked for possible annotation
-#' ambiguities.
+#' @param keys vectors with the names of the features to use for annotation.
+#' @param save_ambig When RNA duplex overlaps multiple features, ambiguous annotation for a single key
+#' can be stored in `ambig_list.A` and `ambig_list.B`. `ambig.A` and `ambig.B' fields will be added as the 0/1 label
+#' @param ambig_key a which feature to use for recording the annotation ambiguity. Determines the values in `ambig_list.A` and `ambig_list.B`.
+#' @param order_key Experimental. In case RNA duplex overlaps multiple features, this key will be used to sort the overlapping features.
+#' @param order_vec Experimental. An ordered vector of values in `order_key` annotation feature, which sets the priority in case of feature overlap.
+#' @export 
 #' @return `GInteractions` object with new fields
-#' @export
 #' @details
 #' For each annotation feature in `keys`, i.e if keys=c(keyname1),
 #' then `<keyname1>.A`, `<keyname1>.B` annotation fields will be created, containing the
@@ -21,70 +20,99 @@
 #' @examples
 #' data("RNADuplexesSampleData")
 #' annotateGI(gi = RNADuplexSampleDGs, anno_gr = SampleGeneAnnoGR)
-annotateGI <- function(
-        gi, anno_gr,
-        keys = c("gene_name", "gene_type", "gene_id"),
-        save_ambig = TRUE) {
-    orininal_columns <- colnames(mcols(gi))
+#'
+#' # Prioritisation of the snRNA and lncRNA before mRNA if genes overlap 
+#' annotateGI(gi = RNADuplexSampleDGs, anno_gr = SampleGeneAnnoGR,
+#'                  keys = c('gene_id','gene_name','gene_type'),
+#'                  order_key = 'gene_type',
+#'                  order_vec = c("snRNA","lncRNA", "protein_coding"),
+#'                  save_ambig = TRUE)
+annotateGI = function(
+    gi, anno_gr,
+    keys = c("gene_name", "gene_type", "gene_id"),
+    ambig_key = keys[1],
+    save_ambig = TRUE,
+    order_key = NULL,
+    order_vec = NULL) {
 
+    orininal_columns <- colnames(mcols(gi))
+    
+    if (!all(keys %in%  colnames(mcols(anno_gr)))){
+      ms = str_c(setdiff(keys,colnames(mcols(anno_gr))),collapse = ', ')
+      message()
+      stop("Not all provided keys are found in the anotation GRanges \nmissing keys: ",ms)
+    }
     anno_gr <- anno_gr[, keys]
     anno_gr$feature_id <- seq_len(length(anno_gr))
     gi@regions$region_id <- seq_len(length(gi@regions))
-
     po <- findOverlapPairs(gi@regions, anno_gr)
+    
+    # df will be grouped by region from below 
     df <- tibble(
-        "region_id" = po@first$region_id,
-        "feature_id" = po@second$feature_id,
-        "overlap_w" = width(pintersect(po))
-    ) %>%
-        group_by(region_id) %>%
-        mutate(ambig = as.integer(n() > 1))
-    # save ambig mapping regions (use 1st key to save ids)
+      "region_id" = po@first$region_id,
+      "overlap_w" = width(pintersect(po))
+    ) %>% bind_cols(data.frame(mcols(po@second))) %>%
+      group_by(region_id) %>%
+      mutate(ambig = vctrs::vec_cast(n_distinct(.data[[ambig_key]], na.rm = TRUE) > 1, integer()) )  
+    
+    
+    # save ambig mapping regions (use pre-defined key to save ids)
     if (save_ambig) {
-        ambig_save <- df %>% dplyr::filter(ambig == 1)
-        ambig_save <- left_join(ambig_save,
-            as_tibble(mcols(anno_gr)[c(keys[1], "feature_id")]),
-            by = "feature_id"
-        )
-        ambig_save <- ambig_save %>%
-            group_by(region_id) %>%
-            dplyr::summarise(ambig_list = paste(unique(get(keys[1])), collapse = ",")) %>%
-            ungroup()
+      message("Will save all redundant values in: ",ambig_key)
+      ambig_save <- df %>% dplyr::filter(ambig == 1)
+      ambig_save <- ambig_save %>% dplyr::filter(!is.na(.data[[ambig_key]])) %>% 
+        group_by(region_id) %>% 
+        dplyr::summarise(ambig_list = paste(unique(.data[[ambig_key]]), collapse = ",")) %>%
+        ungroup()
     }
-
+    
+    # if we use some column to sort the annotation for resolution of ambiguities 
+    if (!is.null(order_key) & !is.null(order_vec)){
+      # Order by the overlap amount first, then by the order key (gene_type) 
+      message("Sorting the annotation layers by: ",order_key)
+      if ((order_key %in% colnames(df) && (order_key %in% keys))){
+        df <- df %>%
+          mutate(sort_col = factor(.data[[order_key]], levels = order_vec, ordered = TRUE)) %>%
+          arrange(sort_col) %>% select(-sort_col) # sort by provided order 
+        
+      } else{
+        warning("Provided annotaion order key" ,order_key,
+                "does not exist in annotation or not part of the keys, skipping")
+      }
+    }
+    
     df <- df %>%
-        arrange(-overlap_w, .by_group = TRUE) %>%
-        ungroup() %>%
-        distinct(region_id, .keep_all = TRUE)
-    df <- left_join(df, as_tibble(mcols(anno_gr)), by = "feature_id")
+      tidyr::fill(all_of(keys), .direction = "up") %>%  slice(1) %>%
+      ungroup()
 
     dt <- left_join(as_tibble(mcols(gi@regions)), df, by = "region_id")
-
+    
     if (save_ambig) {
-        dt <- left_join(dt, ambig_save, by = "region_id")
+      dt <- left_join(dt, ambig_save, by = "region_id")
     }
 
-
     dt <- dt %>%
-        dplyr::select(-c(region_id, feature_id, overlap_w))
-
+      select(-c(feature_id, overlap_w,region_id))
+     
     cnames <- c(str_c(colnames(dt), ".A"), str_c(colnames(dt), ".B"))
-
+    
     dt <- cbind(dt[gi@anchor1, ], dt[gi@anchor2, ])
     colnames(dt) <- cnames
     dt <- dt %>% dplyr::select(order(colnames(dt)))
 
     if (save_ambig) {
-        dt <- dt %>%
-            relocate(ambig.A, ambig.B, ambig_list.A, ambig_list.B, .after = last_col())
+      dt <- dt %>%
+        relocate(ambig.A, ambig.B, ambig_list.A, ambig_list.B, .after = last_col())
     } else {
-        dt <- dt %>% dplyr::select(-c(ambig.A, ambig.B, ambig_list.A, ambig_list.B))
+      dt <- dt %>% dplyr::select(-c(ambig.A, ambig.B, ambig_list.A, ambig_list.B))
     }
-
+    
     dt <- dt %>% data.frame()
     mcols(gi) <- cbind(mcols(gi)[orininal_columns], dt)
+    gi@regions$region_id = NULL
     return(gi)
 }
+
 
 
 #' Annotate RNA-RNA interactions as cis- and trans-
@@ -270,12 +298,12 @@ calculateLigationPvalues <- function(gi, df_counts, id_col = "gene_id") {
             pull(n) %>%
             sum()
     })
-    chim_df$nonchimA <- vapply(chim_df$A %>% as_character(), function(x) {
+    chim_df$nonchimA <- vapply(vctrs::vec_cast(chim_df$A, character()), function(x) {
         df_all_cts %>%
             dplyr::filter(RNA == x) %>%
             pull(n)
     }, vector("double", 1))
-    chim_df$nonchimB <- vapply(chim_df$B %>% as_character(), function(x) {
+    chim_df$nonchimB <- vapply(vctrs::vec_cast(chim_df$B, character()), function(x) {
         df_all_cts %>%
             dplyr::filter(RNA == x) %>%
             pull(n)
