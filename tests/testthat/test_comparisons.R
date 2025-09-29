@@ -22,8 +22,9 @@ test_that("comparing samples works", {
     suppressMessages({
         a <- list("sample1" = group1, "sample2" = group2, "sample3" = group3)
         res <- compareMultipleInteractions(a,
-                                           min_ratio = 0.0,
-                                           minoverlap = 1)
+            min_ratio = 0.0,
+            minoverlap = 1
+        )
         n_reads_real <- sum(res$gi_all$n_reads)
         len_superset <- length(res$gi_all)
         df_res <- res$dt_upset

@@ -2,36 +2,32 @@
 % Please edit documentation in R/utils_preproc.R
 \name{trimAroundJunction}
 \alias{trimAroundJunction}
-\title{Extract regions around chimeric junction
-
-Trim alignements to contain only 'extract len' nucleotides adajcent
-to the chimeric junction}
+\title{Extract regions around chimeric junction}
 \usage{
 trimAroundJunction(dt, extract_len = 30)
 }
 \arguments{
 \item{dt}{table with the}
 
-\item{extract_len}{}
+\item{extract_len}{the length of the seqeunce to trim}
 }
 \value{
 dataframe with the trimmed alignments
 }
 \description{
-Extract regions around chimeric junction
-
 Trim alignements to contain only 'extract len' nucleotides adajcent
 to the chimeric junction
 }
 \details{
 In case of the long alignemtns, it may be necessary trim chimeric alignments
 to identify RNA duplex. If 'extract_len' is longer than the read
-alignemnt length, then no trimmin is performed
+alignemnt length, then no trimming is performed
 }
 \examples{
 data("RNADuplexesSampleData")
-dt_preproc = runDuplexDiscoPreproc(RNADuplexesRawChimSTAR,
-table_type = 'STAR',library_type = 'SE')
-trimAroundJunction(dt_preproc,40)
+dt_preproc <- runDuplexDiscoPreproc(RNADuplexesRawChimSTAR,
+    table_type = "STAR", library_type = "SE"
+)
+trimAroundJunction(dt_preproc, 40)
 
 }

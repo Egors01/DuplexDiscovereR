@@ -54,10 +54,9 @@
 #' collapse_duplex_groups(ginodup, return_collapsed = TRUE)
 #' # Return DGs, but drop duplicated returns n=2 DGs
 #' collapse_duplex_groups(ginodup, return_collapsed = FALSE)
-collapse_duplex_groups <- function(
-        gi, return_unclustered = FALSE,
-        return_collapsed = TRUE,
-        keep_meta = TRUE) {
+collapse_duplex_groups <- function(gi, return_unclustered = FALSE,
+    return_collapsed = TRUE,
+    keep_meta = TRUE) {
     # check n_reads field
     if (!is.null(gi$n_reads)) {
         gi$n_reads <- as_tibble(mcols(gi)["n_reads"]) %>%
@@ -75,10 +74,10 @@ collapse_duplex_groups <- function(
         }
     }
 
-    
+
     # #DEBUG
     # df_reads =  as_tibble(data.frame(gi))
-    # df_bad = df_reads %>% filter(!is.na(dg_id))  
+    # df_bad = df_reads %>% filter(!is.na(dg_id))
     # if (nrow(df_bad)==0){
     #   place = 56
     #   browser()
@@ -90,10 +89,10 @@ collapse_duplex_groups <- function(
     #   place = 55
     #   browser()
     # }
-    # 
-    
+    #
+
     future_clusters <- as_tibble(data.frame(gi))
-    
+
     future_clusters <- future_clusters %>%
         dplyr::filter(!is.na(dg_id)) %>%
         group_by(dg_id) %>%
@@ -107,7 +106,7 @@ collapse_duplex_groups <- function(
             endB = max(end2),
             strandB = dplyr::first(strand2),
             n_reads = sum(n_reads),
-            score = mean(score,na.rm = TRUE)
+            score = mean(score, na.rm = TRUE)
         ) %>%
         relocate(dg_id, .after = n_reads)
 

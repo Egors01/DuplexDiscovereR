@@ -46,10 +46,12 @@ If no overlap is found for the feature, then filed will have NA
 data("RNADuplexesSampleData")
 annotateGI(gi = RNADuplexSampleDGs, anno_gr = SampleGeneAnnoGR)
 
-# Prioritisation of the snRNA and lncRNA before mRNA if genes overlap 
-annotateGI(gi = RNADuplexSampleDGs, anno_gr = SampleGeneAnnoGR,
-                 keys = c('gene_id','gene_name','gene_type'),
-                 order_key = 'gene_type',
-                 order_vec = c("snRNA","lncRNA", "protein_coding"),
-                 save_ambig = TRUE)
+# Prioritisation of the snRNA and lncRNA before mRNA if genes overlap
+annotateGI(
+    gi = RNADuplexSampleDGs, anno_gr = SampleGeneAnnoGR,
+    keys = c("gene_id", "gene_name", "gene_type"),
+    order_key = "gene_type",
+    order_vec = c("snRNA", "lncRNA", "protein_coding"),
+    save_ambig = TRUE
+)
 }

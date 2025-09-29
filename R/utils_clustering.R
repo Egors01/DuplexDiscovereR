@@ -64,21 +64,21 @@
 #' @param maxgap  Maximum relative shift between the overlapping read arms
 #' @param niter Number of times clustering will be called
 #' @param minoverlap Minimum required overlap between either read arm
-#'
+#' @param min_nodes Minimum count of nodes to finish the interaction merging
 #' @return a list with the following keys
 #' \describe{
 #'   \item{gi_updated}{ `GInteractions` object with both collapsed duplex groups
 #'   and not-collapsed unchanged reads}
 #'   \item{stats_df}{ `tibble` With the mapping from the unique read -
 #'    with the the infromation about time and memory reaquired for the function
-#'    call}
+#'    call
+#'    }
 #' }
-collapseSimilarChimeras <- function(
-        gi, read_stats_df,
-        maxgap = 5,
-        niter = 2,
-        minoverlap = 10,
-        min_nodes = 10) {
+collapseSimilarChimeras <- function(gi, read_stats_df,
+    maxgap = 5,
+    niter = 2,
+    minoverlap = 10,
+    min_nodes = 10) {
     message("--- Collapsing the reads shifted by <= ", maxgap, " nt ---")
     gi_base <- gi
     gi_base$dg_id <- NULL
@@ -103,9 +103,9 @@ collapseSimilarChimeras <- function(
             return_collapsed = FALSE
         )
         message("N nodes after collapse: ", length(grc))
-        
-        df_reads =  makeDfFromGi(grc)
-        
+
+        df_reads <- makeDfFromGi(grc)
+
         # update duplex_ids
         orig_mcols <- as_tibble(data.frame(mcols(gi_clustered)[c("duplex_id", "dg_id")]))
         new_mcols <- as_tibble(data.frame(mcols(grc)[c("duplex_id", "dg_id")]))
@@ -115,15 +115,15 @@ collapseSimilarChimeras <- function(
             dplyr::summarize(
                 new_duplex_id = dplyr::first(duplex_id)
             )
-        
+
         # {
         #   orig_mcols <- as_tibble(data.frame(mcols(gi_clustered)[c("duplex_id", "dg_id")]))
         #   new_mcols <- as_tibble(data.frame(mcols(grc)[c("duplex_id", "dg_id")]))
-        #   orig_mcols %>% mutate(was_clustered = if_else())   
-        #   
+        #   orig_mcols %>% mutate(was_clustered = if_else())
+        #
         # }
-        # 
-        
+        #
+
         # update in the gi object
         new_collapsed_stats <- left_join(new_mcols, fill_mcols, by = "dg_id") %>%
             mutate(
@@ -157,18 +157,8 @@ collapseSimilarChimeras <- function(
     res$gi_updated <- gi_base
     res$stats_df <- read_stats_df_upd
     
+    df_reads <- makeDfFromGi(gi_base)
     
-    #DEBUG
-    df_reads =  makeDfFromGi(gi_base)
-    df_bad = df_reads %>% filter(!is.na(duplex_id)) %>% group_by(duplex_id) %>%
-      mutate(n_seqnames = length(unique(c(chromA,chromB)))) %>%
-      filter(n_seqnames>=3)
-    if (nrow(df_bad)!=0){
-      place = 2
-      browser()
-    }
-    
-
     return(res)
 }
 
@@ -338,7 +328,8 @@ computeGISelfOverlaps <- function(gi, id_column = "duplex_id", maxgap = 40, mino
         A_span = width(punion(
             gi@regions[gi[queryHits(fo)]@anchor1],
             gi@regions[gi[subjectHits(fo)]@anchor1],
-            fill.gap = TRUE)),
+            fill.gap = TRUE
+        )),
         B_span = width(punion(
             gi@regions[gi[queryHits(fo)]@anchor2],
             gi@regions[gi[subjectHits(fo)]@anchor2],
