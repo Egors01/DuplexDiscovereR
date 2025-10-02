@@ -38,6 +38,7 @@
 #' @import grid
 #' @importFrom Biostrings readBStringSet RNAStringSet letterFrequency
 #' @importFrom ggsci pal_igv
+#' @importFrom vctrs vec_cast
 #' @author Egor Semenchenko
 #' @seealso [DuplexDiscovereR vignette](`browseVignettes("DuplexDiscovereR")`)
 "_PACKAGE"
