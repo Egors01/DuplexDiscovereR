@@ -26,7 +26,7 @@ alt 3' and 5' ends
   Keys for annotation features, trimming and minimum chimeric length cutoffs have defaults, also can be set by user 
   to be passed to the functions called from inside the `runDuplexDiscoverer`.
 
-# Version  1.3.2
+# Version  1.3.3
 - Date: 2025-09-29
 - Added experimental functionality for prioritisation of ambiguous annotation 
   to `annotateGi()` 
