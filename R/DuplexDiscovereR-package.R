@@ -73,8 +73,10 @@ varlist <- c(
     "strandA", "strandB", "strand_acceptorB", "strand_donorA",
     "tag", "this_chim_aln_score", "seqlengths<-", ".",
     "vert_id", "vert_id1", "vert_id2", "weight", "width1", "width2",
-    "x1", "x2", "x3", "RNA", "chim_withB_noA", "pval", "chim_withA_noB",
-    "chim_noB_noA", "chim_id"
+    "x1", "x2", "x3", "t1", "t2", "t3","t4" , "value",
+    "RNA", "chim_withB_noA", "pval", "chim_withA_noB",
+    "chim_noB_noA", "chim_id" ,"aln_lenA", "aln_lenB", "jA", "jB", "lA", "lB",
+    "len_not_ok", "n_seqnames", "sort_col"
 )
 
 if (getRversion() >= "2.15.1") utils::globalVariables(varlist, add = FALSE)
