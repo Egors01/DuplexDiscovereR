@@ -285,30 +285,6 @@ runDuplexDiscoverer <- function(
     gi_2arm_full <- c(gi_2arm, big_gi[big_gi$keep == FALSE])
     gi_2arm_full$was_clustered <- ifelse(!is.na(gi_2arm_full$was_clustered), 1, 0)
 
-
-    # DEBUG
-    df_reads <- as_tibble(data.frame(gi_2arm_full))
-    df_bad <- df_reads %>%
-        filter(!is.na(dg_id)) %>%
-        group_by(dg_id) %>%
-        mutate(n_seqnames = length(unique(c(seqnames1, seqnames2)))) %>%
-        filter(n_seqnames >= 3)
-
-    # if (nrow(df_bad)!=0){
-    #   place = 2
-    #   browser()
-    # }
-    # df_reads =   as_tibble(data.frame(gi_2arm_full))
-    # df_bad = df_reads %>% filter(!is.na(duplex_id)) %>% group_by(duplex_id) %>%
-    #   mutate(n_seqnames = length(unique(c(seqnames1,seqnames2)))) %>%
-    #   filter(n_seqnames>=3)
-    # if (nrow(df_bad)!=0){
-    #   place = 8
-    #   browser()
-    # }
-
-
-
     time2 <- Sys.time()
     time_clust <- round(as.numeric(difftime(time2, time1,
         units = "secs"
@@ -326,7 +302,7 @@ runDuplexDiscoverer <- function(
         message("N annotated duplex groups: ", annotated)
         message("N duplex groups with at least one arm missing annotaton: ", not_annotated)
         message("N duplex groups with at both arms missing annotaton: ", not_annotated_full)
-        if (compute_p_values & !is.null(df_counts)) {
+        if (compute_p_values && !is.null(df_counts)) {
             message("--- computing random ligation p-values ---")
             gi_final <- calculateLigationPvalues(gi_final, df_counts)
         } else {
