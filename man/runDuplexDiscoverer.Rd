@@ -24,7 +24,8 @@ runDuplexDiscoverer(
   trim_alignments = FALSE,
   trim_length = 40,
   min_arm_len = 9,
-  compute_p_values = TRUE
+  compute_p_values = TRUE,
+  compute_odds_test_p_values = FALSE
 )
 }
 \arguments{
@@ -77,7 +78,9 @@ Increasing this from i.e 0 to 5 reduces clustering time and memory for the libra
 \item{min_arm_len}{minimum allowed length of the alignment arm.
 Read will be dropped if either arm is shorter}
 
-\item{compute_p_values}{TRUE or FALSE. whether to calcualte random ligation test}
+\item{compute_p_values}{TRUE or FALSE. whether to calcualte random ligation test with binominal ligation model}
+
+\item{compute_odds_test_p_values}{TRUE or FALSE. Whether to calcualte odds-ratio random ligation test.}
 }
 \value{
 a list with the  following keys

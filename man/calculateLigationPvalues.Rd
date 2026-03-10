@@ -8,6 +8,7 @@ calculateLigationPvalues(
   gi,
   df_counts,
   id_col = "gene_id",
+  compute_binom = TRUE,
   compute_odds = FALSE
 )
 }
@@ -21,11 +22,11 @@ identifiers in \code{gi}. The second column is the corresponding count.}
 \item{id_col}{\code{character(1)}. Prefix for gene/transcript metadata fields in
 \code{gi}. Two fields, \verb{<id_col>.A} and \verb{<id_col>.B}, are expected.}
 
-\item{compute_odds}{\code{logical(1)}. Whether to compute the odds-ratio /
-Fisher exact test. Default is \code{TRUE}.}
-
 \item{compute_binom}{\code{logical(1)}. Whether to compute the binomial
 random-ligation test. Default is \code{TRUE}.}
+
+\item{compute_odds}{\code{logical(1)}. Whether to compute the odds-ratio /
+Fisher exact test. Default is \code{TRUE}.}
 }
 \value{
 \code{GInteractions} object with added metadata columns.
