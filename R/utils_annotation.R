@@ -187,7 +187,6 @@ annotateGI <- function(
     ) %>% pull(gene_count.B)
     return(gi)
 }
-
 #' Calculate ligation-based significance statistics for RNA duplexes
 #'
 #' Calculates significance statistics for each gene/transcript pair represented
@@ -275,8 +274,13 @@ annotateGI <- function(
 calculateLigationPvalues <- function(gi,
                                      df_counts,
                                      id_col = "gene_id",
+                                     compute_binom = TRUE,
                                      compute_odds = FALSE) {
     df_counts <- df_counts %>% as.data.frame()
+    if (!(compute_binom || compute_odds)) {
+        stop("Error in calculateLigationPvalues at least one compute_binom or compute_odds must be TRUE")
+    }
+  
 
     df_all_cts <- as_tibble(data.frame(
         RNA = unname(df_counts[[1]]),
