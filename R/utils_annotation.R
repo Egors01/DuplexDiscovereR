@@ -273,16 +273,16 @@ calculateLigationPvalues <- function(gi, df_counts, id_col = "gene_id") {
         )
     chim_df <- chim_df %>% dplyr::filter((A %in% unique_ids) &
         (B %in% unique_ids))
-    N_total <- sum(df_all_cts$n) + sum(chim_df$n_reads_chim_total)
     N_chim_total <- sum(chim_df$n_reads_chim_total)
+    N_total <- sum(df_all_cts$n)
+    N_frag_total <- N_total + N_chim_total
+    
     chim_df <- chim_df %>% mutate(
         Pa = nA / N_total,
         Pb = nB / N_total,
         Pab = ifelse(A != B, 2 * Pa * Pb, Pa * Pb)
     )
-
     # adding extra abundance counts
-
     df <- data.frame(chim_df[c("A", "B", "n_reads_chim_total")]) %>%
         dplyr::rename("n" = "n_reads_chim_total")
 
@@ -320,29 +320,86 @@ calculateLigationPvalues <- function(gi, df_counts, id_col = "gene_id") {
         center = FALSE,
         scale = sum(chim_df$Pab)
     )[, 1]
-    chim_df$pval <- pbinom(chim_df$n_reads_chim_total,
-        size = N_total,
-        prob = chim_df$Pab_norm
+    chim_df$pval <- pbinom(chim_df$n_reads_chim_total - 1 ,
+        size = N_chim_total,
+        prob = chim_df$Pab_norm,
+        lower.tail = FALSE
     )
     chim_df$p.adj <- p.adjust(chim_df$pval, method = "BH")
 
+    # Odds ratio test 
+    # |              | RNA1 | Not RNA1 |
+    # | ------------ | ---- | -------- |
+    # | **RNA2**     | C1    | C2       |
+    # | **Not RNA2** | C3    | C4       |
+    # |               |            B present |         B absent |
+    # | ------------- | -------------------: | ---------------: |
+    # | **A present** | n_reads_chim_total | chim_withA_noB + nonchimA |
+    # | **A absent**  |     chim_withB_noA + nonchimB|   chim_noB_noA |
+
+    chim_df$C1 <- chim_df$n_reads_chim_total
+    chim_df$C2 <- chim_df$chim_withA_noB + chim_df$nonchimA
+    chim_df$C3 <- chim_df$chim_withB_noA + chim_df$nonchimB
+    chim_df$C4 <- N_frag_total - chim_df$C1 - chim_df$C2 - chim_df$C3
+
+    fisher_res <- lapply(seq_len(nrow(chim_df)), function(i) {
+        mat <- matrix(
+            c(chim_df$C1[i], chim_df$C2[i],
+              chim_df$C3[i], chim_df$C4[i]),
+            nrow = 2,
+            byrow = TRUE
+        )
+
+        ft <- fisher.test(mat, alternative = "greater")
+
+        data.frame(
+            odds_ratio = unname(ft$estimate),
+            odds_pval = ft$p.value
+        )
+    })
+
+    fisher_res <- dplyr::bind_rows(fisher_res)
+    chim_df <- dplyr::bind_cols(chim_df, fisher_res)
+    chim_df$odds_p.adj <- p.adjust(chim_df$odds_pval, method = "BH")
+
     counts_stats <- chim_df %>%
         dplyr::select(
-            pval, p.adj, AB, Pa, Pb, chim_withA_noB,
-            chim_withB_noA, chim_noB_noA
+            AB,
+            pval, p.adj, Pa, Pb,
+            chim_withA_noB, chim_withB_noA, chim_noB_noA,
+            nonchimA, nonchimB,
+            C1, C2, C3, C4,
+            odds_ratio, odds_pval, odds_p.adj
         ) %>%
         dplyr::rename(
-            count.chim.notA.B = "chim_withB_noA",
-            count.chim.A.notB = "chim_withA_noB",
+            p_val = pval,
+            count.chim.A.notB = chim_withA_noB,
+            count.chim.notA.B = chim_withB_noA,
+            count.chim.notA.notB = chim_noB_noA
+        )
+
+
+    counts_stats <- chim_df %>%
+        dplyr::select(
+            AB,
+            pval, p.adj, Pa, Pb,
+            chim_withA_noB, chim_withB_noA, chim_noB_noA,
+            nonchimA, nonchimB,
+            C1, C2, C3, C4,
+            odds_ratio, odds_pval, odds_p.adj
+        ) %>%
+        dplyr::rename(
+            p_val = pval,
+            count.chim.A.notB = chim_withA_noB,
+            count.chim.notA.B = chim_withB_noA,
             count.chim.notA.notB = chim_noB_noA
         )
 
     chimdf_save <- chimdf_save %>%
         left_join(counts_stats, by = "AB")
 
-    statcounts_final <- tibble("chim_id" = seq_len(length(gi))) %>%
+    statcounts_final <- tibble(chim_id = seq_len(length(gi))) %>%
         left_join(chimdf_save, by = "chim_id") %>%
-        dplyr::rename(p_val = pval) %>% # back - compatibility
         select(-c(chim_id, AB)) %>%
         data.frame()
 
