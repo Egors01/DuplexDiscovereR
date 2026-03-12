@@ -235,13 +235,22 @@ collapseIdenticalReads <- function(gi) {
     dt1$n_reads <- NULL
     # to avoid groupby, use duplicated count +1
     readcts <- dt1 %>%
-        dplyr::filter(duplicated(num)) %>%
-        dplyr::select(num)
+      dplyr::filter(duplicated(num)) %>%
+      dplyr::select(num)
+    
     readcts <- table(readcts$num)
-    readcts <- tibble("num" = (names(readcts)), "n_reads" = as.vector(readcts) + 1)
+    
+    readcts <- tibble::tibble(
+      num = names(readcts),
+      n_reads = as.vector(readcts) + 1
+    )
+    if (nrow(readcts)!=0){ #  duplicated reads are present
+      dt1 <- dplyr::left_join(dt1, readcts, by = "num") %>%
+        dplyr::mutate(n_reads = tidyr::replace_na(n_reads, 1))        
+    }else{ #   no duplicated reads 
+      dt1 <- dt1 %>% dplyr::mutate(n_reads = 1)
+    }
 
-    dt1 <- left_join(dt1, readcts, by = "num") %>%
-        mutate(n_reads = tidyr::replace_na(n_reads, 1))
 
     read2duplex_map <- dt1 %>% dplyr::select(read_id, num)
 
