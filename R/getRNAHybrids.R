@@ -60,6 +60,9 @@ getRNAHybrids <- function(gi, fafile) {
 
     gr1 <- get_arm_a(gi)
     gr2 <- get_arm_b(gi)
+    gr1 <- keepSeqlevels(gr1,unique(seqnames(gr1)),pruning.mode = 'tidy')
+    gr2 <- keepSeqlevels(gr2,unique(seqnames(gr2)),pruning.mode = 'tidy')
+  
     seq1 <- sq[gr1]
     seq2 <- sq[gr2]
 
@@ -74,6 +77,11 @@ getRNAHybrids <- function(gi, fafile) {
     gi$E <- energies
     gi$hyb_len_1 <- len1
     gi$hyb_len_2 <- len2
+    gi$hyb_start_A <- as.numeric(matches[, 2])
+    gi$hyb_end_A <- as.numeric(matches[, 3])
+    gi$hyb_start_B <- as.numeric(matches[, 4])
+    gi$hyb_end_B <- as.numeric(matches[, 5])
+
     gi$dots <- dots
     return(gi)
 }
