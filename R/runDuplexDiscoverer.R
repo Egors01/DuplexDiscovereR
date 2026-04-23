@@ -49,8 +49,8 @@
 #' @param trim_length target size of trimmed alignment
 #' @param min_arm_len minimum allowed length of the alignment arm.
 #' Read will be dropped if either arm is shorter
-#' @param compute_p_values TRUE or FALSE. whether to calcualte random ligation test with binominal ligation model 
-#' @param compute_odds_test_p_values  TRUE or FALSE. Whether to calcualte odds-ratio random ligation test. 
+#' @param compute_p_values TRUE or FALSE. whether to calcualte random ligation test with binominal ligation model
+#' @param compute_odds_test_p_values  TRUE or FALSE. Whether to calcualte odds-ratio random ligation test.
 #' @return a list with the  following keys
 #' \describe{
 #'   \item{`duplex_groups`}{ `GInteractions` object with chimeric reads clustered duplex groups }
@@ -86,28 +86,27 @@
 #' dd_get_chimeric_reads(result)
 #' # counts of detected read tyoes
 #' dd_get_chimeric_reads_stats(result)
-runDuplexDiscoverer <- function(
-        data,
-        table_type = "",
-        junctions_gr = NULL,
-        anno_gr = NULL,
-        anno_gr_keys = c("gene_id", "gene_name", "gene_type"),
-        fafile = NULL,
-        df_counts = NULL,
-        sample_name = "sample",
-        lib_type = "SE",
-        min_junction_len = 5,
-        max_gap = 50,
-        min_arm_ratio = 0.1,
-        min_overlap = 10,
-        max_sj_shift = 10,
-        gap_collapse_similar = 2,
-        collapse_n_inter = 5,
-        trim_alignments = FALSE,
-        trim_length = 40,
-        min_arm_len = 9,
-        compute_p_values = TRUE,
-        compute_odds_test_p_values = FALSE) {
+runDuplexDiscoverer <- function(data,
+    table_type = "",
+    junctions_gr = NULL,
+    anno_gr = NULL,
+    anno_gr_keys = c("gene_id", "gene_name", "gene_type"),
+    fafile = NULL,
+    df_counts = NULL,
+    sample_name = "sample",
+    lib_type = "SE",
+    min_junction_len = 5,
+    max_gap = 50,
+    min_arm_ratio = 0.1,
+    min_overlap = 10,
+    max_sj_shift = 10,
+    gap_collapse_similar = 2,
+    collapse_n_inter = 5,
+    trim_alignments = FALSE,
+    trim_length = 40,
+    min_arm_len = 9,
+    compute_p_values = TRUE,
+    compute_odds_test_p_values = FALSE) {
     memstart <- sum(data.frame(gc(reset = TRUE))[, 6])
     start_time <- Sys.time()
     # STEP 1 pre-process------
@@ -304,11 +303,12 @@ runDuplexDiscoverer <- function(
         message("N annotated duplex groups: ", annotated)
         message("N duplex groups with at least one arm missing annotaton: ", not_annotated)
         message("N duplex groups with at both arms missing annotaton: ", not_annotated_full)
-        if ( ((compute_odds_test_p_values) || (compute_p_values)) && !is.null(df_counts)) {
+        if (((compute_odds_test_p_values) || (compute_p_values)) && !is.null(df_counts)) {
             message("--- computing random ligation p-values ---")
             gi_final <- calculateLigationPvalues(gi_final, df_counts,
                 compute_binom = compute_p_values,
-                compute_odds = compute_odds_test_p_values)
+                compute_odds = compute_odds_test_p_values
+            )
         } else {
             if (!is.null(df_counts)) {
                 message("--- adding counts from df_counts without p-value calculation  ---")

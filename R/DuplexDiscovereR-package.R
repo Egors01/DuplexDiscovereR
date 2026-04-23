@@ -39,6 +39,8 @@
 #' @importFrom Biostrings readBStringSet RNAStringSet letterFrequency
 #' @importFrom ggsci pal_igv
 #' @importFrom vctrs vec_cast
+#' @importFrom GenomeInfoDb keepSeqlevels
+#' @importFrom stats fisher.test
 #' @author Egor Semenchenko
 #' @seealso [DuplexDiscovereR vignette](`browseVignettes("DuplexDiscovereR")`)
 "_PACKAGE"
@@ -73,10 +75,11 @@ varlist <- c(
     "strandA", "strandB", "strand_acceptorB", "strand_donorA",
     "tag", "this_chim_aln_score", "seqlengths<-", ".",
     "vert_id", "vert_id1", "vert_id2", "weight", "width1", "width2",
-    "x1", "x2", "x3", "t1", "t2", "t3","t4" , "value",
+    "x1", "x2", "x3", "t1", "t2", "t3", "t4", "value",
     "RNA", "chim_withB_noA", "pval", "chim_withA_noB",
-    "chim_noB_noA", "chim_id" ,"aln_lenA", "aln_lenB", "jA", "jB", "lA", "lB",
-    "len_not_ok", "n_seqnames", "sort_col"
+    "chim_noB_noA", "chim_id", "aln_lenA", "aln_lenB", "jA", "jB", "lA", "lB",
+    "len_not_ok", "n_seqnames", "sort_col","C1","C2","C3","C4",
+    "nonchimA", "nonchimB","odds_p.adj","odds_ratio",'odds_pval'
 )
 
 if (getRversion() >= "2.15.1") utils::globalVariables(varlist, add = FALSE)

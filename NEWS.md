@@ -31,3 +31,8 @@ alt 3' and 5' ends
 - Added experimental functionality for prioritisation of ambiguous annotation 
   to `annotateGi()` 
 
+# Version  1.3.5
+- Date: 2026-04-23
+- Added the Fisher tests for the odds-ratios. Tests for the over-representation  
+- Fixed bug in a full pipeline run: possible crash where no duplicated reads are present in the input.
+- Computation of hybrids  now returns the relative start and end coordinates of the dot-bracket string

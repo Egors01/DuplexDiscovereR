@@ -29,13 +29,12 @@
 #'     order_vec = c("snRNA", "lncRNA", "protein_coding"),
 #'     save_ambig = TRUE
 #' )
-annotateGI <- function(
-        gi, anno_gr,
-        keys = c("gene_name", "gene_type", "gene_id"),
-        ambig_key = keys[1],
-        save_ambig = TRUE,
-        order_key = NULL,
-        order_vec = NULL) {
+annotateGI <- function(gi, anno_gr,
+    keys = c("gene_name", "gene_type", "gene_id"),
+    ambig_key = keys[1],
+    save_ambig = TRUE,
+    order_key = NULL,
+    order_vec = NULL) {
     orininal_columns <- colnames(mcols(gi))
 
     if (!all(keys %in% colnames(mcols(anno_gr)))) {
@@ -265,22 +264,22 @@ annotateGI <- function(
 #' @examples
 #' data("RNADuplexesSampleData")
 #' gi <- calculateLigationPvalues(
-#'   RNADuplexSampleDGs,
-#'   df_counts = RNADuplexesGeneCounts
+#'     RNADuplexSampleDGs,
+#'     df_counts = RNADuplexesGeneCounts
 #' )
 #' hist(gi$p.adj, breaks = 20)
 #'
 #' @export
 calculateLigationPvalues <- function(gi,
-                                     df_counts,
-                                     id_col = "gene_id",
-                                     compute_binom = TRUE,
-                                     compute_odds = FALSE) {
+    df_counts,
+    id_col = "gene_id",
+    compute_binom = TRUE,
+    compute_odds = FALSE) {
     df_counts <- df_counts %>% as.data.frame()
     if (!(compute_binom || compute_odds)) {
         stop("Error in calculateLigationPvalues at least one compute_binom or compute_odds must be TRUE")
     }
-  
+
 
     df_all_cts <- as_tibble(data.frame(
         RNA = unname(df_counts[[1]]),
@@ -300,7 +299,7 @@ calculateLigationPvalues <- function(gi,
     # filter not annotated chimeras and those for which we don't have record in counts df
     unique_ids <- unique(df_all_cts$RNA)
 
-  
+
     # keep original row-to-pair mapping so we can join back later
     chim_df$AB <- apply(chim_df[c("Araw", "Braw")], 1, function(row) {
         paste(sort(row), collapse = "<>")
@@ -338,13 +337,13 @@ calculateLigationPvalues <- function(gi,
         )
     df <- data.frame(chim_df[c("A", "B", "n_reads_chim_total")]) %>%
         dplyr::rename(n = "n_reads_chim_total")
-   
+
     # For odds- test count chimeras with A but not B, with B but not A, and with neither
     chim_df$chim_withA_noB <- apply(df, 1, function(row) {
         df %>%
             dplyr::filter(
                 (A == row["A"] | B == row["A"]) &
-                (A != row["B"] & B != row["B"])
+                    (A != row["B"] & B != row["B"])
             ) %>%
             pull(n) %>%
             sum()
@@ -354,7 +353,7 @@ calculateLigationPvalues <- function(gi,
         df %>%
             dplyr::filter(
                 (A == row["B"] | B == row["B"]) &
-                (A != row["A"] & B != row["A"])
+                    (A != row["A"] & B != row["A"])
             ) %>%
             pull(n) %>%
             sum()
@@ -364,13 +363,13 @@ calculateLigationPvalues <- function(gi,
         df %>%
             dplyr::filter(
                 (A != row["B"] & B != row["B"]) &
-                (A != row["A"] & B != row["A"])
+                    (A != row["A"] & B != row["A"])
             ) %>%
             pull(n) %>%
             sum()
     })
 
-    # singleton fpor odds 
+    # singleton fpor odds
     chim_df$nonchimA <- vapply(
         vctrs::vec_cast(chim_df$A, character()),
         function(x) {
@@ -424,13 +423,15 @@ calculateLigationPvalues <- function(gi,
 
         odds_res <- lapply(seq_len(nrow(chim_df)), function(i) {
             mat <- matrix(
-                c(chim_df$C1[i], chim_df$C2[i],
-                  chim_df$C3[i], chim_df$C4[i]),
+                c(
+                    chim_df$C1[i], chim_df$C2[i],
+                    chim_df$C3[i], chim_df$C4[i]
+                ),
                 nrow = 2,
                 byrow = TRUE
             )
 
-            ft <- fisher.test(mat, alternative = "greater")
+            ft <- stats::fisher.test(mat, alternative = "greater")
 
             data.frame(
                 odds_ratio = unname(ft$estimate),

@@ -74,11 +74,12 @@
 #'    call
 #'    }
 #' }
-collapseSimilarChimeras <- function(gi, read_stats_df,
-    maxgap = 5,
-    niter = 2,
-    minoverlap = 10,
-    min_nodes = 10) {
+collapseSimilarChimeras <- function(
+        gi, read_stats_df,
+        maxgap = 5,
+        niter = 2,
+        minoverlap = 10,
+        min_nodes = 10) {
     message("--- Collapsing the reads shifted by <= ", maxgap, " nt ---")
     gi_base <- gi
     gi_base$dg_id <- NULL
@@ -156,9 +157,9 @@ collapseSimilarChimeras <- function(gi, read_stats_df,
     res <- list()
     res$gi_updated <- gi_base
     res$stats_df <- read_stats_df_upd
-    
+
     df_reads <- makeDfFromGi(gi_base)
-    
+
     return(res)
 }
 
@@ -235,20 +236,20 @@ collapseIdenticalReads <- function(gi) {
     dt1$n_reads <- NULL
     # to avoid groupby, use duplicated count +1
     readcts <- dt1 %>%
-      dplyr::filter(duplicated(num)) %>%
-      dplyr::select(num)
-    
+        dplyr::filter(duplicated(num)) %>%
+        dplyr::select(num)
+
     readcts <- table(readcts$num)
-    
+
     readcts <- tibble::tibble(
-      num = names(readcts),
-      n_reads = as.vector(readcts) + 1
+        num = names(readcts),
+        n_reads = as.vector(readcts) + 1
     )
-    if (nrow(readcts)!=0){ #  duplicated reads are present
-      dt1 <- dplyr::left_join(dt1, readcts, by = "num") %>%
-        dplyr::mutate(n_reads = tidyr::replace_na(n_reads, 1))        
-    }else{ #   no duplicated reads 
-      dt1 <- dt1 %>% dplyr::mutate(n_reads = 1)
+    if (nrow(readcts) != 0) { #  duplicated reads are present
+        dt1 <- dplyr::left_join(dt1, readcts, by = "num") %>%
+            dplyr::mutate(n_reads = tidyr::replace_na(n_reads, 1))
+    } else { #   no duplicated reads
+        dt1 <- dt1 %>% dplyr::mutate(n_reads = 1)
     }
 
 

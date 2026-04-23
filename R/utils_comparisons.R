@@ -50,14 +50,13 @@
 #' res$gi_all
 #' # dataframe for the Upset plot
 #' res$dt_upset
-compareMultipleInteractions <- function(
-        gi_samples_list,
-        min_ratio = 0.3,
-        minoverlap = 5,
-        maxgap = 50,
-        niter = 3,
-        gi_superset = NULL,
-        anno_gr = NULL) {
+compareMultipleInteractions <- function(gi_samples_list,
+    min_ratio = 0.3,
+    minoverlap = 5,
+    maxgap = 50,
+    niter = 3,
+    gi_superset = NULL,
+    anno_gr = NULL) {
     if (!is.null(gi_superset)) {
         message("Using provided superset of interactions")
         gi_all <- gi_superset
@@ -136,9 +135,8 @@ compareMultipleInteractions <- function(
     return(res)
 }
 
-computeGIPairOverlaps <- function(
-        gi1, gi2, minoverlap = 10,
-        maxgap = 10) {
+computeGIPairOverlaps <- function(gi1, gi2, minoverlap = 10,
+    maxgap = 10) {
     # this is to unify levels
     # otherwise A-B B-A matches would be messed between query an dsubject
     mcols(gi1) <- NULL

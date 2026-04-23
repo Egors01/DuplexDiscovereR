@@ -45,6 +45,7 @@ Imports:
     rtracklayer,
     GenomicAlignments,
     GenomicRanges,
+    GenomeInfoDb,
     ggsci,
     igraph,
     rlang,

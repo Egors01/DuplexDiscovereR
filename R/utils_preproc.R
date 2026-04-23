@@ -476,12 +476,11 @@ preproc_generic_gi <- function(gi_raw, keep_all_columns = TRUE) {
 #'     table_type = "STAR",
 #'     keep_metadata = FALSE
 #' )
-runDuplexDiscoPreproc <- function(
-        data, table_type,
-        library_type = "SE",
-        keep_metadata = TRUE,
-        return_gi = FALSE,
-        min_arm_len = 15) {
+runDuplexDiscoPreproc <- function(data, table_type,
+    library_type = "SE",
+    keep_metadata = TRUE,
+    return_gi = FALSE,
+    min_arm_len = 15) {
     # Start with determining the input data type
     if (is(data, "GInteractions")) {
         # GI input
@@ -597,8 +596,9 @@ runDuplexDiscoPreproc <- function(
 #' )
 #' trimAroundJunction(dt_preproc, 40)
 #'
-trimAroundJunction <- function(dt,
-    extract_len = 30) {
+trimAroundJunction <- function(
+        dt,
+        extract_len = 30) {
     cnames <- c("brkpt_donorA", "brkpt_acceptorB")
     dift <- 2
     extract_len <- extract_len - 1
@@ -620,7 +620,7 @@ trimAroundJunction <- function(dt,
         if (all(cnames %in% colnames(dt))) {
             dt <- dt %>% rename(jA = brkpt_donorA, jB = brkpt_acceptorB)
         } else {
-            message("Junction fields not found: Possible filed names are jA and JB or 
+            message("Junction fields not found: Possible filed names are jA and JB or
                 brkpt_donorA and brkpt_acceptorB ")
         }
     }

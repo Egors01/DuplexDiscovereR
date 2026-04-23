@@ -60,9 +60,9 @@ getRNAHybrids <- function(gi, fafile) {
 
     gr1 <- get_arm_a(gi)
     gr2 <- get_arm_b(gi)
-    gr1 <- keepSeqlevels(gr1,unique(seqnames(gr1)),pruning.mode = 'tidy')
-    gr2 <- keepSeqlevels(gr2,unique(seqnames(gr2)),pruning.mode = 'tidy')
-  
+    gr1 <- GenomeInfoDb::keepSeqlevels(gr1, unique(seqnames(gr1)), pruning.mode = "tidy")
+    gr2 <- GenomeInfoDb::keepSeqlevels(gr2, unique(seqnames(gr2)), pruning.mode = "tidy")
+
     seq1 <- sq[gr1]
     seq2 <- sq[gr2]
 
