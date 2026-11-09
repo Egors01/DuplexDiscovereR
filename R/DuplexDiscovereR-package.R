@@ -79,7 +79,7 @@ varlist <- c(
     "RNA", "chim_withB_noA", "pval", "chim_withA_noB",
     "chim_noB_noA", "chim_id", "aln_lenA", "aln_lenB", "jA", "jB", "lA", "lB",
     "len_not_ok", "n_seqnames", "sort_col","C1","C2","C3","C4",
-    "nonchimA", "nonchimB","odds_p.adj","odds_ratio",'odds_pval'
+    "nonchimA", "nonchimB","odds_p.adj","odds_ratio",'odds_pval','drawGD','DuplexTrack',
 )
 
 if (getRversion() >= "2.15.1") utils::globalVariables(varlist, add = FALSE)

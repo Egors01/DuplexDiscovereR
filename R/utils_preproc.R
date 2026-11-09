@@ -204,8 +204,8 @@ preproc_chim_junction_out_se <- function(dt, keep_all_columns = FALSE) {
     message("getting alignment coordinates ")
     dt <- dt %>%
         mutate(
-            endA = startA + GenomicAlignments::cigarWidthAlongReferenceSpace(cigar_alnA),
-            endB = startB + GenomicAlignments::cigarWidthAlongReferenceSpace(cigar_alnB),
+            endA = startA + cigarillo::cigar_extent_along_ref(cigar_alnA),
+            endB = startB + cigarillo::cigar_extent_along_ref(cigar_alnB),
             bad_junction = ifelse(chromA == chromB &
                 strandA == strandB &
                 abs(brkpt_donorA - brkpt_acceptorB) <= 2, 1, 0),
@@ -292,7 +292,7 @@ preproc_chim_junction_out_pe <- function(dt, keep_all_columns = FALSE) {
         ) %>%
         mutate(
             lengapsA = n_n,
-            endA_along = startA + cigarWidthAlongReferenceSpace(cigar_str),
+            endA_along = startA + cigarillo::cigar_extent_along_ref(cigar_str),
             lA = n_m + n_p * sign_p + n_n,
             endA = startA + lA - 1
         ) %>%
@@ -310,7 +310,7 @@ preproc_chim_junction_out_pe <- function(dt, keep_all_columns = FALSE) {
         mutate(
             lengapsB = n_n,
             lB = n_m + n_p * sign_p + n_n,
-            endB_along = startB + cigarWidthAlongReferenceSpace(cigar_str),
+            endB_along = startB + cigarillo::cigar_extent_along_ref(cigar_str),
             endB = startB + lB - 1
         ) %>%
         mutate(

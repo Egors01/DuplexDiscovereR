@@ -13,3 +13,4 @@ vignettes/*.R
 .Rbuildignore
 dev/
 tests/testthat/Rplots.pdf
+.positai
