@@ -521,7 +521,7 @@ table(gi$splicejnc)
 For determining the duplex groups, we will leave only chimeric junctions
 in a read which do not self-overlap:
 
-```{r }
+```{r ex_cassif4}
 keep <- which((gi$junction_type == "2arm") & (gi$splicejnc == 0))
 gi <- gi[keep]
 ```
