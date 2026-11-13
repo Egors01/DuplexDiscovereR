@@ -36,3 +36,7 @@ alt 3' and 5' ends
 - Added the Fisher tests for the odds-ratios. Tests for the over-representation  
 - Fixed bug in a full pipeline run: possible crash where no duplicated reads are present in the input.
 - Computation of hybrids  now returns the relative start and end coordinates of the dot-bracket string
+
+# Version  1.5.1
+- Date: 2026-11-15
+- removed dependency on GenomicAlignments. Parser of STAR Chimeric.out.unction in preprocessing now uses cigarillo package.
