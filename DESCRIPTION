@@ -31,7 +31,6 @@ Encoding: UTF-8
 NeedsCompilation: no
 Version: 1.7.1
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 BiocType: Software
 biocViews: 
   Sequencing,
@@ -61,7 +60,7 @@ Imports:
     utils,
     vctrs
 Depends: 
-    R (>= 4.5),
+    R (>= 4.6),
     InteractionSet
 LazyData: false
 Suggests: 
@@ -71,5 +70,5 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
-VignetteEngine: knitr
 Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.1

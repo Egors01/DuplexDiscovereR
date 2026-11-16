@@ -36,45 +36,63 @@ import(rlang)
 import(rtracklayer)
 import(stringr)
 import(tibble)
-importFrom(Biostrings,RNAStringSet)
-importFrom(Biostrings,letterFrequency)
-importFrom(Biostrings,readBStringSet)
-importFrom(cigarillo,cigar_extent_along_ref)
+importFrom(Biostrings,
+  RNAStringSet,
+  letterFrequency,
+  readBStringSet
+)
+importFrom(GenomeInfoDb,keepSeqlevels)
 importFrom(GenomicRanges,GRanges)
-importFrom(Gviz,availableDisplayPars)
-importFrom(Gviz,getScheme)
+importFrom(Gviz,
+  availableDisplayPars,
+  getScheme
+)
+importFrom(cigarillo,cigar_extent_along_ref)
 importFrom(dplyr,first)
 importFrom(ggsci,pal_igv)
-importFrom(grDevices,col2rgb)
-importFrom(grDevices,hsv)
-importFrom(grDevices,rgb2hsv)
-importFrom(igraph,V)
-importFrom(igraph,cluster_fast_greedy)
-importFrom(igraph,cluster_louvain)
-importFrom(igraph,decompose)
-importFrom(igraph,edge.attributes)
-importFrom(igraph,graph_from_data_frame)
-importFrom(igraph,membership)
-importFrom(igraph,simplify)
-importFrom(methods,as)
-importFrom(methods,callNextMethod)
-importFrom(methods,getClass)
-importFrom(methods,getClassDef)
-importFrom(methods,is)
-importFrom(methods,new)
-importFrom(methods,show)
-importFrom(methods,slot)
-importFrom(methods,slotNames)
+importFrom(grDevices,
+  col2rgb,
+  hsv,
+  rgb2hsv
+)
+importFrom(igraph,
+  V,
+  cluster_fast_greedy,
+  cluster_louvain,
+  decompose,
+  edge.attributes,
+  graph_from_data_frame,
+  membership,
+  simplify
+)
+importFrom(methods,
+  as,
+  callNextMethod,
+  getClass,
+  getClassDef,
+  is,
+  new,
+  show,
+  slot,
+  slotNames
+)
 importFrom(purrr,set_names)
 importFrom(scales,rescale)
-importFrom(stats,median)
-importFrom(stats,p.adjust)
-importFrom(stats,pbinom)
-importFrom(stats,setNames)
-importFrom(tidyr,replace_na)
-importFrom(tidyr,unite)
-importFrom(utils,head)
-importFrom(utils,setTxtProgressBar)
-importFrom(utils,txtProgressBar)
-importFrom(utils,write.table)
+importFrom(stats,
+  fisher.test,
+  median,
+  p.adjust,
+  pbinom,
+  setNames
+)
+importFrom(tidyr,
+  replace_na,
+  unite
+)
+importFrom(utils,
+  head,
+  setTxtProgressBar,
+  txtProgressBar,
+  write.table
+)
 importFrom(vctrs,vec_cast)

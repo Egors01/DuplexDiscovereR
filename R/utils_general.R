@@ -136,7 +136,7 @@ makeGiFromDf <- function(df) {
 makeDfFromGi <- function(gi) {
     meta <- as_tibble(mcols(gi))
     mcols(gi) <- NULL
-    gidf <- as_tibble(data.frame(gi)) %>%
+    gidf <- as_tibble(as.data.frame(gi)) %>%
         dplyr::rename(
             chromA = seqnames1,
             startA = start1,

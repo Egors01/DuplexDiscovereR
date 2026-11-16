@@ -16,9 +16,9 @@ computeGISelfOverlaps(
 
 \item{id_column}{column which use for using as ids for entries}
 
-\item{maxgap}{parameter for call of \code{\link[InteractionSet:overlaps]{InteractionSet::findOverlaps()}}}
+\item{maxgap}{parameter for call of \code{\link[InteractionSet:findOverlaps]{InteractionSet::findOverlaps()}}}
 
-\item{minoverlap}{parameter for call \code{\link[InteractionSet:overlaps]{InteractionSet::findOverlaps()}}}
+\item{minoverlap}{parameter for call \code{\link[InteractionSet:findOverlaps]{InteractionSet::findOverlaps()}}}
 }
 \value{
 dataframe with indexes of pairwise overlapsin input and

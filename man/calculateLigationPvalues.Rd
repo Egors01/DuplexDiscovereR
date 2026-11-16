@@ -97,8 +97,8 @@ A one-sided Fisher exact test (\code{alternative = "greater"}) is used.
 \examples{
 data("RNADuplexesSampleData")
 gi <- calculateLigationPvalues(
-  RNADuplexSampleDGs,
-  df_counts = RNADuplexesGeneCounts
+    RNADuplexSampleDGs,
+    df_counts = RNADuplexesGeneCounts
 )
 hist(gi$p.adj, breaks = 20)
 

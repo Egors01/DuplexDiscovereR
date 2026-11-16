@@ -170,7 +170,7 @@ collapseSimilarChimeras <- function(
 #'
 #' @return tibble
 .DGIdToDuplexId <- function(gi) {
-    future_clusters <- as_tibble(data.frame(gi))
+    future_clusters <- makeDfFromGi(gi)
     return(future_clusters %>% dplyr::select(duplex_id, dg_id))
 }
 

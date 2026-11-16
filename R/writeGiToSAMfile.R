@@ -149,7 +149,7 @@ writeGiToSAMfile <- function(gi_coords, file_out,
     cis_inter_large_dist <- cis_inter[mcols(cis_inter)$partner1_dist >= distance_chim_junction]
     cis_inter <- cis_inter[mcols(cis_inter)$partner1_dist < distance_chim_junction]
     if (length(cis_inter) > 0) {
-        cis_inter_tib <- as_tibble(cis_inter)
+        cis_inter_tib <- as_tibble(as.data.frame(cis_inter))
         # important to have same gene to have them correct
         mcols(cis_inter)$artCIGAR <- paste(mcols(cis_inter)$width_anchor1, "M", mcols(cis_inter)$partner1_dist, "N", mcols(cis_inter)$width_anchor2, "M", sep = "")
         mcols(cis_inter)$artSEQ <- "*"
@@ -166,7 +166,7 @@ writeGiToSAMfile <- function(gi_coords, file_out,
             sep = "\t"
         )
 
-        cis_inter_tibble <- as_tibble(cis_inter) %>%
+        cis_inter_tibble <- as_tibble(as.data.frame(cis_inter)) %>%
             dplyr::select(
                 rname, col2, seqnames1, start1,
                 col5, artCIGAR, col7, col8, col9, artSEQ, col11, tag
@@ -179,7 +179,7 @@ writeGiToSAMfile <- function(gi_coords, file_out,
     trans_inter <- temp_gi_coords[is.na(partner1_dist)]
     trans_inter <- c(trans_inter, cis_inter_large_dist)
 
-    trans_inter_tib <- as_tibble(trans_inter)
+    trans_inter_tib <- as_tibble(as.data.frame(trans_inter))
 
     mcols(trans_inter)$col1read1 <- paste(mcols(trans_inter)[, "rname"], "", sep = "")
     mcols(trans_inter)$col1read2 <- paste(mcols(trans_inter)[, "rname"], "", sep = "")
@@ -201,14 +201,14 @@ writeGiToSAMfile <- function(gi_coords, file_out,
     )
 
     #  pairs of gi_coords
-    tibble_read1 <- as_tibble(trans_inter) %>% dplyr::select(
+    tibble_read1 <-  as_tibble(as.data.frame(trans_inter)) %>% dplyr::select(
         col1read1, col2,
         seqnames1, start1, col5,
         artCIGAR1, col7, col8,
         col9, seq_anchor1,
         col11, tag
     )
-    tibble_read2 <- as_tibble(trans_inter) %>% dplyr::select(
+    tibble_read2 <-  as_tibble(as.data.frame(trans_inter)) %>% dplyr::select(
         col1read2, col2,
         seqnames2, start2, col5,
         artCIGAR2, col7, col8,

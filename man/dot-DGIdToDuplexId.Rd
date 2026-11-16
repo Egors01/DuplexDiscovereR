@@ -6,9 +6,6 @@
 \usage{
 .DGIdToDuplexId(gi)
 }
-\arguments{
-\item{gi}{}
-}
 \value{
 tibble
 }

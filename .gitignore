@@ -15,3 +15,6 @@ vignettes/*.R
 dev/
 tests/testthat/Rplots.pdf
 .positai
+envsetup.R
+.Rprofile
+.vscode

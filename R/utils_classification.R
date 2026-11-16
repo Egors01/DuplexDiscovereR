@@ -24,8 +24,9 @@
 #' \item{junction_type}{factor for the junction types}
 #' }
 #' @export
-#' @seealso [DuplexDiscovereR::getChimericJunctionTypes(),
-#' DuplexDiscovereR::getSpliceJunctionChimeras()]
+#' @seealso
+#' - [getChimericJunctionTypes()]
+#' - [getSpliceJunctionChimeras()]
 #' @examples
 #' data("RNADuplexesSampleData")
 #' head(RNADuplexSampleGI)
